@@ -1,0 +1,1 @@
+export { ReactSmartSlider } from './components'

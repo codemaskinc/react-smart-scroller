@@ -3,8 +3,8 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "jsx": "react-native",
-    "lib": ["es6"],
+    "jsx": "react",
+    "lib": ["es6", "es5", "dom"],
     "moduleResolution": "node",
     "noEmit": false,
     "strict": true,
@@ -12,7 +12,12 @@
     "baseUrl": "src",
     "skipLibCheck": true,
     "noImplicitAny": false,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "rootDir": "src",
+    "typeRoots": [
+      "node_modules/@types",
+      "src/typings"
+    ]
   },
   "exclude": ["node_modules"]
 }
