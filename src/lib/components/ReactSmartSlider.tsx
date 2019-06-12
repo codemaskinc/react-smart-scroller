@@ -4,7 +4,7 @@ import { colors } from 'styles'
 import { C, isMobile } from 'utils'
 
 export type ReactSmartSliderProps = {
-    cols?: number,
+    numCols?: number,
     spacing?: number,
     circleSize?: number,
     circleColor?: string,
@@ -20,7 +20,7 @@ type ReactSmartSliderState = {
 
 export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, ReactSmartSliderState> {
     static defaultProps: Partial<ReactSmartSliderProps> = {
-        cols: 1,
+        numCols: 1,
         spacing: 0,
         circleSize: 15,
         trackHeight: 5,
@@ -62,7 +62,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
 
     get shouldRenderScrollbar() {
         const overflownRef = this.overflowContainerRef.current
-        const cols = this.props.cols as number
+        const cols = this.props.numCols as number
 
         return !(overflownRef && overflownRef.children.length <= cols)
     }
@@ -184,7 +184,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
     }
 
     renderChildren() {
-        const cols = this.props.cols as number
+        const cols = this.props.numCols as number
         const spacing = this.props.spacing as number
         const flexBasis = `${100 / cols}%`
         const padding = spacing / 2
