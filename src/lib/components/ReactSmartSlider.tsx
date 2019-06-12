@@ -1,15 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 import { colors } from 'styles'
-import { R, isMobile } from 'utils'
+import { C, isMobile } from 'utils'
 
 export type ReactSmartSliderProps = {
-    cols: number,
-    spacing: number,
+    cols?: number,
+    spacing?: number,
     circleSize?: number,
     circleColor?: string,
-    barHeight?: number,
-    barColor?: string
+    trackHeight?: number,
+    trackColor?: string
 }
 
 type ReactSmartSliderState = {
@@ -20,10 +20,12 @@ type ReactSmartSliderState = {
 
 export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, ReactSmartSliderState> {
     static defaultProps: Partial<ReactSmartSliderProps> = {
+        cols: 1,
+        spacing: 0,
         circleSize: 15,
-        barHeight: 5,
+        trackHeight: 5,
         circleColor: colors.primary,
-        barColor: colors.gray.mediumGray
+        trackColor: colors.gray.mediumGray
     }
 
     state: ReactSmartSliderState = {
@@ -60,15 +62,16 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
 
     get shouldRenderScrollbar() {
         const overflownRef = this.overflowContainerRef.current
+        const cols = this.props.cols as number
 
-        return !(overflownRef && overflownRef.children.length <= this.props.cols)
+        return !(overflownRef && overflownRef.children.length <= cols)
     }
 
     measureContainers() {
         const overflownRef = this.overflowContainerRef.current as HTMLDivElement
         const scrollCircleRef = this.scrollCircleRef.current as HTMLDivElement
         const circleWidth = this.props.circleSize as number
-        const areRefsCurrent = R.all(
+        const areRefsCurrent = C.all(
             overflownRef,
             scrollCircleRef
         )
@@ -107,7 +110,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
         const circleSize = this.props.circleSize as number
         const circleRef = this.scrollCircleRef.current as HTMLDivElement
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
-        const shouldReturn = R.all(
+        const shouldReturn = C.all(
             circleRef,
             overflowRef,
             clientX >= (circleRef.offsetLeft + overflowRef.getBoundingClientRect().left),
@@ -142,7 +145,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
         const maximumOffset = scrollContainerWidth - circleSize
         const offset = event.clientX - deltaX + deltaXOrigin
         const isBetweenClientWidth = offset >= 0 && offset <= maximumOffset
-        const areRefsCurrent = R.all(
+        const areRefsCurrent = C.all(
             Boolean(this.overflowContainerRef.current),
             Boolean(this.scrollCircleRef.current)
         )
@@ -181,7 +184,8 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
     }
 
     renderChildren() {
-        const { cols, spacing } = this.props
+        const cols = this.props.cols as number
+        const spacing = this.props.spacing as number
         const flexBasis = `${100 / cols}%`
         const padding = spacing / 2
         const children = this.props.children as ChildNode[]
@@ -211,8 +215,8 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
     }
 
     renderCustomScrollbar() {
-        const { barHeight, barColor, circleSize, circleColor } = this.props
-        const scrollbarHeight = barHeight as number
+        const { trackHeight, trackColor, circleSize, circleColor } = this.props
+        const scrollbarHeight = trackHeight as number
         const circleDiameter = circleSize as number
         const bottom = (circleDiameter - scrollbarHeight) / 2
 
@@ -220,7 +224,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
             <CustomScrollbar
                 style={{
                     height: scrollbarHeight,
-                    color: barColor,
+                    color: trackColor,
                     bottom
                 }}
                 onClick={this.onScrollbarClick}
