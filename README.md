@@ -1,6 +1,6 @@
 # react-smart-slider
 
-React-smart-slider is a library that allows in easy way to construct horizontal slider.
+React-smart-slider is a library that allows you to create horizontal slider in easy way.
 
 <p align="center">
   <img src="assets/react-smart-slider-demo-first.gif" />
@@ -34,7 +34,7 @@ Let's create our first component
     import { ReactSmartSlider } from 'react-smart-slider'
     
     const renderImages = () => {
-        const styles = [
+        const images = [
             'https://cdn.pixabay.com/photo/2019/06/02/00/46/chapel-4245437__340.jpg',
             'https://cdn.pixabay.com/photo/2017/08/22/22/36/cinque-terre-2670762__340.jpg',
             'https://cdn.pixabay.com/photo/2016/08/01/20/34/girl-1562091__340.jpg',
@@ -42,7 +42,7 @@ Let's create our first component
             'https://cdn.pixabay.com/photo/2019/04/11/09/50/wave-4119274__340.jpg'
         ]
     
-        return styles.map(image => (
+        return images.map(image => (
             <Image src={image}/>
         ))
     }
@@ -57,4 +57,22 @@ This is what you'll see in your browser:
 
 <p align="center">
   <img src="assets/usage-first.png" />
+</p>
+
+Now we can add some props to our Slider
+
+    export const Slider = () => (
+            <ReactSmartSlider
+                cols={3}
+                spacing={24}
+                circleSize={20}
+            >
+                {renderImages()}
+            </ReactSmartSlider>
+        )
+
+After setting above props we should see something like this:
+
+<p align="center">
+  <img src="assets/react-smart-slider-demo-second.gif" />
 </p>
