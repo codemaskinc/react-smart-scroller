@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { colors } from 'styles'
-import { Helpers, isMobile } from 'utils'
+import { C, isMobile } from 'utils'
 
 export type ReactSmartSliderProps = {
     cols?: number,
@@ -71,7 +71,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
         const overflownRef = this.overflowContainerRef.current as HTMLDivElement
         const scrollCircleRef = this.scrollCircleRef.current as HTMLDivElement
         const circleWidth = this.props.circleSize as number
-        const areRefsCurrent = Helpers.all(
+        const areRefsCurrent = C.all(
             overflownRef,
             scrollCircleRef
         )
@@ -110,7 +110,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
         const circleSize = this.props.circleSize as number
         const circleRef = this.scrollCircleRef.current as HTMLDivElement
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
-        const shouldReturn = Helpers.all(
+        const shouldReturn = C.all(
             circleRef,
             overflowRef,
             clientX >= (circleRef.offsetLeft + overflowRef.getBoundingClientRect().left),
@@ -145,7 +145,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
         const maximumOffset = scrollContainerWidth - circleSize
         const offset = event.clientX - deltaX + deltaXOrigin
         const isBetweenClientWidth = offset >= 0 && offset <= maximumOffset
-        const areRefsCurrent = Helpers.all(
+        const areRefsCurrent = C.all(
             Boolean(this.overflowContainerRef.current),
             Boolean(this.scrollCircleRef.current)
         )

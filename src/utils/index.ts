@@ -1,6 +1,6 @@
-import * as Helpers from './helpers'
+import * as C from './helpers'
 
 export * from './deviceDetect'
 export {
-    Helpers
+    C
 }
