@@ -8,7 +8,6 @@
 <p align="center">
 
   ![react-smart-slider-demo](assets/react-smart-slider-demo-first.gif)
-  
 </p>
 
 ## Props
