@@ -6,4 +6,4 @@
 
 # react-smart-slider
 
-![react-smart-slider-demo](assets/react-smart-slider-demo.gif)
+![react-smart-slider-demo](assets/react-smart-slider-demo-first.gif)
