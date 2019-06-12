@@ -6,8 +6,7 @@
 
 # react-smart-slider
 <p align="center">
-
-  ![react-smart-slider-demo](assets/react-smart-slider-demo-first.gif)
+  <img src="assets/react-smart-slider-demo-first.gif" />
 </p>
 
 ## Props
