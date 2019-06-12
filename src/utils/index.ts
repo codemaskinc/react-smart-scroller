@@ -1,4 +1,4 @@
-import * as R from './ramda'
+import * as R from './helpers'
 
 export * from './deviceDetect'
 export {

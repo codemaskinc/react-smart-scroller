@@ -1,1 +1,1 @@
-export { ReactSmartSlider } from './components'
+export { ReactSmartSlider, ReactSmartSliderProps } from './components'

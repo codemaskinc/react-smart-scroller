@@ -11,14 +11,5 @@ export const colors = {
         lightGray: '#ecf0f1',
         mediumGray: '#bdc3c7',
         darkGray: '#9ca2a7',
-    },
-    customWhiteTransparent: (opacity) => `rgba(255, 255, 255, ${opacity})`,
-    customBlackTransparent: (opacity) => `rgba(0, 0, 0, ${opacity})`,
-    hexToRGBA: (hex, opacity) => hex
-        .replace('#', '')
-        .split(/(?=(?:..)*$)/)
-        .map(x => parseInt(x, 16))
-        .filter(num => !isNaN(num))
-        .reduce((acc, color) => `${acc}${color},`, 'rgba(')
-        .concat(`${opacity})`)
+    }
 };
