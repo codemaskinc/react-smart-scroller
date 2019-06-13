@@ -1,33 +1,33 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { colors } from 'styles';
-import { Wrapper, ReactSmartSlider, CustomScrollbar, ScrollCircle, SecondWrapper } from './ReactSmartSlider';
+import { Wrapper, ReactSmartSlider, RectangleThumb, Track, SecondWrapper } from './ReactSmartSlider';
 const mockConfig = (device) => ({
     value: device,
     configurable: true
 });
 const agent = 'userAgent';
 const initialProps = {
-    cols: 6,
-    spacing: 16,
-    circleSize: 15,
-    barHeight: 5,
-    circleColor: colors.primary,
-    barColor: colors.gray.mediumGray
+    numCols: 1,
+    spacing: 0,
+    trackProps: {
+        color: colors.secondary,
+        height: 20
+    }
 };
 describe('ReactSmartSlider: lib/components', () => {
     it('should render itself', () => {
         const wrapper = shallow(React.createElement(ReactSmartSlider, Object.assign({}, initialProps)));
         expect(wrapper.find(Wrapper).exists()).toEqual(true);
         expect(wrapper.find(SecondWrapper).exists()).toEqual(true);
-        expect(wrapper.find(CustomScrollbar).exists()).toEqual(true);
-        expect(wrapper.find(ScrollCircle).exists()).toEqual(true);
+        expect(wrapper.find(RectangleThumb).exists()).toEqual(true);
+        expect(wrapper.find(Track).exists()).toEqual(true);
     });
-    it('should not render CustomScrollbar', () => {
+    it('should not render Scrollbar', () => {
         Object.defineProperty(window.navigator, agent, mockConfig('iPhone'));
         const wrapper = shallow(React.createElement(ReactSmartSlider, Object.assign({}, initialProps)));
-        expect(wrapper.find(CustomScrollbar).exists()).toEqual(false);
-        expect(wrapper.find(ScrollCircle).exists()).toEqual(false);
+        expect(wrapper.find(Track).exists()).toEqual(false);
+        expect(wrapper.find(RectangleThumb).exists()).toEqual(false);
     });
     it('should invoke onOverflowContentScroll onScroll', () => {
         const onOverflowContentScrollSpy = jest.spyOn(ReactSmartSlider.prototype, 'onOverflowContentScroll');
@@ -59,18 +59,15 @@ describe('ReactSmartSlider: lib/components', () => {
         const event = {
             preventDefault: jest.fn()
         };
-        wrapper.find(ScrollCircle).simulate('mousedown', event);
+        wrapper.find(RectangleThumb).simulate('mousedown', event);
         expect(onMouseDownSpy).toHaveBeenCalled();
     });
     it('should render CustomScrollbar with props', () => {
         const wrapper = shallow(React.createElement(ReactSmartSlider, Object.assign({}, initialProps)));
-        const bottom = (initialProps.circleSize - initialProps.barHeight) / 2;
         const style = {
-            height: initialProps.barHeight,
-            color: initialProps.barColor,
-            bottom
+            height: '100%'
         };
-        expect(wrapper.find(CustomScrollbar).props().style).toEqual(style);
+        expect(wrapper.find(RectangleThumb).props().style).toEqual(style);
     });
     it('should invoke onScrollbarClick after CustomScrollbar clicked', () => {
         ReactSmartSlider.prototype.onScrollbarClick = jest.fn();
@@ -79,16 +76,7 @@ describe('ReactSmartSlider: lib/components', () => {
         const event = {
             clientX: 123
         };
-        wrapper.find(CustomScrollbar).simulate('click', event);
+        wrapper.find(Track).simulate('click', event);
         expect(onScrollbarClickSpy).toHaveBeenCalled();
-    });
-    it('should render ScrollCircle with props', () => {
-        const wrapper = shallow(React.createElement(ReactSmartSlider, Object.assign({}, initialProps)));
-        const style = {
-            height: initialProps.circleSize,
-            width: initialProps.circleSize,
-            color: initialProps.circleColor
-        };
-        expect(wrapper.find(ScrollCircle).props().style).toEqual(style);
     });
 });
