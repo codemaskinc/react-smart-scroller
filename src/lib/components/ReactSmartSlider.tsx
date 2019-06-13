@@ -1,41 +1,42 @@
 import React from 'react'
 import styled from 'styled-components'
 import { colors } from 'styles'
-import { C, isMobile } from 'utils'
+import { C, isMobile, isMacOs } from 'utils'
 
 export type ReactSmartSliderProps = {
     numCols?: number,
     spacing?: number,
-    circleSize?: number,
-    circleColor?: string,
-    trackHeight?: number,
-    trackColor?: string
+    trackProps?: React.CSSProperties,
+    thumb?: JSX.Element
 }
 
 type ReactSmartSliderState = {
     scrollContainerWidth: number,
     deltaXOrigin: number,
-    deltaX: number
+    deltaX: number,
+    thumbWidth: number,
+    thumbHeight: number,
+    trackHeight: number
 }
 
 export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, ReactSmartSliderState> {
     static defaultProps: Partial<ReactSmartSliderProps> = {
         numCols: 1,
         spacing: 0,
-        circleSize: 15,
-        trackHeight: 5,
-        circleColor: colors.primary,
-        trackColor: colors.gray.mediumGray
     }
 
     state: ReactSmartSliderState = {
         scrollContainerWidth: 0,
         deltaXOrigin: 0,
-        deltaX: 0
+        deltaX: 0,
+        thumbWidth: 0,
+        thumbHeight: 0,
+        trackHeight: 0
     }
 
     private overflowContainerRef: React.RefObject<HTMLDivElement> = React.createRef()
-    private scrollCircleRef: React.RefObject<HTMLDivElement> = React.createRef()
+    private thumbRef: React.RefObject<HTMLDivElement> = React.createRef()
+    private trackRef: React.RefObject<HTMLDivElement> = React.createRef()
 
     constructor(props: ReactSmartSliderProps) {
         super(props)
@@ -44,7 +45,6 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
         this.onMouseDown = this.onMouseDown.bind(this)
         this.onMouseDrag = this.onMouseDrag.bind(this)
         this.onOverflowContentScroll = this.onOverflowContentScroll.bind(this)
-        this.renderCustomScrollbar = this.renderCustomScrollbar.bind(this)
         this.deleteMouseMoveEvent = this.deleteMouseMoveEvent.bind(this)
         this.onScrollbarClick = this.onScrollbarClick.bind(this)
     }
@@ -67,38 +67,52 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
         return !(overflownRef && overflownRef.children.length <= cols)
     }
 
+    get contentMargin() {
+        const { thumbHeight, trackHeight } = this.state
+        const windowsScrollHeight = 20
+        const marginHeight = trackHeight > thumbHeight ? trackHeight : thumbHeight
+        const margin = isMacOs() ? marginHeight + windowsScrollHeight : marginHeight
+
+        return !isMobile() && this.shouldRenderScrollbar
+            ? `${margin + 10}px`
+            : '20px'
+    }
+
     measureContainers() {
         const overflownRef = this.overflowContainerRef.current as HTMLDivElement
-        const scrollCircleRef = this.scrollCircleRef.current as HTMLDivElement
-        const circleWidth = this.props.circleSize as number
+        const thumbRef = this.thumbRef.current as HTMLDivElement
+        const trackRef = this.trackRef.current as HTMLDivElement
         const areRefsCurrent = C.all(
             overflownRef,
-            scrollCircleRef
+            thumbRef,
+            trackRef
         )
-
         if (areRefsCurrent) {
             this.setState({
-                scrollContainerWidth: overflownRef.clientWidth
+                scrollContainerWidth: overflownRef.clientWidth,
+                thumbWidth: thumbRef.clientWidth,
+                thumbHeight: thumbRef.clientHeight,
+                trackHeight: trackRef.clientHeight
             })
         }
 
-        if (areRefsCurrent && scrollCircleRef.offsetLeft + circleWidth > overflownRef.clientWidth) {
-            const scrollCircleLeftOffset = scrollCircleRef.offsetLeft + circleWidth
+        if (areRefsCurrent && thumbRef.offsetLeft + thumbRef.clientWidth > overflownRef.clientWidth) {
+            const scrollCircleLeftOffset = thumbRef.offsetLeft + thumbRef.clientWidth
             const scrollOffset = scrollCircleLeftOffset > overflownRef.clientWidth
-                ? overflownRef.clientWidth - scrollCircleRef.clientWidth
-                : scrollCircleRef.offsetLeft
+                ? overflownRef.clientWidth - thumbRef.clientWidth
+                : thumbRef.offsetLeft
 
             overflownRef.scroll(overflownRef.scrollWidth, 0)
-            scrollCircleRef.style.left = `${scrollOffset}px`
+            thumbRef.style.left = `${scrollOffset}px`
         }
     }
 
     onMouseDown(event: React.MouseEvent) {
         event.preventDefault()
 
-        if (this.scrollCircleRef.current) {
+        if (this.thumbRef.current) {
             this.setState({
-                deltaXOrigin: this.scrollCircleRef.current.offsetLeft,
+                deltaXOrigin: this.thumbRef.current.offsetLeft,
                 deltaX: event.clientX
             })
         }
@@ -107,24 +121,23 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
     }
 
     onScrollbarClick({ clientX }: React.MouseEvent) {
-        const circleSize = this.props.circleSize as number
-        const circleRef = this.scrollCircleRef.current as HTMLDivElement
+        const thumbRef = this.thumbRef.current as HTMLDivElement
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const shouldReturn = C.all(
-            circleRef,
+            thumbRef,
             overflowRef,
-            clientX >= (circleRef.offsetLeft + overflowRef.getBoundingClientRect().left),
-            clientX <= (circleRef.offsetLeft + overflowRef.getBoundingClientRect().left + circleSize)
+            clientX >= (thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left),
+            clientX <= (thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left + thumbRef.clientWidth)
         )
 
-        // leave this function if circle was clicked
+        // leave this function if thumb was clicked
         if (shouldReturn) {
             return null
         }
 
-        const maximumOffset = this.state.scrollContainerWidth - circleSize
+        const maximumOffset = this.state.scrollContainerWidth - thumbRef.clientWidth
         const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset
-        const deltaX = overflowRef.getBoundingClientRect().left + (circleSize / 2)
+        const deltaX = overflowRef.getBoundingClientRect().left + (thumbRef.clientWidth / 2)
 
         return overflowRef.scroll({
             left: ratio * (clientX - deltaX),
@@ -138,26 +151,25 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
     }
 
     onMouseDrag(event: DragEvent | MouseEvent) {
-        const circleSize = this.props.circleSize as number
-        const { deltaX, deltaXOrigin, scrollContainerWidth } = this.state
+        const { deltaX, deltaXOrigin, scrollContainerWidth, thumbWidth } = this.state
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
-        const scrollCircleRef = this.scrollCircleRef.current as HTMLDivElement
-        const maximumOffset = scrollContainerWidth - circleSize
+        const thumbRef = this.thumbRef.current as HTMLDivElement
+        const maximumOffset = scrollContainerWidth - thumbWidth
         const offset = event.clientX - deltaX + deltaXOrigin
         const isBetweenClientWidth = offset >= 0 && offset <= maximumOffset
         const areRefsCurrent = C.all(
             Boolean(this.overflowContainerRef.current),
-            Boolean(this.scrollCircleRef.current)
+            Boolean(this.thumbRef.current)
         )
 
         if (areRefsCurrent && !isBetweenClientWidth) {
-            const marginLeft = overflowRef.getBoundingClientRect().left + circleSize
+            const marginLeft = overflowRef.getBoundingClientRect().left + thumbRef.clientWidth
             const criticalDimension = event.clientX < marginLeft ? 0 : maximumOffset
             const criticalScrollerDimensions = event.clientX > marginLeft
                 ? overflowRef.scrollWidth - overflowRef.clientWidth
                 : 0
 
-            scrollCircleRef.style.left = `${criticalDimension}px`
+            thumbRef.style.left = `${criticalDimension}px`
             overflowRef.scroll(criticalScrollerDimensions, 0)
         }
 
@@ -165,21 +177,20 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
             const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset
 
             overflowRef.scroll(ratio * offset, 0)
-            scrollCircleRef.style.left = `${offset}px`
+            thumbRef.style.left = `${offset}px`
         }
     }
 
     onOverflowContentScroll() {
-        const circleSize = this.props.circleSize as number
-        const { scrollContainerWidth } = this.state
-        const maximumOffset = scrollContainerWidth - circleSize
+        const { scrollContainerWidth, thumbWidth } = this.state
+        const thumbRef = this.thumbRef.current  as HTMLDivElement
+        const maximumOffset = scrollContainerWidth - thumbWidth
         const overflowRef = this.overflowContainerRef.current
-        const scrollCircleRef = this.scrollCircleRef.current
 
-        if (overflowRef && scrollCircleRef) {
+        if (overflowRef && thumbRef) {
             const ratio = maximumOffset / (overflowRef.scrollWidth - overflowRef.clientWidth)
 
-            scrollCircleRef.style.left = `${overflowRef.scrollLeft * ratio}px`
+            thumbRef.style.left = `${overflowRef.scrollLeft * ratio}px`
         }
     }
 
@@ -188,7 +199,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
         const spacing = this.props.spacing as number
         const flexBasis = `${100 / cols}%`
         const padding = spacing / 2
-        const children = this.props.children as ChildNode[]
+        const children = this.props.children as ChildNode
 
         return React.Children.map(children, (child: ChildNode, index: number) => {
             const paddingRight = index !== React.Children.count(children) - 1
@@ -205,7 +216,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
                         flexBasis,
                         paddingRight,
                         paddingLeft,
-                        marginBottom: !isMobile() && this.shouldRenderScrollbar ? '50px' : '20px'
+                        marginBottom: this.contentMargin
                     }}
                 >
                     {child}
@@ -214,31 +225,59 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
         })
     }
 
-    renderCustomScrollbar() {
-        const { trackHeight, trackColor, circleSize, circleColor } = this.props
-        const scrollbarHeight = trackHeight as number
-        const circleDiameter = circleSize as number
-        const bottom = (circleDiameter - scrollbarHeight) / 2
+    renderRectangleScrollBar() {
+        const bottom = this.state.thumbHeight > this.state.trackHeight
+            ? (this.state.thumbHeight - this.state.trackHeight) / 2
+            : 0
+
+        if (!isMobile() && this.shouldRenderScrollbar && this.props.thumb) {
+            const thumb = React.cloneElement(
+                this.props.thumb,
+                {
+                    ref: this.thumbRef,
+                    onMouseDown: this.onMouseDown,
+                    style: {
+                        left: 0,
+                        position: 'relative',
+                        cursor: 'pointer',
+                        ...this.props.thumb.props.style
+                    }
+                }
+            )
+
+            return (
+                <Track
+                    ref={this.trackRef}
+                    onClick={this.onScrollbarClick}
+                    style={{
+                        color: colors.gray.mediumGray,
+                        bottom,
+                        ...this.props.trackProps
+                    }}
+                >
+                    {thumb}
+                </Track>
+            )
+        }
 
         return !isMobile() && this.shouldRenderScrollbar ? (
-            <CustomScrollbar
-                style={{
-                    height: scrollbarHeight,
-                    color: trackColor,
-                    bottom
-                }}
+            <Track
+                ref={this.trackRef}
                 onClick={this.onScrollbarClick}
+                style={{
+                    color: colors.gray.mediumGray,
+                    bottom,
+                    ...this.props.trackProps
+                }}
             >
-                <ScrollCircle
-                    ref={this.scrollCircleRef}
+                <RectangleThumb
+                    ref={this.thumbRef}
                     onMouseDown={this.onMouseDown}
                     style={{
-                        height: circleDiameter,
-                        width: circleDiameter,
-                        color: circleColor
+                        height: '100%'
                     }}
                 />
-            </CustomScrollbar>
+            </Track>
         ) : null
     }
 
@@ -252,7 +291,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
                 >
                     {this.renderChildren()}
                 </SecondWrapper>
-                {this.renderCustomScrollbar()}
+                {this.renderRectangleScrollBar()}
             </Wrapper>
         )
     }
@@ -276,21 +315,22 @@ export const ChildrenWrapper = styled.div`
     flex: 0 0 auto;
 `
 
-export const CustomScrollbar = styled.div`
+export const Track = styled.div`
     position: absolute;
     display: flex;
     align-items: center;
     cursor: pointer;
     left: 0;
     width: 100%;
-    border-radius: 4px;
     background-color: ${colors.gray.mediumGray};
+    bottom: 0;
+    height: 10px;
 `
 
-export const ScrollCircle = styled.div`
+export const RectangleThumb = styled.div`
     position: relative;
     left: 0;
-    border-radius: 50%;
     background-color: ${colors.primary};
     cursor: pointer;
+    width: 100px;
 `

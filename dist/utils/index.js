@@ -1,3 +1,3 @@
-import * as R from './helpers';
+import * as C from './helpers';
 export * from './deviceDetect';
-export { R };
+export { C };

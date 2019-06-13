@@ -1,22 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors } from 'styles';
-import { R, isMobile } from 'utils';
+import { C, isMobile, isMacOs } from 'utils';
 export class ReactSmartSlider extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             scrollContainerWidth: 0,
             deltaXOrigin: 0,
-            deltaX: 0
+            deltaX: 0,
+            thumbWidth: 0,
+            thumbHeight: 0,
+            trackHeight: 0
         };
         this.overflowContainerRef = React.createRef();
-        this.scrollCircleRef = React.createRef();
+        this.thumbRef = React.createRef();
+        this.trackRef = React.createRef();
         this.measureContainers = this.measureContainers.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseDrag = this.onMouseDrag.bind(this);
         this.onOverflowContentScroll = this.onOverflowContentScroll.bind(this);
-        this.renderCustomScrollbar = this.renderCustomScrollbar.bind(this);
         this.deleteMouseMoveEvent = this.deleteMouseMoveEvent.bind(this);
         this.onScrollbarClick = this.onScrollbarClick.bind(this);
     }
@@ -31,49 +34,61 @@ export class ReactSmartSlider extends React.Component {
     }
     get shouldRenderScrollbar() {
         const overflownRef = this.overflowContainerRef.current;
-        return !(overflownRef && overflownRef.children.length <= this.props.cols);
+        const cols = this.props.numCols;
+        return !(overflownRef && overflownRef.children.length <= cols);
+    }
+    get contentMargin() {
+        const { thumbHeight, trackHeight } = this.state;
+        const windowsScrollHeight = 20;
+        const marginHeight = trackHeight > thumbHeight ? trackHeight : thumbHeight;
+        const margin = isMacOs() ? marginHeight + windowsScrollHeight : marginHeight;
+        return !isMobile() && this.shouldRenderScrollbar
+            ? `${margin + 10}px`
+            : '20px';
     }
     measureContainers() {
         const overflownRef = this.overflowContainerRef.current;
-        const scrollCircleRef = this.scrollCircleRef.current;
-        const circleWidth = this.props.circleSize;
-        const areRefsCurrent = R.all(overflownRef, scrollCircleRef);
+        const thumbRef = this.thumbRef.current;
+        const trackRef = this.trackRef.current;
+        const areRefsCurrent = C.all(overflownRef, thumbRef, trackRef);
         if (areRefsCurrent) {
             this.setState({
-                scrollContainerWidth: overflownRef.clientWidth
+                scrollContainerWidth: overflownRef.clientWidth,
+                thumbWidth: thumbRef.clientWidth,
+                thumbHeight: thumbRef.clientHeight,
+                trackHeight: trackRef.clientHeight
             });
         }
-        if (areRefsCurrent && scrollCircleRef.offsetLeft + circleWidth > overflownRef.clientWidth) {
-            const scrollCircleLeftOffset = scrollCircleRef.offsetLeft + circleWidth;
+        if (areRefsCurrent && thumbRef.offsetLeft + thumbRef.clientWidth > overflownRef.clientWidth) {
+            const scrollCircleLeftOffset = thumbRef.offsetLeft + thumbRef.clientWidth;
             const scrollOffset = scrollCircleLeftOffset > overflownRef.clientWidth
-                ? overflownRef.clientWidth - scrollCircleRef.clientWidth
-                : scrollCircleRef.offsetLeft;
+                ? overflownRef.clientWidth - thumbRef.clientWidth
+                : thumbRef.offsetLeft;
             overflownRef.scroll(overflownRef.scrollWidth, 0);
-            scrollCircleRef.style.left = `${scrollOffset}px`;
+            thumbRef.style.left = `${scrollOffset}px`;
         }
     }
     onMouseDown(event) {
         event.preventDefault();
-        if (this.scrollCircleRef.current) {
+        if (this.thumbRef.current) {
             this.setState({
-                deltaXOrigin: this.scrollCircleRef.current.offsetLeft,
+                deltaXOrigin: this.thumbRef.current.offsetLeft,
                 deltaX: event.clientX
             });
         }
         window.addEventListener('mousemove', this.onMouseDrag);
     }
     onScrollbarClick({ clientX }) {
-        const circleSize = this.props.circleSize;
-        const circleRef = this.scrollCircleRef.current;
+        const thumbRef = this.thumbRef.current;
         const overflowRef = this.overflowContainerRef.current;
-        const shouldReturn = R.all(circleRef, overflowRef, clientX >= (circleRef.offsetLeft + overflowRef.getBoundingClientRect().left), clientX <= (circleRef.offsetLeft + overflowRef.getBoundingClientRect().left + circleSize));
-        // leave this function if circle was clicked
+        const shouldReturn = C.all(thumbRef, overflowRef, clientX >= (thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left), clientX <= (thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left + thumbRef.clientWidth));
+        // leave this function if thumb was clicked
         if (shouldReturn) {
             return null;
         }
-        const maximumOffset = this.state.scrollContainerWidth - circleSize;
+        const maximumOffset = this.state.scrollContainerWidth - thumbRef.clientWidth;
         const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset;
-        const deltaX = overflowRef.getBoundingClientRect().left + (circleSize / 2);
+        const deltaX = overflowRef.getBoundingClientRect().left + (thumbRef.clientWidth / 2);
         return overflowRef.scroll({
             left: ratio * (clientX - deltaX),
             top: 0,
@@ -84,42 +99,41 @@ export class ReactSmartSlider extends React.Component {
         window.removeEventListener('mousemove', this.onMouseDrag);
     }
     onMouseDrag(event) {
-        const circleSize = this.props.circleSize;
-        const { deltaX, deltaXOrigin, scrollContainerWidth } = this.state;
+        const { deltaX, deltaXOrigin, scrollContainerWidth, thumbWidth } = this.state;
         const overflowRef = this.overflowContainerRef.current;
-        const scrollCircleRef = this.scrollCircleRef.current;
-        const maximumOffset = scrollContainerWidth - circleSize;
+        const thumbRef = this.thumbRef.current;
+        const maximumOffset = scrollContainerWidth - thumbWidth;
         const offset = event.clientX - deltaX + deltaXOrigin;
         const isBetweenClientWidth = offset >= 0 && offset <= maximumOffset;
-        const areRefsCurrent = R.all(Boolean(this.overflowContainerRef.current), Boolean(this.scrollCircleRef.current));
+        const areRefsCurrent = C.all(Boolean(this.overflowContainerRef.current), Boolean(this.thumbRef.current));
         if (areRefsCurrent && !isBetweenClientWidth) {
-            const marginLeft = overflowRef.getBoundingClientRect().left + circleSize;
+            const marginLeft = overflowRef.getBoundingClientRect().left + thumbRef.clientWidth;
             const criticalDimension = event.clientX < marginLeft ? 0 : maximumOffset;
             const criticalScrollerDimensions = event.clientX > marginLeft
                 ? overflowRef.scrollWidth - overflowRef.clientWidth
                 : 0;
-            scrollCircleRef.style.left = `${criticalDimension}px`;
+            thumbRef.style.left = `${criticalDimension}px`;
             overflowRef.scroll(criticalScrollerDimensions, 0);
         }
         if (areRefsCurrent && isBetweenClientWidth) {
             const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset;
             overflowRef.scroll(ratio * offset, 0);
-            scrollCircleRef.style.left = `${offset}px`;
+            thumbRef.style.left = `${offset}px`;
         }
     }
     onOverflowContentScroll() {
-        const circleSize = this.props.circleSize;
-        const { scrollContainerWidth } = this.state;
-        const maximumOffset = scrollContainerWidth - circleSize;
+        const { scrollContainerWidth, thumbWidth } = this.state;
+        const thumbRef = this.thumbRef.current;
+        const maximumOffset = scrollContainerWidth - thumbWidth;
         const overflowRef = this.overflowContainerRef.current;
-        const scrollCircleRef = this.scrollCircleRef.current;
-        if (overflowRef && scrollCircleRef) {
+        if (overflowRef && thumbRef) {
             const ratio = maximumOffset / (overflowRef.scrollWidth - overflowRef.clientWidth);
-            scrollCircleRef.style.left = `${overflowRef.scrollLeft * ratio}px`;
+            thumbRef.style.left = `${overflowRef.scrollLeft * ratio}px`;
         }
     }
     renderChildren() {
-        const { cols, spacing } = this.props;
+        const cols = this.props.numCols;
+        const spacing = this.props.spacing;
         const flexBasis = `${100 / cols}%`;
         const padding = spacing / 2;
         const children = this.props.children;
@@ -135,37 +149,49 @@ export class ReactSmartSlider extends React.Component {
                     flexBasis,
                     paddingRight,
                     paddingLeft,
-                    marginBottom: !isMobile() && this.shouldRenderScrollbar ? '50px' : '20px'
+                    marginBottom: this.contentMargin
                 } }, child));
         });
     }
-    renderCustomScrollbar() {
-        const { barHeight, barColor, circleSize, circleColor } = this.props;
-        const scrollbarHeight = barHeight;
-        const circleDiameter = circleSize;
-        const bottom = (circleDiameter - scrollbarHeight) / 2;
-        return !isMobile() && this.shouldRenderScrollbar ? (React.createElement(CustomScrollbar, { style: {
-                height: scrollbarHeight,
-                color: barColor,
-                bottom
-            }, onClick: this.onScrollbarClick },
-            React.createElement(ScrollCircle, { ref: this.scrollCircleRef, onMouseDown: this.onMouseDown, style: {
-                    height: circleDiameter,
-                    width: circleDiameter,
-                    color: circleColor
+    renderRectangleScrollBar() {
+        const bottom = this.state.thumbHeight > this.state.trackHeight
+            ? (this.state.thumbHeight - this.state.trackHeight) / 2
+            : 0;
+        if (!isMobile() && this.shouldRenderScrollbar && this.props.thumb) {
+            const thumb = React.cloneElement(this.props.thumb, {
+                ref: this.thumbRef,
+                onMouseDown: this.onMouseDown,
+                style: {
+                    left: 0,
+                    position: 'relative',
+                    cursor: 'pointer',
+                    ...this.props.thumb.props.style
+                }
+            });
+            return (React.createElement(Track, { ref: this.trackRef, onClick: this.onScrollbarClick, style: {
+                    color: colors.gray.mediumGray,
+                    bottom,
+                    ...this.props.trackProps
+                } }, thumb));
+        }
+        return !isMobile() && this.shouldRenderScrollbar ? (React.createElement(Track, { ref: this.trackRef, onClick: this.onScrollbarClick, style: {
+                color: colors.gray.mediumGray,
+                bottom,
+                ...this.props.trackProps
+            } },
+            React.createElement(RectangleThumb, { ref: this.thumbRef, onMouseDown: this.onMouseDown, style: {
+                    height: '100%'
                 } }))) : null;
     }
     render() {
         return (React.createElement(Wrapper, null,
             React.createElement(SecondWrapper, { ref: this.overflowContainerRef, onScroll: this.onOverflowContentScroll, onLoad: this.measureContainers }, this.renderChildren()),
-            this.renderCustomScrollbar()));
+            this.renderRectangleScrollBar()));
     }
 }
 ReactSmartSlider.defaultProps = {
-    circleSize: 15,
-    barHeight: 5,
-    circleColor: colors.primary,
-    barColor: colors.gray.mediumGray
+    numCols: 1,
+    spacing: 0,
 };
 export const Wrapper = styled.div `
     width: 100%;
@@ -182,20 +208,21 @@ export const SecondWrapper = styled.div `
 export const ChildrenWrapper = styled.div `
     flex: 0 0 auto;
 `;
-export const CustomScrollbar = styled.div `
+export const Track = styled.div `
     position: absolute;
     display: flex;
     align-items: center;
     cursor: pointer;
     left: 0;
     width: 100%;
-    border-radius: 4px;
     background-color: ${colors.gray.mediumGray};
+    bottom: 0;
+    height: 10px;
 `;
-export const ScrollCircle = styled.div `
+export const RectangleThumb = styled.div `
     position: relative;
     left: 0;
-    border-radius: 50%;
     background-color: ${colors.primary};
     cursor: pointer;
+    width: 100px;
 `;
