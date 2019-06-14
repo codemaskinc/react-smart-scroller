@@ -1,1 +1,0 @@
-export { ReactSmartSlider } from './ReactSmartSlider';
