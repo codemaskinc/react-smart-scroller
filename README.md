@@ -80,3 +80,11 @@ After setting above props we should see something like this:
 <p align="center">
   <img src="assets/react-smart-slider-usage-second.gif" />
 </p>
+
+## todo
+
+- [x] thumb width dependent on scrollWidth
+- [ ] vertical scroll
+- [ ] vertical scroll tests
+- [ ] improve documentation
+- [ ] more examples in usage
