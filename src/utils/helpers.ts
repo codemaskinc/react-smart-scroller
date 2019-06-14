@@ -22,30 +22,32 @@ export const getPaddingValues = (padding?: string | number, paddingLeft?: string
         return null
     }
 
+    const zeroPadding = {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+    }
+
     if (!padding && paddingLeft && paddingRight) {
         return {
-            top: 0,
+            ...zeroPadding,
             right: extractNumberFromStyle(paddingRight.toString()),
-            bottom: 0,
             left: extractNumberFromStyle(paddingLeft.toString())
         }
     }
 
     if (!padding && paddingLeft) {
         return {
-            top: 0,
-            right: 0,
-            bottom: 0,
+            ...zeroPadding,
             left: extractNumberFromStyle(paddingLeft.toString())
         }
     }
 
     if (!padding && paddingRight) {
         return {
-            top: 0,
-            right: extractNumberFromStyle(paddingRight.toString()),
-            bottom: 0,
-            left: 0
+            ...zeroPadding,
+            right: extractNumberFromStyle(paddingRight.toString())
         }
     }
 
