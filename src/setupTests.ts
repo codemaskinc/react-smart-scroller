@@ -1,6 +1,6 @@
 import { configure } from 'enzyme'
 import ReactSixteenAdapter from 'enzyme-adapter-react-16'
-import { Global } from 'types'
+import { Global } from 'lib/types'
 
 const { JSDOM } = require('jsdom')
 

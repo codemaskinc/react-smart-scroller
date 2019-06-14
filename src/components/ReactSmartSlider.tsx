@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { colors } from 'styles'
-import { Padding, ReactSmartSliderProps } from 'types'
-import { C, isMobile, isMacOs } from 'utils'
+import { colors } from 'lib/styles'
+import { Padding, ReactSmartSliderProps } from 'lib/types'
+import { C, isMobile, isMacOs } from 'lib/utils'
 
 type ReactSmartSliderState = {
     scrollContainerWidth: number,

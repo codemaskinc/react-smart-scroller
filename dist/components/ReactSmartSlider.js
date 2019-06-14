@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from 'styles';
-import { C, isMobile, isMacOs } from 'utils';
+import { colors } from 'lib/styles';
+import { C, isMobile, isMacOs } from 'lib/utils';
 export class ReactSmartSlider extends React.Component {
     constructor(props) {
         super(props);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { colors } from 'styles';
+import { colors } from 'lib/styles';
 import { Wrapper, ReactSmartSlider, RectangleThumb, Track, SecondWrapper } from './ReactSmartSlider';
 const mockConfig = (device) => ({
     value: device,
