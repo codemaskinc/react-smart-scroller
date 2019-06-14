@@ -4,10 +4,12 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "del -rf ./dist && yarn tsc",
+    "build": "rimraf dist && tsc",
+    "build:watch": "rimraf dist && tsc --watch",
     "tsc": "node_modules/typescript/bin/tsc",
     "tsc:watch": "node_modules/typescript/bin/tsc --watch",
-    "test": "react-scripts-ts test --env=jsdom"
+    "test": "react-scripts-ts test --env=jsdom",
+    "start": "react-scripts-ts start"
   },
   "typings": "index.d.ts",
   "repository": {
@@ -43,5 +45,11 @@
   },
   "dependencies": {
     "styled-components": "4.3.1"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

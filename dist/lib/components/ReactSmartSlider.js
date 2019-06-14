@@ -46,6 +46,22 @@ export class ReactSmartSlider extends React.Component {
             ? `${margin + 10}px`
             : '20px';
     }
+    get bottomOffset() {
+        return this.state.thumbHeight > this.state.trackHeight
+            ? (this.state.thumbHeight - this.state.trackHeight) / 2
+            : 0;
+    }
+    scrollContainerReducedWidth(scrollContainerWidth) {
+        const { trackProps } = this.props;
+        if (trackProps) {
+            const scrollPadding = C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight);
+            const padding = scrollPadding
+                ? scrollPadding.left + scrollPadding.right
+                : 0;
+            return scrollContainerWidth - padding;
+        }
+        return scrollContainerWidth;
+    }
     measureContainers() {
         const overflownRef = this.overflowContainerRef.current;
         const thumbRef = this.thumbRef.current;
@@ -53,7 +69,7 @@ export class ReactSmartSlider extends React.Component {
         const areRefsCurrent = C.all(overflownRef, thumbRef, trackRef);
         if (areRefsCurrent) {
             this.setState({
-                scrollContainerWidth: overflownRef.clientWidth,
+                scrollContainerWidth: this.scrollContainerReducedWidth(overflownRef.clientWidth),
                 thumbWidth: thumbRef.clientWidth,
                 thumbHeight: thumbRef.clientHeight,
                 trackHeight: trackRef.clientHeight
@@ -70,10 +86,17 @@ export class ReactSmartSlider extends React.Component {
     }
     onMouseDown(event) {
         event.preventDefault();
+        const { trackProps } = this.props;
+        const scrollPadding = trackProps
+            ? C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight)
+            : null;
+        const padding = scrollPadding
+            ? scrollPadding.left
+            : 0;
         if (this.thumbRef.current) {
             this.setState({
                 deltaXOrigin: this.thumbRef.current.offsetLeft,
-                deltaX: event.clientX
+                deltaX: event.clientX + padding
             });
         }
         window.addEventListener('mousemove', this.onMouseDrag);
@@ -106,10 +129,17 @@ export class ReactSmartSlider extends React.Component {
         const offset = event.clientX - deltaX + deltaXOrigin;
         const isBetweenClientWidth = offset >= 0 && offset <= maximumOffset;
         const areRefsCurrent = C.all(Boolean(this.overflowContainerRef.current), Boolean(this.thumbRef.current));
+        const { trackProps } = this.props;
+        const scrollPadding = trackProps
+            ? C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight)
+            : null;
+        const padding = scrollPadding
+            ? scrollPadding.left
+            : 0;
         if (areRefsCurrent && !isBetweenClientWidth) {
             const marginLeft = overflowRef.getBoundingClientRect().left + thumbRef.clientWidth;
-            const criticalDimension = event.clientX < marginLeft ? 0 : maximumOffset;
-            const criticalScrollerDimensions = event.clientX > marginLeft
+            const criticalDimension = event.clientX < marginLeft + padding ? 0 : maximumOffset;
+            const criticalScrollerDimensions = event.clientX > marginLeft + padding
                 ? overflowRef.scrollWidth - overflowRef.clientWidth
                 : 0;
             thumbRef.style.left = `${criticalDimension}px`;
@@ -134,7 +164,7 @@ export class ReactSmartSlider extends React.Component {
     renderChildren() {
         const cols = this.props.numCols;
         const spacing = this.props.spacing;
-        const flexBasis = `${100 / cols}%`;
+        const flexBasis = cols ? `${100 / cols}%` : 'unset';
         const padding = spacing / 2;
         const children = this.props.children;
         return React.Children.map(children, (child, index) => {
@@ -153,11 +183,8 @@ export class ReactSmartSlider extends React.Component {
                 } }, child));
         });
     }
-    renderRectangleScrollBar() {
-        const bottom = this.state.thumbHeight > this.state.trackHeight
-            ? (this.state.thumbHeight - this.state.trackHeight) / 2
-            : 0;
-        if (!isMobile() && this.shouldRenderScrollbar && this.props.thumb) {
+    renderThumb() {
+        if (this.props.thumb) {
             const thumb = React.cloneElement(this.props.thumb, {
                 ref: this.thumbRef,
                 onMouseDown: this.onMouseDown,
@@ -170,28 +197,29 @@ export class ReactSmartSlider extends React.Component {
             });
             return (React.createElement(Track, { ref: this.trackRef, onClick: this.onScrollbarClick, style: {
                     color: colors.gray.mediumGray,
-                    bottom,
+                    bottom: this.bottomOffset,
                     ...this.props.trackProps
                 } }, thumb));
         }
+        return (React.createElement(RectangleThumb, { ref: this.thumbRef, onMouseDown: this.onMouseDown, style: {
+                height: '100%'
+            } }));
+    }
+    renderScrollbar() {
         return !isMobile() && this.shouldRenderScrollbar ? (React.createElement(Track, { ref: this.trackRef, onClick: this.onScrollbarClick, style: {
                 color: colors.gray.mediumGray,
-                bottom,
+                bottom: this.bottomOffset,
                 ...this.props.trackProps
-            } },
-            React.createElement(RectangleThumb, { ref: this.thumbRef, onMouseDown: this.onMouseDown, style: {
-                    height: '100%'
-                } }))) : null;
+            } }, this.renderThumb())) : null;
     }
     render() {
         return (React.createElement(Wrapper, null,
             React.createElement(SecondWrapper, { ref: this.overflowContainerRef, onScroll: this.onOverflowContentScroll, onLoad: this.measureContainers }, this.renderChildren()),
-            this.renderRectangleScrollBar()));
+            this.renderScrollbar()));
     }
 }
 ReactSmartSlider.defaultProps = {
-    numCols: 1,
-    spacing: 0,
+    spacing: 0
 };
 export const Wrapper = styled.div `
     width: 100%;
