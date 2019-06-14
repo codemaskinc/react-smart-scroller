@@ -1,1 +1,3 @@
-export { ReactSmartSlider } from './components';
+export * from './common';
+export * from './styles';
+export * from './utils';
