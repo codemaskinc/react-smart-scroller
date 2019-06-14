@@ -201,9 +201,7 @@ export class ReactSmartSlider extends React.Component {
                     ...this.props.trackProps
                 } }, thumb));
         }
-        return (React.createElement(RectangleThumb, { ref: this.thumbRef, onMouseDown: this.onMouseDown, style: {
-                height: '100%'
-            } }));
+        return (React.createElement(RectangleThumb, { ref: this.thumbRef, onMouseDown: this.onMouseDown }));
     }
     renderScrollbar() {
         return !isMobile() && this.shouldRenderScrollbar ? (React.createElement(Track, { ref: this.trackRef, onClick: this.onScrollbarClick, style: {
@@ -253,4 +251,5 @@ export const RectangleThumb = styled.div `
     background-color: ${colors.primary};
     cursor: pointer;
     width: 100px;
+    height: 100%;
 `;

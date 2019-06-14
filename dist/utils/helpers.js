@@ -1,3 +1,4 @@
+import { PaddingCount } from '../common';
 // tslint:disable-next-line:no-any
 const all = (...params) => params.every(Boolean);
 const clearObject = (value) => Object
@@ -13,35 +14,36 @@ export const getPaddingValues = (padding, paddingLeft, paddingRight) => {
     if (!padding && !paddingLeft && !paddingRight) {
         return null;
     }
+    const zeroPadding = {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+    };
     if (!padding && paddingLeft && paddingRight) {
         return {
-            top: 0,
+            ...zeroPadding,
             right: extractNumberFromStyle(paddingRight.toString()),
-            bottom: 0,
             left: extractNumberFromStyle(paddingLeft.toString())
         };
     }
     if (!padding && paddingLeft) {
         return {
-            top: 0,
-            right: 0,
-            bottom: 0,
+            ...zeroPadding,
             left: extractNumberFromStyle(paddingLeft.toString())
         };
     }
     if (!padding && paddingRight) {
         return {
-            top: 0,
-            right: extractNumberFromStyle(paddingRight.toString()),
-            bottom: 0,
-            left: 0
+            ...zeroPadding,
+            right: extractNumberFromStyle(paddingRight.toString())
         };
     }
     const splittedPadding = padding ? padding.toString().split(' ') : [];
     const paddingValuesCount = splittedPadding.length;
     const paddingValues = splittedPadding.map(extractNumberFromStyle);
     switch (paddingValuesCount) {
-        case 1: {
+        case PaddingCount.One: {
             const [padding] = paddingValues;
             return {
                 top: padding,
@@ -50,7 +52,7 @@ export const getPaddingValues = (padding, paddingLeft, paddingRight) => {
                 left: padding
             };
         }
-        case 2: {
+        case PaddingCount.Two: {
             const [paddingVertical, paddingHorizontal] = paddingValues;
             return {
                 top: paddingVertical,
@@ -59,7 +61,7 @@ export const getPaddingValues = (padding, paddingLeft, paddingRight) => {
                 left: paddingHorizontal
             };
         }
-        case 3: {
+        case PaddingCount.Three: {
             const [paddingTop, paddingHorizontal, paddingBottom] = paddingValues;
             return {
                 top: paddingTop,
@@ -68,6 +70,7 @@ export const getPaddingValues = (padding, paddingLeft, paddingRight) => {
                 left: paddingHorizontal
             };
         }
+        case PaddingCount.Four:
         default: {
             const [top, right, bottom, left] = paddingValues;
             return {
