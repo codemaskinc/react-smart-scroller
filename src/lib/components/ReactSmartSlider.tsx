@@ -10,7 +10,8 @@ type ReactSmartSliderState = {
     deltaX: number,
     thumbWidth: number,
     thumbHeight: number,
-    trackHeight: number
+    trackHeight: number,
+    scrollWidth: number
 }
 
 export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, ReactSmartSliderState> {
@@ -24,7 +25,8 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
         deltaX: 0,
         thumbWidth: 0,
         thumbHeight: 0,
-        trackHeight: 0
+        trackHeight: 0,
+        scrollWidth: 0
     }
 
     private overflowContainerRef: React.RefObject<HTMLDivElement> = React.createRef()
@@ -56,6 +58,10 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
     get shouldRenderScrollbar() {
         const overflownRef = this.overflowContainerRef.current
         const cols = this.props.numCols as number
+
+        if (!cols && overflownRef) {
+            return overflownRef.clientWidth < overflownRef.scrollWidth
+        }
 
         return !(overflownRef && overflownRef.children.length <= cols)
     }
@@ -106,7 +112,8 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
                 scrollContainerWidth: this.scrollContainerReducedWidth(overflownRef.clientWidth),
                 thumbWidth: thumbRef.clientWidth,
                 thumbHeight: thumbRef.clientHeight,
-                trackHeight: trackRef.clientHeight
+                trackHeight: trackRef.clientHeight,
+                scrollWidth: overflownRef.scrollWidth
             })
         }
 
@@ -192,7 +199,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
             : 0
 
         if (areRefsCurrent && !isBetweenClientWidth) {
-            const marginLeft = overflowRef.getBoundingClientRect().left + thumbRef.clientWidth
+            const marginLeft = overflowRef.getBoundingClientRect().left + thumbRef.clientWidth - thumbRef.offsetLeft
             const criticalDimension = event.clientX < marginLeft + padding ? 0 : maximumOffset
             const criticalScrollerDimensions = event.clientX > marginLeft + padding
                 ? overflowRef.scrollWidth - overflowRef.clientWidth
@@ -255,6 +262,10 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
     }
 
     renderThumb() {
+        const { scrollContainerWidth, scrollWidth } = this.state
+        const percentageWidth = Number(((scrollContainerWidth * 100) / scrollWidth).toFixed(0))
+        const width = `${(percentageWidth * scrollContainerWidth) / 100}px`
+
         if (this.props.thumb) {
             const thumb = React.cloneElement(
                 this.props.thumb,
@@ -289,24 +300,30 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
             <RectangleThumb
                 ref={this.thumbRef}
                 onMouseDown={this.onMouseDown}
+                style={{
+                    width
+                }}
             />
         )
     }
 
     renderScrollbar() {
-        return !isMobile() && this.shouldRenderScrollbar ? (
+        const display = !isMobile() && this.shouldRenderScrollbar
+
+        return (
             <Track
                 ref={this.trackRef}
                 onClick={this.onScrollbarClick}
                 style={{
                     color: colors.gray.mediumGray,
                     bottom: this.bottomOffset,
+                    display: display ? 'block' : 'none',
                     ...this.props.trackProps
                 }}
             >
                 {this.renderThumb()}
             </Track>
-        ) : null
+        )
     }
 
     render() {
@@ -335,7 +352,7 @@ export const SecondWrapper = styled.div`
     display: flex;
     overflow-x: scroll;
     overflow-y: hidden;
-    margin-bottom: -16px;
+    margin-bottom: -20px;
     -webkit-overflow-scrolling: touch;
 `
 
