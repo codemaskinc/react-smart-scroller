@@ -3,7 +3,7 @@
 React-smart-slider is a library that allows you to create horizontal slider in easy way.
 
 <p align="center">
-  <img src="assets/react-smart-slider-demo-first.gif" />
+  <img src="assets/react-smart-slider-demo-default.gif" />
 </p>
 
 ### Features
@@ -19,12 +19,10 @@ React-smart-slider is a library that allows you to create horizontal slider in e
 
 Property      | Type          | Description
 ------------- | ------------- | ------------
-numCols       | number        | Default: `1`.<br> Number of visible columns.<br>If 1 width of each child is 100%.
+numCols       | number        | Default: `undefined`.<br> Number of columns per container width.<br>If 1, width of each child is 100%.<br>If not provided, column has child width.
 spacing       | number        | Default: `0`.<br> Space in pixels between elements.
-circleSize    | number        | Default: `15`.<br> Diameter of circle in pixels.
-circleColor   | string        | Default: `#2ecc71`.<br> Color of circle.
-trackHeight   | number        | Default: `5`.<br> Height of scroll track.
-trackColor    | string        | Default: `#bdc3c7`.<br> Color of track.
+trackProps    | CssProperties | Default: `undefined`.<br> Css styles to original track.
+thumb         | Element       | Default: `rectangle`.<br> Element that if provided overrides default rectangle.
 
 ## Usage
 
@@ -43,7 +41,14 @@ Let's create our first component
         ]
     
         return images.map(image => (
-            <Image src={image}/>
+            <img
+                src={image}
+                style={{
+                    width: '100%',
+                    height: 300,
+                    objectFit: 'cover'
+                }}
+            />
         ))
     }
     
@@ -56,16 +61,15 @@ Let's create our first component
 This is what you'll see in your browser:
 
 <p align="center">
-  <img src="assets/usage-first.png" />
+  <img src="assets/react-smart-slider-usage-first.png" />
 </p>
 
 Now we can add some props to our Slider
 
     export const Slider = () => (
             <ReactSmartSlider
-                cols={3}
+                numCols={3}
                 spacing={24}
-                circleSize={20}
             >
                 {renderImages()}
             </ReactSmartSlider>
@@ -74,5 +78,5 @@ Now we can add some props to our Slider
 After setting above props we should see something like this:
 
 <p align="center">
-  <img src="assets/react-smart-slider-demo-second.gif" />
+  <img src="assets/react-smart-slider-usage-second.gif" />
 </p>
