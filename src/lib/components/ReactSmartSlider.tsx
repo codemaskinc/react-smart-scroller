@@ -107,6 +107,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
             thumbRef,
             trackRef
         )
+
         if (areRefsCurrent) {
             this.setState({
                 scrollContainerWidth: this.scrollContainerReducedWidth(overflownRef.clientWidth),
