@@ -14,13 +14,27 @@ const mockConfig = (device: string) => ({
     configurable: true
 })
 const agent = 'userAgent'
+const renderImages = () => {
+    const images = [
+        'https://cdn.pixabay.com/photo/2019/06/02/00/46/chapel-4245437__340.jpg',
+        'https://cdn.pixabay.com/photo/2017/08/22/22/36/cinque-terre-2670762__340.jpg',
+        'https://cdn.pixabay.com/photo/2016/08/01/20/34/girl-1562091__340.jpg',
+        'https://cdn.pixabay.com/photo/2013/09/26/23/23/glitter-powder-186829__340.jpg',
+        'https://cdn.pixabay.com/photo/2019/04/11/09/50/wave-4119274__340.jpg'
+    ]
+
+    return images.map(image => (
+        <img src={image}/>
+    ))
+}
 const initialProps = {
     numCols: 1,
     spacing: 0,
     trackProps: {
         color: colors.secondary,
         height: 20
-    }
+    },
+    children: renderImages()
 }
 
 describe('ReactSmartSlider: lib/components', () => {
@@ -93,15 +107,6 @@ describe('ReactSmartSlider: lib/components', () => {
         expect(onMouseDownSpy).toHaveBeenCalled()
     })
 
-    it('should render CustomScrollbar with props', () => {
-        const wrapper = shallow(<ReactSmartSlider {...initialProps}/>)
-        const style = {
-            height: '100%'
-        }
-
-        expect(wrapper.find(RectangleThumb).props().style).toEqual(style)
-    })
-
     it('should invoke onScrollbarClick after CustomScrollbar clicked', () => {
         ReactSmartSlider.prototype.onScrollbarClick = jest.fn()
 
@@ -114,5 +119,185 @@ describe('ReactSmartSlider: lib/components', () => {
         wrapper.find(Track).simulate('click', event)
 
         expect(onScrollbarClickSpy).toHaveBeenCalled()
+    })
+
+    it('should set state after measureContainers invoked', () => {
+        const wrapper = shallow<ReactSmartSlider>(
+            <ReactSmartSlider
+                {...initialProps}
+                numCols={undefined}
+            />
+        )
+        const wrapperInstance = wrapper.instance() as ReactSmartSlider
+        const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
+        const value = 100
+        const documentWidth = 1000
+        const trackHeight = 50
+
+        getRefCurrent('thumbRef' , {
+            clientWidth: value,
+            clientHeight: value
+        })
+        getRefCurrent('overflowContainerRef' , {
+            children: [],
+            clientWidth: documentWidth
+        })
+        getRefCurrent('trackRef' , {
+            clientHeight: trackHeight
+        })
+
+        wrapperInstance.measureContainers()
+
+        expect(wrapper.state().thumbWidth).toEqual(value)
+        expect(wrapper.state().thumbHeight).toEqual(value)
+        expect(wrapper.state().trackHeight).toEqual(trackHeight)
+        expect(wrapper.state().scrollContainerWidth).toEqual(documentWidth)
+    })
+
+    it('should change thumbRef after measureContainers invoked', () => {
+        const wrapper = shallow<ReactSmartSlider>(
+            <ReactSmartSlider
+                {...initialProps}
+                numCols={undefined}
+            />
+        )
+        const wrapperInstance = wrapper.instance() as ReactSmartSlider
+        const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
+        const value = 100
+        const documentWidth = 500
+        const trackHeight = 50
+        const thumbOffsetLeft = 800
+        const overflownRef = 'overflowContainerRef'
+        const thumbRef = 'thumbRef'
+
+        getRefCurrent('thumbRef' , {
+            clientWidth: value,
+            clientHeight: value,
+            offsetLeft: thumbOffsetLeft,
+            style: {
+                left: 0
+            }
+        })
+        getRefCurrent(overflownRef , {
+            children: [],
+            clientWidth: documentWidth,
+            scroll: jest.fn()
+        })
+        getRefCurrent('trackRef' , {
+            clientHeight: trackHeight
+        })
+
+        wrapperInstance.measureContainers()
+
+        expect(wrapperInstance[thumbRef].current!.style.left).toEqual(`${documentWidth - value}px`)
+    })
+
+    it('should change state after onMouseDown', () => {
+        const wrapper = shallow<ReactSmartSlider>(
+            <ReactSmartSlider
+                {...initialProps}
+                numCols={undefined}
+            />
+        )
+        const wrapperInstance = wrapper.instance() as ReactSmartSlider
+        const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
+        const offsetLeft = 50
+        const clientX = 100
+        const onMouseDownEvent = {
+            clientX,
+            preventDefault: jest.fn()
+        }
+
+        getRefCurrent('thumbRef' , {
+            offsetLeft
+        })
+
+        wrapper.find(RectangleThumb).simulate('mousedown', onMouseDownEvent)
+
+        expect(wrapper.state().deltaXOrigin).toEqual(offsetLeft)
+        expect(wrapper.state().deltaX).toEqual(clientX)
+    })
+
+    it('should set thumb left style', () => {
+        const wrapper = shallow<ReactSmartSlider>(
+            <ReactSmartSlider
+                {...initialProps}
+                numCols={undefined}
+            />
+        )
+        const wrapperInstance = wrapper.instance() as ReactSmartSlider
+        const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
+        const clientX = 100
+        const state = {
+            deltaX: 50,
+            deltaXOrigin: 0,
+            scrollContainerWidth: 500,
+            thumbWidth: 100
+        }
+        const thumbRef = 'thumbRef'
+        const onMouseDragEvent = {
+            clientX
+        } as DragEvent
+        const offset = clientX - state.deltaX + state.deltaXOrigin
+
+        wrapper.setState(state)
+
+        getRefCurrent('overflowContainerRef' , {
+            scroll: jest.fn(),
+            getBoundingClientRect: jest.fn(() => ({ left: 0 }))
+        })
+        getRefCurrent('thumbRef' , {
+            style: {
+                left: 0
+            },
+            clientWidth: 100
+        })
+
+        wrapperInstance.onMouseDrag(onMouseDragEvent)
+
+        expect(wrapperInstance[thumbRef].current!.style.left).toEqual(`${offset}px`)
+
+        wrapperInstance.onMouseDrag({ clientX: -clientX } as DragEvent)
+
+        expect(wrapperInstance[thumbRef].current!.style.left).toEqual(`${0}px`)
+    })
+
+    it('should set thumb left style when overflownScrollContent scrolled', () => {
+        const wrapper = shallow<ReactSmartSlider>(
+            <ReactSmartSlider
+                {...initialProps}
+                numCols={undefined}
+            />
+        )
+        const wrapperInstance = wrapper.instance() as ReactSmartSlider
+        const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
+        const state = {
+            scrollContainerWidth: 500,
+            thumbWidth: 100
+        }
+        const scrollWidth = 1000
+        const clientWidth = 100
+        const scrollLeft = 50
+        const thumbRef = 'thumbRef'
+        const maximumOffset = state.scrollContainerWidth - state.thumbWidth
+        const ratio = maximumOffset / (scrollWidth - clientWidth)
+
+        getRefCurrent('overflowContainerRef' , {
+            scrollWidth,
+            clientWidth,
+            scrollLeft,
+            children: []
+        })
+        getRefCurrent('thumbRef' , {
+            style: {
+                left: scrollLeft
+            }
+        })
+
+        wrapper.setState(state)
+
+        wrapperInstance.onOverflowContentScroll()
+
+        expect(wrapperInstance[thumbRef].current!.style.left).toEqual(`${scrollLeft * ratio}px`)
     })
 })
