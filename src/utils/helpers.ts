@@ -1,4 +1,5 @@
 import { KeyValuePair } from '../types'
+import { PaddingCount } from '../common'
 
 // tslint:disable-next-line:no-any
 const all = (...params: Array<any>) => params.every(Boolean)
@@ -56,7 +57,7 @@ export const getPaddingValues = (padding?: string | number, paddingLeft?: string
     const paddingValues = splittedPadding.map(extractNumberFromStyle)
 
     switch (paddingValuesCount) {
-        case 1: {
+        case PaddingCount.One: {
             const [ padding ] = paddingValues
 
             return {
@@ -66,7 +67,7 @@ export const getPaddingValues = (padding?: string | number, paddingLeft?: string
                 left: padding
             }
         }
-        case 2: {
+        case PaddingCount.Two: {
             const [ paddingVertical, paddingHorizontal ] = paddingValues
 
             return {
@@ -76,7 +77,7 @@ export const getPaddingValues = (padding?: string | number, paddingLeft?: string
                 left: paddingHorizontal
             }
         }
-        case 3: {
+        case PaddingCount.Three: {
             const [ paddingTop, paddingHorizontal, paddingBottom ] = paddingValues
 
             return {
@@ -86,6 +87,7 @@ export const getPaddingValues = (padding?: string | number, paddingLeft?: string
                 left: paddingHorizontal
             }
         }
+        case PaddingCount.Four:
         default: {
             const [ top, right, bottom, left ] = paddingValues
 
