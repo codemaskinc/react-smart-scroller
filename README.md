@@ -61,7 +61,7 @@ Let's create our first component
 This is what you'll see in your browser:
 
 <p align="center">
-  <img src="assets/usage-first.png" />
+  <img src="assets/react-smart-slider-usage-first.png" />
 </p>
 
 Now we can add some props to our Slider
