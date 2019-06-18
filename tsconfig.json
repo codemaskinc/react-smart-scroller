@@ -6,18 +6,17 @@
     "jsx": "react",
     "lib": ["es6", "es5", "dom"],
     "moduleResolution": "node",
-    "noEmit": false,
+    "noEmit": true,
     "strict": true,
     "target": "esnext",
     "baseUrl": "src",
     "skipLibCheck": true,
     "noImplicitAny": false,
-    "outDir": "./dist",
-    "rootDir": "src",
+    "rootDir": ".",
     "typeRoots": [
       "node_modules/@types",
       "src/typings"
     ]
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }
