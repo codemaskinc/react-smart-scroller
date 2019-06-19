@@ -23,8 +23,11 @@ numCols       | number        | Default: `undefined`.<br> Number of columns per 
 spacing       | number        | Default: `0`.<br> Space in pixels between elements.
 trackProps    | CssProperties | Default: `undefined`.<br> Css styles to original track.
 thumb         | Element       | Default: `rectangle`.<br> Element that if provided overrides default rectangle.
+vertical      | Boolean       | Default: `false`.<br> Defines direction of scrollbar - horizontal in default.<br>If height of ReactSmartSlider is not defined it will automatically resize to 100%and scroll will not be visible. 
 
 ## Usage
+
+### Basic
 
 Let's create our first component
 
@@ -61,24 +64,82 @@ Let's create our first component
 This is what you'll see in your browser:
 
 <p align="center">
-  <img src="assets/react-smart-slider-usage-first.png" />
+  <img src="assets/react-smart-slider-usage-basic.png" />
 </p>
 
-Now we can add some props to our Slider
+### numCols
 
     export const Slider = () => (
-            <ReactSmartSlider
-                numCols={3}
-                spacing={24}
-            >
-                {renderImages()}
-            </ReactSmartSlider>
-        )
-
-After setting above props we should see something like this:
+        <ReactSmartSlider numCols={3}>
+            {renderImages()}
+        </ReactSmartSlider>
+    )
 
 <p align="center">
-  <img src="assets/react-smart-slider-usage-second.gif" />
+  <img src="assets/react-smart-slider-usage-numCols.png" />
+</p>
+
+### spacing
+
+    export const Slider = () => (
+        <ReactSmartSlider spacing={24}>
+            {renderImages()}
+        </ReactSmartSlider>
+    )
+    
+<p align="center">
+    <img src="assets/react-smart-slider-usage-spacing.png" />
+</p>
+
+### trackProps
+
+    export const Slider = () => (
+        <ReactSmartSlider
+            trackProps={{
+                height: 25
+            }}
+        >
+            {renderImages()}
+        </ReactSmartSlider>
+    )
+    
+<p align="center">
+    <img src="assets/react-smart-slider-usage-trackProps.png" />
+</p>
+
+### thumb
+
+    export const Slider = () => (
+        <ReactSmartSlider
+            thumb={
+                <div
+                    style={{
+                        width: 20,
+                        height: 20,
+                        borderRadius: '50%',
+                        backgroundColor: 'black'
+                    }}
+                />
+            }
+        >
+            {renderImages()}
+        </ReactSmartSlider>
+    )
+    
+<p align="center">
+    <img src="assets/react-smart-slider-usage-thumb.png" />
+</p>
+
+### vertical
+
+    export const Slider = () => (
+        <ReactSmartSlider vertical>
+            {renderImages()}
+        </ReactSmartSlider>
+    )
+
+<p align="center">
+    <img src="assets/react-smart-slider-usage-vertical.png" />
 </p>
 
 ## todo
@@ -86,5 +147,5 @@ After setting above props we should see something like this:
 - [x] thumb width dependent on scrollWidth
 - [x] vertical scroll
 - [x] vertical scroll tests
-- [ ] improve documentation
-- [ ] more examples in usage
+- [x] improve documentation
+- [x] more examples in usage

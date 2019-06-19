@@ -227,9 +227,12 @@ export class ReactSmartSliderVertical extends React.Component<ReactSmartSliderPr
     }
 
     renderThumb() {
-        const { scrollContainerHeight, scrollHeight } = this.state
+        const { scrollContainerHeight, scrollHeight, thumbWidth, trackWidth } = this.state
         const percentageWidth = Number(((scrollContainerHeight * 100) / scrollHeight).toFixed(0))
         const height = `${(percentageWidth * scrollContainerHeight) / 100}px`
+        const right = this.rightOffset !== 0
+            ? this.rightOffset
+            : (thumbWidth - trackWidth) / 2
 
         if (this.props.thumb) {
             return React.cloneElement(
@@ -241,7 +244,7 @@ export class ReactSmartSliderVertical extends React.Component<ReactSmartSliderPr
                         top: 0,
                         position: 'relative',
                         cursor: 'pointer',
-                        right: this.rightOffset,
+                        right,
                         boxSizing: 'border-box',
                         ...this.props.thumb.props.style
                     }
@@ -254,7 +257,8 @@ export class ReactSmartSliderVertical extends React.Component<ReactSmartSliderPr
                 ref={this.thumbRef}
                 onMouseDown={this.onMouseDown}
                 style={{
-                    height
+                    height,
+                    right
                 }}
             />
         )
@@ -270,7 +274,7 @@ export class ReactSmartSliderVertical extends React.Component<ReactSmartSliderPr
                 style={{
                     color: colors.gray.mediumGray,
                     right: this.rightOffset,
-                    display: display ? 'block' : 'none',
+                    display: display ? 'display' : 'none',
                     ...this.props.trackProps
                 }}
             >
@@ -336,11 +340,12 @@ export const Content = styled.div`
     -webkit-overflow-scrolling: touch;
 `
 
-export const ChildrenWrapper = styled.div``
+export const ChildrenWrapper = styled.div`
+    display: flex;
+`
 
 export const Track = styled.div`
     position: absolute;
-    display: block;
     cursor: pointer;
     right: 0;
     height: 100%;
