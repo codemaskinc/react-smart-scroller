@@ -16,7 +16,9 @@ export {
     all
 }
 
-export const extractNumberFromStyle = (value: string | number) => Number(value.toString().replace('px', ''))
+export const extractNumberFromStyle = (value?: string | number) => value
+    ? Number(value.toString().replace('px', ''))
+    : undefined
 
 export const getPaddingValues = (
     padding?: string | number,
@@ -39,10 +41,10 @@ export const getPaddingValues = (
     if (!padding) {
         return {
             ...zeroPadding,
-            right: paddingRight ? extractNumberFromStyle(paddingRight) : undefined,
-            left: paddingLeft ? extractNumberFromStyle(paddingLeft) : undefined,
-            top: paddingTop ? extractNumberFromStyle(paddingTop) : undefined,
-            bottom: paddingBottom ? extractNumberFromStyle(paddingBottom) : undefined
+            right: extractNumberFromStyle(paddingRight),
+            left: extractNumberFromStyle(paddingLeft),
+            top: extractNumberFromStyle(paddingTop),
+            bottom: extractNumberFromStyle(paddingBottom)
         }
     }
 
