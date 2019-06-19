@@ -119,6 +119,16 @@ export class ReactSmartSliderVertical extends React.Component<ReactSmartSliderPr
                 scrollHeight: overflownRef.scrollHeight
             })
         }
+
+        if (areRefsCurrent && thumbRef.offsetTop + thumbRef.clientHeight > overflownRef.clientHeight) {
+            const scrollCircleTopOffset = thumbRef.offsetTop + thumbRef.clientHeight
+            const scrollOffset = scrollCircleTopOffset > overflownRef.clientHeight
+                ? overflownRef.clientHeight - thumbRef.clientHeight
+                : thumbRef.offsetTop
+
+            overflownRef.scroll(0, overflownRef.scrollHeight)
+            thumbRef.style.top = `${scrollOffset}px`
+        }
     }
 
     onMouseDown(event: React.MouseEvent) {
@@ -184,8 +194,6 @@ export class ReactSmartSliderVertical extends React.Component<ReactSmartSliderPr
             Boolean(this.overflowContainerRef.current),
             Boolean(this.thumbRef.current)
         )
-
-        console.log(scrollContainerHeight, thumbHeight)
 
         if (areRefsCurrent && !isBetweenClientHeight) {
             const criticalDimension = offset < zero ? zero: maximumOffset
