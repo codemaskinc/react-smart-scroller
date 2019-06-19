@@ -219,10 +219,13 @@ export class ReactSmartSlider extends React.Component {
   renderThumb() {
     const {
       scrollContainerWidth,
-      scrollWidth
+      scrollWidth,
+      thumbHeight,
+      trackHeight
     } = this.state;
     const percentageWidth = Number((scrollContainerWidth * 100 / scrollWidth).toFixed(0));
     const width = `${percentageWidth * scrollContainerWidth / 100}px`;
+    const bottom = this.bottomOffset !== 0 ? this.bottomOffset : (thumbHeight - trackHeight) / 2;
 
     if (this.props.thumb) {
       return React.cloneElement(this.props.thumb, {
@@ -232,7 +235,7 @@ export class ReactSmartSlider extends React.Component {
           left: 0,
           position: 'relative',
           cursor: 'pointer',
-          bottom: this.bottomOffset
+          bottom
         }, this.props.thumb.props.style)
       });
     }
@@ -241,7 +244,8 @@ export class ReactSmartSlider extends React.Component {
       ref: this.thumbRef,
       onMouseDown: this.onMouseDown,
       style: {
-        width
+        width,
+        bottom
       }
     });
   }
@@ -296,7 +300,6 @@ export const ChildrenWrapper = styled.div`
 `;
 export const Track = styled.div`
     position: absolute;
-    display: block;
     cursor: pointer;
     left: 0;
     width: 100%;

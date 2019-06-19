@@ -197,10 +197,13 @@ export class ReactSmartSliderVertical extends React.Component {
   renderThumb() {
     const {
       scrollContainerHeight,
-      scrollHeight
+      scrollHeight,
+      thumbWidth,
+      trackWidth
     } = this.state;
     const percentageWidth = Number((scrollContainerHeight * 100 / scrollHeight).toFixed(0));
     const height = `${percentageWidth * scrollContainerHeight / 100}px`;
+    const right = this.rightOffset !== 0 ? this.rightOffset : (thumbWidth - trackWidth) / 2;
 
     if (this.props.thumb) {
       return React.cloneElement(this.props.thumb, {
@@ -210,7 +213,7 @@ export class ReactSmartSliderVertical extends React.Component {
           top: 0,
           position: 'relative',
           cursor: 'pointer',
-          right: this.rightOffset,
+          right,
           boxSizing: 'border-box'
         }, this.props.thumb.props.style)
       });
@@ -220,7 +223,8 @@ export class ReactSmartSliderVertical extends React.Component {
       ref: this.thumbRef,
       onMouseDown: this.onMouseDown,
       style: {
-        height
+        height,
+        right
       }
     });
   }
@@ -233,7 +237,7 @@ export class ReactSmartSliderVertical extends React.Component {
       style: _objectSpread({
         color: colors.gray.mediumGray,
         right: this.rightOffset,
-        display: display ? 'block' : 'none'
+        display: display ? 'display' : 'none'
       }, this.props.trackProps)
     }, this.renderThumb());
   }
@@ -277,10 +281,11 @@ export const Content = styled.div`
     margin-right: -20px;
     -webkit-overflow-scrolling: touch;
 `;
-export const ChildrenWrapper = styled.div``;
+export const ChildrenWrapper = styled.div`
+    display: flex;
+`;
 export const Track = styled.div`
     position: absolute;
-    display: block;
     cursor: pointer;
     right: 0;
     height: 100%;
