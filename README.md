@@ -8,7 +8,6 @@ React-smart-slider is a library that allows you to create horizontal slider in e
 
 ### Features
 
-- Horizontal scroll only
 - Full responsiveness
 - Every child is resized dependent of view cols
 
@@ -17,13 +16,13 @@ React-smart-slider is a library that allows you to create horizontal slider in e
 
 ## Props
 
-Property      | Type          | Description
-------------- | ------------- | ------------
-numCols       | number        | Default: `undefined`.<br> Number of columns per container width.<br>If 1, width of each child is 100%.<br>If not provided, column has child width.
-spacing       | number        | Default: `0`.<br> Space in pixels between elements.
-trackProps    | CssProperties | Default: `undefined`.<br> Css styles to original track.
-thumb         | Element       | Default: `rectangle`.<br> Element that if provided overrides default rectangle.
-vertical      | Boolean       | Default: `false`.<br> Defines direction of scrollbar - horizontal in default.<br>If height of ReactSmartSlider is not defined it will automatically resize to 100%and scroll will not be visible. 
+Property      | Type                | Description
+------------- | ------------------- | ------------------------
+numCols       | number              | Default: `undefined`.<br> Number of columns per container width.<br>If 1, width of each child is 100%.<br>If not provided, column has child width.
+spacing       | number              | Default: `0`.<br> Space in pixels between elements.
+trackProps    | React.CssProperties | Default: `undefined`.<br> Css styles to original track.
+thumb         | JSX.Element         | Default: `rectangle`.<br> Element that if provided overrides default rectangle.
+vertical      | boolean             | Default: `false`.<br> Defines direction of scrollbar - horizontal in default.<br>If height of ReactSmartSlider is not defined it will automatically resize to 100% and scroll will not be visible. 
 
 ## Usage
 
@@ -43,8 +42,9 @@ Let's create our first component
             'https://cdn.pixabay.com/photo/2019/04/11/09/50/wave-4119274__340.jpg'
         ]
     
-        return images.map(image => (
+        return images.map((image, index) => (
             <img
+                key={index}
                 src={image}
                 style={{
                     width: '100%',
@@ -133,9 +133,16 @@ This is what you'll see in your browser:
 ### vertical
 
     export const Slider = () => (
-        <ReactSmartSlider vertical>
-            {renderImages()}
-        </ReactSmartSlider>
+        <div
+            style={{
+                width: 500,
+                height: 600
+            }}
+        >
+            <ReactSmartSlider vertical>
+                {renderImages()}
+            </ReactSmartSlider>
+        </div>
     )
 
 <p align="center">
