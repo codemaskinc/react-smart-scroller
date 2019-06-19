@@ -85,6 +85,6 @@ After setting above props we should see something like this:
 
 - [x] thumb width dependent on scrollWidth
 - [x] vertical scroll
-- [ ] vertical scroll tests
+- [x] vertical scroll tests
 - [ ] improve documentation
 - [ ] more examples in usage
