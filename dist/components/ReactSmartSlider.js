@@ -152,6 +152,7 @@ export class ReactSmartSlider extends React.Component {
   }
 
   onMouseDrag(event) {
+    const zero = 0;
     const {
       deltaX,
       deltaXOrigin,
@@ -162,19 +163,19 @@ export class ReactSmartSlider extends React.Component {
     const thumbRef = this.thumbRef.current;
     const maximumOffset = scrollContainerWidth - thumbWidth;
     const offset = event.clientX - deltaX + deltaXOrigin;
-    const isBetweenClientWidth = offset >= 0 && offset <= maximumOffset;
+    const isBetweenClientWidth = offset >= zero && offset <= maximumOffset;
     const areRefsCurrent = C.all(Boolean(this.overflowContainerRef.current), Boolean(this.thumbRef.current));
 
     if (areRefsCurrent && !isBetweenClientWidth) {
-      const criticalDimension = offset > 0 ? maximumOffset : 0;
-      const criticalScrollerDimensions = offset > 0 ? overflowRef.scrollWidth - overflowRef.clientWidth : 0;
+      const criticalDimension = offset < zero ? zero : maximumOffset;
+      const criticalScrollerDimensions = offset > zero ? overflowRef.scrollWidth - overflowRef.clientWidth : zero;
       thumbRef.style.left = `${criticalDimension}px`;
-      overflowRef.scroll(criticalScrollerDimensions, 0);
+      overflowRef.scroll(criticalScrollerDimensions, zero);
     }
 
     if (areRefsCurrent && isBetweenClientWidth) {
       const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset;
-      overflowRef.scroll(ratio * offset, 0);
+      overflowRef.scroll(ratio * offset, zero);
       thumbRef.style.left = `${offset}px`;
     }
   }

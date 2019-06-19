@@ -173,12 +173,13 @@ export class ReactSmartSliderVertical extends React.Component<ReactSmartSliderPr
     }
 
     onMouseDrag(event: DragEvent | MouseEvent) {
+        const zero = 0
         const { deltaY, deltaYOrigin, scrollContainerHeight, thumbHeight } = this.state
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const thumbRef = this.thumbRef.current as HTMLDivElement
         const maximumOffset = scrollContainerHeight - thumbHeight
         const offset = event.clientY - deltaY + deltaYOrigin
-        const isBetweenClientHeight = offset >= 0 && offset <= maximumOffset
+        const isBetweenClientHeight = offset >= zero && offset <= maximumOffset
         const areRefsCurrent = C.all(
             Boolean(this.overflowContainerRef.current),
             Boolean(this.thumbRef.current)
@@ -187,19 +188,19 @@ export class ReactSmartSliderVertical extends React.Component<ReactSmartSliderPr
         console.log(scrollContainerHeight, thumbHeight)
 
         if (areRefsCurrent && !isBetweenClientHeight) {
-            const criticalDimension = offset > 0 ? maximumOffset : 0
-            const criticalScrollerDimensions = offset > 0
+            const criticalDimension = offset < zero ? zero: maximumOffset
+            const criticalScrollerDimensions = offset > zero
                 ? overflowRef.scrollHeight - overflowRef.clientHeight
-                : 0
+                : zero
 
             thumbRef.style.top = `${criticalDimension}px`
-            overflowRef.scroll(0, criticalScrollerDimensions)
+            overflowRef.scroll(zero, criticalScrollerDimensions)
         }
 
         if (areRefsCurrent && isBetweenClientHeight) {
             const ratio = (overflowRef.scrollHeight - overflowRef.clientHeight) / maximumOffset
 
-            overflowRef.scroll(0, ratio * offset)
+            overflowRef.scroll(zero, ratio * offset)
             thumbRef.style.top = `${offset}px`
         }
     }
