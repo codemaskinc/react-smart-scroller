@@ -16,10 +16,16 @@ export {
     all
 }
 
-export const extractNumberFromStyle = (value: string) => Number(value.replace('px', ''))
+export const extractNumberFromStyle = (value: string | number) => Number(value.toString().replace('px', ''))
 
-export const getPaddingValues = (padding?: string | number, paddingLeft?: string | number, paddingRight?: string | number) => {
-    if (!padding && !paddingLeft && !paddingRight) {
+export const getPaddingValues = (
+    padding?: string | number,
+    paddingLeft?: string | number,
+    paddingRight?: string | number,
+    paddingTop?: string | number,
+    paddingBottom?: string | number
+) => {
+    if (!padding && !paddingLeft && !paddingRight && !paddingTop && paddingBottom) {
         return null
     }
 
@@ -30,25 +36,13 @@ export const getPaddingValues = (padding?: string | number, paddingLeft?: string
         left: 0
     }
 
-    if (!padding && paddingLeft && paddingRight) {
+    if (!padding) {
         return {
             ...zeroPadding,
-            right: extractNumberFromStyle(paddingRight.toString()),
-            left: extractNumberFromStyle(paddingLeft.toString())
-        }
-    }
-
-    if (!padding && paddingLeft) {
-        return {
-            ...zeroPadding,
-            left: extractNumberFromStyle(paddingLeft.toString())
-        }
-    }
-
-    if (!padding && paddingRight) {
-        return {
-            ...zeroPadding,
-            right: extractNumberFromStyle(paddingRight.toString())
+            right: paddingRight ? extractNumberFromStyle(paddingRight) : undefined,
+            left: paddingLeft ? extractNumberFromStyle(paddingLeft) : undefined,
+            top: paddingTop ? extractNumberFromStyle(paddingTop) : undefined,
+            bottom: paddingBottom ? extractNumberFromStyle(paddingBottom) : undefined
         }
     }
 
