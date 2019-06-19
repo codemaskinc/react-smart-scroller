@@ -84,7 +84,7 @@ After setting above props we should see something like this:
 ## todo
 
 - [x] thumb width dependent on scrollWidth
-- [ ] vertical scroll
+- [x] vertical scroll
 - [ ] vertical scroll tests
 - [ ] improve documentation
 - [ ] more examples in usage

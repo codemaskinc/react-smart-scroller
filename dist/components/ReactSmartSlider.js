@@ -1,9 +1,10 @@
 import _objectSpread from "@babel/runtime/helpers/objectSpread";
 import _defineProperty from "@babel/runtime/helpers/defineProperty";
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { colors } from "../lib/styles";
 import { C, isMobile, isMacOs } from "../lib/utils";
+import { ReactSmartSliderVertical } from "./ReactSmartSliderVertical";
 export class ReactSmartSlider extends React.Component {
   constructor(props) {
     super(props);
@@ -75,7 +76,7 @@ export class ReactSmartSlider extends React.Component {
     } = this.props;
 
     if (trackProps) {
-      const scrollPadding = C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight);
+      const scrollPadding = C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight, trackProps.paddingTop, trackProps.paddingBottom);
       const padding = scrollPadding ? scrollPadding.left + scrollPadding.right : 0;
       return scrollContainerWidth - padding;
     }
@@ -163,16 +164,10 @@ export class ReactSmartSlider extends React.Component {
     const offset = event.clientX - deltaX + deltaXOrigin;
     const isBetweenClientWidth = offset >= 0 && offset <= maximumOffset;
     const areRefsCurrent = C.all(Boolean(this.overflowContainerRef.current), Boolean(this.thumbRef.current));
-    const {
-      trackProps
-    } = this.props;
-    const scrollPadding = trackProps ? C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight) : null;
-    const padding = scrollPadding ? scrollPadding.left : 0;
 
     if (areRefsCurrent && !isBetweenClientWidth) {
-      const marginLeft = overflowRef.getBoundingClientRect().left + thumbRef.clientWidth - thumbRef.offsetLeft;
-      const criticalDimension = event.clientX < marginLeft + padding ? 0 : maximumOffset;
-      const criticalScrollerDimensions = event.clientX > marginLeft + padding ? overflowRef.scrollWidth - overflowRef.clientWidth : 0;
+      const criticalDimension = offset > 0 ? maximumOffset : 0;
+      const criticalScrollerDimensions = offset > 0 ? overflowRef.scrollWidth - overflowRef.clientWidth : 0;
       thumbRef.style.left = `${criticalDimension}px`;
       overflowRef.scroll(criticalScrollerDimensions, 0);
     }
@@ -202,7 +197,7 @@ export class ReactSmartSlider extends React.Component {
   renderChildren() {
     const cols = this.props.numCols;
     const spacing = this.props.spacing;
-    const flexBasis = cols ? `${100 / cols}%` : 'unset';
+    const flexBasis = cols ? `calc((100% - ${(cols - 1) * spacing}px) / ${cols})` : 'unset';
     const padding = spacing / 2;
     const children = this.props.children;
     return React.Children.map(children, (child, index) => {
@@ -229,23 +224,16 @@ export class ReactSmartSlider extends React.Component {
     const width = `${percentageWidth * scrollContainerWidth / 100}px`;
 
     if (this.props.thumb) {
-      const thumb = React.cloneElement(this.props.thumb, {
+      return React.cloneElement(this.props.thumb, {
         ref: this.thumbRef,
         onMouseDown: this.onMouseDown,
         style: _objectSpread({
           left: 0,
           position: 'relative',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          bottom: this.bottomOffset
         }, this.props.thumb.props.style)
       });
-      return React.createElement(Track, {
-        ref: this.trackRef,
-        onClick: this.onScrollbarClick,
-        style: _objectSpread({
-          color: colors.gray.mediumGray,
-          bottom: this.bottomOffset
-        }, this.props.trackProps)
-      }, thumb);
     }
 
     return React.createElement(RectangleThumb, {
@@ -270,22 +258,28 @@ export class ReactSmartSlider extends React.Component {
     }, this.renderThumb());
   }
 
-  render() {
-    return React.createElement(Wrapper, null, React.createElement(SecondWrapper, {
+  renderContent() {
+    return !this.props.vertical ? React.createElement(Fragment, null, React.createElement(SecondWrapper, {
       ref: this.overflowContainerRef,
       onScroll: this.onOverflowContentScroll,
       onLoad: this.measureContainers
-    }, this.renderChildren()), this.renderScrollbar());
+    }, this.renderChildren()), this.renderScrollbar()) : React.createElement(ReactSmartSliderVertical, this.props);
+  }
+
+  render() {
+    return React.createElement(Wrapper, null, this.renderContent());
   }
 
 }
 
 _defineProperty(ReactSmartSlider, "defaultProps", {
-  spacing: 0
+  spacing: 0,
+  vertical: false
 });
 
 export const Wrapper = styled.div`
     width: 100%;
+    height: 100%;
     overflow: hidden;
     position: relative;
 `;
@@ -301,8 +295,7 @@ export const ChildrenWrapper = styled.div`
 `;
 export const Track = styled.div`
     position: absolute;
-    display: flex;
-    align-items: center;
+    display: block;
     cursor: pointer;
     left: 0;
     width: 100%;
@@ -316,5 +309,5 @@ export const RectangleThumb = styled.div`
     background-color: ${colors.primary};
     cursor: pointer;
     width: 100px;
-    height: 100%;
+    height: 10px;
 `;
