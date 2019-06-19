@@ -8,7 +8,7 @@ const clearObject = value => Object.keys(value).filter(key => Boolean(value[key]
 }), {});
 
 export { clearObject, all };
-export const extractNumberFromStyle = value => Number(value.toString().replace('px', ''));
+export const extractNumberFromStyle = value => value ? Number(value.toString().replace('px', '')) : undefined;
 export const getPaddingValues = (padding, paddingLeft, paddingRight, paddingTop, paddingBottom) => {
   if (!padding && !paddingLeft && !paddingRight && !paddingTop && paddingBottom) {
     return null;
@@ -23,10 +23,10 @@ export const getPaddingValues = (padding, paddingLeft, paddingRight, paddingTop,
 
   if (!padding) {
     return _objectSpread({}, zeroPadding, {
-      right: paddingRight ? extractNumberFromStyle(paddingRight) : undefined,
-      left: paddingLeft ? extractNumberFromStyle(paddingLeft) : undefined,
-      top: paddingTop ? extractNumberFromStyle(paddingTop) : undefined,
-      bottom: paddingBottom ? extractNumberFromStyle(paddingBottom) : undefined
+      right: extractNumberFromStyle(paddingRight),
+      left: extractNumberFromStyle(paddingLeft),
+      top: extractNumberFromStyle(paddingTop),
+      bottom: extractNumberFromStyle(paddingBottom)
     });
   }
 
