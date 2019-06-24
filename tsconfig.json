@@ -9,14 +9,10 @@
     "noEmit": true,
     "strict": true,
     "target": "esnext",
-    "baseUrl": "src",
+    "rootDir": ".",
     "skipLibCheck": true,
     "noImplicitAny": false,
-    "rootDir": ".",
-    "typeRoots": [
-      "node_modules/@types",
-      "src/typings"
-    ]
+    "baseUrl": "src"
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules"]
 }

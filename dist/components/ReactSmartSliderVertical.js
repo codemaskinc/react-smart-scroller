@@ -245,12 +245,12 @@ export class ReactSmartSliderVertical extends React.Component {
   renderChildren() {
     const cols = this.props.numCols;
     const spacing = this.props.spacing;
-    const height = cols ? `calc((100% - ${(cols - 1) * spacing}px) / ${cols})` : 'unset';
     const padding = spacing / 2;
     const children = this.props.children;
     return React.Children.map(children, (child, index) => {
       const paddingBottom = index !== React.Children.count(children) - 1 ? `paddingBottom: ${padding}px` : undefined;
       const paddingTop = index !== 0 ? `paddingTop: ${padding}px` : undefined;
+      const height = cols ? `calc(100% / ${cols})` : 'unset';
       return React.createElement(ChildrenWrapper, {
         style: {
           padding: `${padding}px 0`,

@@ -198,12 +198,12 @@ export class ReactSmartSlider extends React.Component {
   renderChildren() {
     const cols = this.props.numCols;
     const spacing = this.props.spacing;
-    const flexBasis = cols ? `calc((100% - ${(cols - 1) * spacing}px) / ${cols})` : 'unset';
     const padding = spacing / 2;
     const children = this.props.children;
     return React.Children.map(children, (child, index) => {
       const paddingRight = index !== React.Children.count(children) - 1 ? `paddingRight: ${padding}px` : undefined;
       const paddingLeft = index !== 0 ? `paddingLeft: ${padding}px` : undefined;
+      const flexBasis = cols ? `calc(100% / ${cols})` : 'unset';
       return React.createElement(ChildrenWrapper, {
         style: {
           padding: `0 ${padding}px`,
