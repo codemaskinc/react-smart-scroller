@@ -286,7 +286,6 @@ export class ReactSmartSliderVertical extends React.Component<ReactSmartSliderPr
     renderChildren() {
         const cols = this.props.numCols as number
         const spacing = this.props.spacing as number
-        const height = cols ? `calc((100% - ${(cols - 1) * spacing}px) / ${cols})` : 'unset'
         const padding = spacing / 2
         const children = this.props.children as ChildNode
 
@@ -297,6 +296,7 @@ export class ReactSmartSliderVertical extends React.Component<ReactSmartSliderPr
             const paddingTop = index !== 0
                 ? `paddingTop: ${padding}px`
                 : undefined
+            const height = cols ? `calc(100% / ${cols})` : 'unset'
 
             return (
                 <ChildrenWrapper
