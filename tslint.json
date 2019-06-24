@@ -74,6 +74,7 @@
     "no-empty": false,
     "no-object-literal-type-assertion": false,
     "no-submodule-imports": false,
-    "no-console": false
+    "no-console": false,
+    "jsdoc-format": false
   }
 }

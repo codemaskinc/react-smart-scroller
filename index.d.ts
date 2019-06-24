@@ -1,7 +1,7 @@
 import React from 'react'
 
 export type ReactSmartSliderProps = {
-    /*
+    /**
         Default undefined.
         If given defines number of columns per container width.
         If 1, width of each child is 100%of container width.
@@ -10,7 +10,7 @@ export type ReactSmartSliderProps = {
 
     numCols?: number,
 
-    /*
+    /**
         Default 0.
         Defines space in pixels between columns.
         Spacing is based on padding of each element.
@@ -18,14 +18,14 @@ export type ReactSmartSliderProps = {
 
     spacing?: number,
 
-    /*
+    /**
         Default undefined.
         Overrides base style of track.
     */
 
     trackProps?: React.CSSProperties,
 
-    /*
+    /**
         Default rectangle.
         Base rectangle element has adaptive width, dependent on length of children.
         Provided JSX.Element replaces original thumb.
@@ -33,7 +33,7 @@ export type ReactSmartSliderProps = {
 
     thumb?: JSX.Element,
 
-    /*
+    /**
         Default false.
         Defines direction of scrollbar - horizontal in default.
         If true, it resize automatically.
