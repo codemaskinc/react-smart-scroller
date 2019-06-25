@@ -61,8 +61,7 @@
     "typescript": "3.4.5"
   },
   "dependencies": {
-    "styled-components": "4.3.1",
-    "@types/styled-components": "4.1.16"
+    "styled-components": "4.3.1"
   },
   "browserslist": [
     ">0.2%",
