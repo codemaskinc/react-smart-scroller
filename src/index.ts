@@ -1,7 +1,7 @@
 import { ReactSmartSliderProps } from './lib'
-import { ReactSmartSlider } from './components'
+import { ReactSmartScroller } from './components'
 
 export {
-    ReactSmartSlider,
+    ReactSmartScroller,
     ReactSmartSliderProps
 }

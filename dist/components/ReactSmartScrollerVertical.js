@@ -4,7 +4,7 @@ import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { C, isMacOs, isMobile } from "../lib/utils";
 import { colors } from "../lib/styles";
-export class ReactSmartSliderVertical extends React.Component {
+export class ReactSmartScrollerVertical extends React.Component {
   constructor(props) {
     super(props);
 

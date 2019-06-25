@@ -4,8 +4,8 @@ import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { colors } from "../lib/styles";
 import { C, isMobile, isMacOs } from "../lib/utils";
-import { ReactSmartSliderVertical } from "./ReactSmartSliderVertical";
-export class ReactSmartSlider extends React.Component {
+import { ReactSmartScrollerVertical } from "./ReactSmartScrollerVertical";
+export class ReactSmartScroller extends React.Component {
   constructor(props) {
     super(props);
 
@@ -268,7 +268,7 @@ export class ReactSmartSlider extends React.Component {
       ref: this.overflowContainerRef,
       onScroll: this.onOverflowContentScroll,
       onLoad: this.measureContainers
-    }, this.renderChildren()), this.renderScrollbar()) : React.createElement(ReactSmartSliderVertical, this.props);
+    }, this.renderChildren()), this.renderScrollbar()) : React.createElement(ReactSmartScrollerVertical, this.props);
   }
 
   render() {
@@ -277,7 +277,7 @@ export class ReactSmartSlider extends React.Component {
 
 }
 
-_defineProperty(ReactSmartSlider, "defaultProps", {
+_defineProperty(ReactSmartScroller, "defaultProps", {
   spacing: 0,
   vertical: false
 });

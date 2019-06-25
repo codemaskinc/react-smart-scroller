@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { colors } from 'lib/styles'
 import { Padding, ReactSmartSliderProps } from 'lib/types'
 import { C, isMobile, isMacOs } from 'lib/utils'
-import { ReactSmartSliderVertical } from './ReactSmartSliderVertical'
+import { ReactSmartScrollerVertical } from './ReactSmartScrollerVertical'
 
 type ReactSmartSliderState = {
     scrollContainerWidth: number,
@@ -15,7 +15,7 @@ type ReactSmartSliderState = {
     scrollWidth: number
 }
 
-export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, ReactSmartSliderState> {
+export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, ReactSmartSliderState> {
     static defaultProps: Partial<ReactSmartSliderProps> = {
         spacing: 0,
         vertical: false
@@ -332,7 +332,7 @@ export class ReactSmartSlider extends React.Component<ReactSmartSliderProps, Rea
                 {this.renderScrollbar()}
             </Fragment>
         ) : (
-            <ReactSmartSliderVertical {...this.props}/>
+            <ReactSmartScrollerVertical {...this.props}/>
         )
     }
 

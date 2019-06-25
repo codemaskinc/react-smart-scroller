@@ -14,7 +14,7 @@ type ReactSmartSliderVerticalState = {
     scrollHeight: number
 }
 
-export class ReactSmartSliderVertical extends React.Component<ReactSmartSliderProps, ReactSmartSliderVerticalState> {
+export class ReactSmartScrollerVertical extends React.Component<ReactSmartSliderProps, ReactSmartSliderVerticalState> {
     state: ReactSmartSliderVerticalState = {
         scrollContainerHeight: 0,
         deltaYOrigin: 0,

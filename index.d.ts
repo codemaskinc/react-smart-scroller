@@ -1,6 +1,6 @@
 import React from 'react'
 
-export type ReactSmartSliderProps = {
+export type ReactSmartScrollerProps = {
     /**
         Default undefined.
         If given defines number of columns per container width.
@@ -44,4 +44,4 @@ export type ReactSmartSliderProps = {
     vertical?: boolean
 }
 
-export class ReactSmartSlider extends React.Component<ReactSmartSliderProps> {}
+export class ReactSmartScroller extends React.Component<ReactSmartScrollerProps> {}
