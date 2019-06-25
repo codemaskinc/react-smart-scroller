@@ -13,20 +13,20 @@ React-smart-scroller is a library that allows you to create horizontal and verti
 ### Features
 
 - Full responsiveness
-- Every child is resized dependent of view cols
+- Every child is resized dependent on view cols
 
 ## Install
-`yarn add react-smart-scroller` or `npm install react-smart-scroller`
+`yarn add react-smart-scroller` or `npm install --save react-smart-scroller`
 
 ## Props
 
 Property      | Type                | Description
 ------------- | ------------------- | ------------------------
-numCols       | number              | Default: `undefined`.<br> Number of columns per container width.<br>If 1, width of each child is 100%.<br>If not provided, column has child width.
+numCols       | number              | Default: `undefined`.<br> Number of columns per container width.<br>If 1, width of each child is 100%.<br>If not provided, column has childs width.
 spacing       | number              | Default: `0`.<br> Space in pixels between elements.
-trackProps    | React.CssProperties | Default: `undefined`.<br> Css styles to original track.
+trackProps    | React.CssProperties | Default: `undefined`.<br> CSS styles to original track.
 thumb         | JSX.Element         | Default: `rectangle`.<br> Element that if provided overrides default rectangle.
-vertical      | boolean             | Default: `false`.<br> Defines direction of scrollbar - horizontal in default.<br>If height of ReactSmartScroller is not defined it will automatically resize to 100% and scroll will not be visible. 
+vertical      | boolean             | Default: `false`.<br> Defines direction of scrollbar - horizontal by default.<br>If height of ReactSmartScroller is not defined it will automatically resize to 100% and scroll will not be visible. 
 
 ## Usage
 

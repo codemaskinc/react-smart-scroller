@@ -48,7 +48,7 @@ export const getPaddingValues = (
         }
     }
 
-    const splittedPadding = padding ? padding.toString().split(' ') : []
+    const splittedPadding = padding.toString().split(' ')
     const paddingValuesCount = splittedPadding.length
     const paddingValues = splittedPadding.map(extractNumberFromStyle)
 

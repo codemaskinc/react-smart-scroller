@@ -30,7 +30,7 @@ export const getPaddingValues = (padding, paddingLeft, paddingRight, paddingTop,
     });
   }
 
-  const splittedPadding = padding ? padding.toString().split(' ') : [];
+  const splittedPadding = padding.toString().split(' ');
   const paddingValuesCount = splittedPadding.length;
   const paddingValues = splittedPadding.map(extractNumberFromStyle);
 
