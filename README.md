@@ -2,6 +2,7 @@
   <img src="assets/react-smart-scroller.png" />
 </p>
 
+##
 
 React-smart-scroller is a library that allows you to create horizontal and vertical scroller in easy way.
 
