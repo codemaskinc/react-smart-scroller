@@ -1,7 +1,7 @@
 {
   "name": "react-smart-scroller",
   "version": "1.0.2",
-  "description": "",
+  "description": "React-smart-scroller is a library that allows you to create horizontal and vertical scroller in easy way",
   "main": "dist/index.js",
   "scripts": {
     "build": "babel ./src --out-dir dist --extensions \".ts,.tsx\"",
