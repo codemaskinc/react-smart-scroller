@@ -353,7 +353,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     })
 
     it('should return null if thumbClicked on onScrollbarClick response', () => {
-        const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical{...initialProps}/>)
+        const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical {...initialProps}/>)
         const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const state = {
