@@ -2,7 +2,7 @@
     <img src="assets/react-smart-scroller.png" width="400"/>
 </p>
 
-##<a href='https://coveralls.io/github/codegateinc/react-smart-scroller?branch=features/Readme'><img src='https://coveralls.io/repos/github/codegateinc/react-smart-scroller/badge.svg?branch=features/Readme' alt='Coverage Status' /></a>
+## <a href='https://coveralls.io/github/codegateinc/react-smart-scroller?branch=features/Readme'><img src='https://coveralls.io/repos/github/codegateinc/react-smart-scroller/badge.svg?branch=features/Readme' alt='Coverage Status' /></a>
 
 React-smart-scroller is a library that allows you to create horizontal and vertical scroller in easy way.
 
