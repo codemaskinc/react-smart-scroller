@@ -2,7 +2,7 @@ import _extends from "@babel/runtime/helpers/extends";
 import React from 'react';
 import { shallow } from 'enzyme';
 import { colors } from "../lib/styles";
-import { ReactSmartSliderVertical, RectangleThumb, Track, Content } from "./ReactSmartSliderVertical";
+import { ReactSmartScrollerVertical, RectangleThumb, Track, Content } from "./ReactSmartScrollerVertical";
 
 const mockConfig = device => ({
   value: device,
@@ -29,43 +29,43 @@ const initialProps = {
 };
 describe('ReactSmartSliderVertical: lib/components', () => {
   it('should render itself', () => {
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, initialProps));
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
     expect(wrapper.find(Content).exists()).toEqual(true);
     expect(wrapper.find(RectangleThumb).exists()).toEqual(true);
     expect(wrapper.find(Track).exists()).toEqual(true);
   });
   it('should not render Scrollbar', () => {
     Object.defineProperty(window.navigator, agent, mockConfig('iPhone'));
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, initialProps));
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
     expect(wrapper.find(Track).props().style.display).toEqual('none');
   });
   it('should invoke onOverflowContentScroll onScroll', () => {
-    const onOverflowContentScrollSpy = jest.spyOn(ReactSmartSliderVertical.prototype, 'onOverflowContentScroll');
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, initialProps));
+    const onOverflowContentScrollSpy = jest.spyOn(ReactSmartScrollerVertical.prototype, 'onOverflowContentScroll');
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
     wrapper.find(Content).simulate('scroll');
     expect(onOverflowContentScrollSpy).toHaveBeenCalled();
   });
   it('should invoke measureContainers onLoad', () => {
-    const measureContainersSpy = jest.spyOn(ReactSmartSliderVertical.prototype, 'measureContainers');
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, initialProps));
+    const measureContainersSpy = jest.spyOn(ReactSmartScrollerVertical.prototype, 'measureContainers');
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
     wrapper.find(Content).simulate('load');
     expect(measureContainersSpy).toHaveBeenCalled();
   });
   it('should invoke addEventListener', () => {
     window.addEventListener = jest.fn();
-    shallow(React.createElement(ReactSmartSliderVertical, initialProps));
+    shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
     expect(window.addEventListener).toHaveBeenCalled();
   });
   it('should invoke removeEventListener', () => {
     window.removeEventListener = jest.fn();
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, initialProps));
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
     wrapper.unmount();
     expect(window.removeEventListener).toHaveBeenCalled();
   });
   it('should invoke onMouseDown', () => {
     Object.defineProperty(window.navigator, agent, mockConfig('web'));
-    const onMouseDownSpy = jest.spyOn(ReactSmartSliderVertical.prototype, 'onMouseDown');
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, initialProps));
+    const onMouseDownSpy = jest.spyOn(ReactSmartScrollerVertical.prototype, 'onMouseDown');
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
     const event = {
       preventDefault: jest.fn()
     };
@@ -73,9 +73,9 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     expect(onMouseDownSpy).toHaveBeenCalled();
   });
   it('should invoke onScrollbarClick after CustomScrollbar clicked', () => {
-    ReactSmartSliderVertical.prototype.onScrollbarClick = jest.fn();
-    const onScrollbarClickSpy = jest.spyOn(ReactSmartSliderVertical.prototype, 'onScrollbarClick');
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, initialProps));
+    ReactSmartScrollerVertical.prototype.onScrollbarClick = jest.fn();
+    const onScrollbarClickSpy = jest.spyOn(ReactSmartScrollerVertical.prototype, 'onScrollbarClick');
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
     const event = {
       clientX: 123
     };
@@ -83,7 +83,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     expect(onScrollbarClickSpy).toHaveBeenCalled();
   });
   it('should set state after measureContainers invoked', () => {
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, _extends({}, initialProps, {
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
       numCols: undefined
     })));
     const wrapperInstance = wrapper.instance();
@@ -111,7 +111,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     expect(wrapper.state().scrollContainerHeight).toEqual(documentHeight);
   });
   it('should change thumbRef after measureContainers invoked', () => {
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, _extends({}, initialProps, {
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
       numCols: undefined
     })));
     const wrapperInstance = wrapper.instance();
@@ -144,7 +144,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     expect(wrapperInstance[thumbRef].current.style.top).toEqual(`${documentHeight - value}px`);
   });
   it('should change state after onMouseDown', () => {
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, _extends({}, initialProps, {
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
       numCols: undefined
     })));
     const wrapperInstance = wrapper.instance();
@@ -165,7 +165,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     expect(wrapper.state().deltaY).toEqual(clientY);
   });
   it('should set thumb left style', () => {
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, _extends({}, initialProps, {
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
       numCols: undefined
     })));
     const wrapperInstance = wrapper.instance();
@@ -205,7 +205,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     expect(wrapperInstance[thumbRef].current.style.top).toEqual(`${0}px`);
   });
   it('should set thumb left style when overflownScrollContent scrolled', () => {
-    const wrapper = shallow(React.createElement(ReactSmartSliderVertical, _extends({}, initialProps, {
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
       numCols: undefined,
       trackProps: undefined
     })));

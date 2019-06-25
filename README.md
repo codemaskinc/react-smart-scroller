@@ -1,9 +1,9 @@
-# react-smart-slider
+# react-smart-scroller
 
-React-smart-slider is a library that allows you to create horizontal slider in easy way.
+React-smart-scroller is a library that allows you to create horizontal scroller in easy way.
 
 <p align="center">
-  <img src="assets/react-smart-slider-demo-default.gif" />
+  <img src="assets/react-smart-scroller-demo-default.gif" />
 </p>
 
 ### Features
@@ -12,7 +12,7 @@ React-smart-slider is a library that allows you to create horizontal slider in e
 - Every child is resized dependent of view cols
 
 ## Install
-`yarn add react-smart-slider` or `npm install react-smart-slider`
+`yarn add react-smart-scroller` or `npm install react-smart-scroller`
 
 ## Props
 
@@ -22,7 +22,7 @@ numCols       | number              | Default: `undefined`.<br> Number of column
 spacing       | number              | Default: `0`.<br> Space in pixels between elements.
 trackProps    | React.CssProperties | Default: `undefined`.<br> Css styles to original track.
 thumb         | JSX.Element         | Default: `rectangle`.<br> Element that if provided overrides default rectangle.
-vertical      | boolean             | Default: `false`.<br> Defines direction of scrollbar - horizontal in default.<br>If height of ReactSmartSlider is not defined it will automatically resize to 100% and scroll will not be visible. 
+vertical      | boolean             | Default: `false`.<br> Defines direction of scrollbar - horizontal in default.<br>If height of ReactSmartScroller is not defined it will automatically resize to 100% and scroll will not be visible. 
 
 ## Usage
 
@@ -31,7 +31,7 @@ vertical      | boolean             | Default: `false`.<br> Defines direction of
 Let's create our first component
 
     import React from 'react'
-    import { ReactSmartSlider } from 'react-smart-slider'
+    import { ReactSmartScroller } from 'react-smart-scroller'
     
     const renderImages = () => {
         const images = [
@@ -56,61 +56,61 @@ Let's create our first component
     }
     
     export const Slider = () => (
-        <ReactSmartSlider>
+        <ReactSmartScroller>
             {renderImages()}
-        </ReactSmartSlider>
+        </ReactSmartScroller>
     )
     
 This is what you'll see in your browser:
 
 <p align="center">
-  <img src="assets/react-smart-slider-usage-basic.png" />
+  <img src="assets/react-smart-scroller-usage-basic.png" />
 </p>
 
 ### numCols
 
     export const Slider = () => (
-        <ReactSmartSlider numCols={3}>
+        <ReactSmartScroller numCols={3}>
             {renderImages()}
-        </ReactSmartSlider>
+        </ReactSmartScroller>
     )
 
 <p align="center">
-  <img src="assets/react-smart-slider-usage-numCols.png" />
+  <img src="assets/react-smart-scroller-usage-numCols.png" />
 </p>
 
 ### spacing
 
     export const Slider = () => (
-        <ReactSmartSlider spacing={24}>
+        <ReactSmartScroller spacing={24}>
             {renderImages()}
-        </ReactSmartSlider>
+        </ReactSmartScroller>
     )
     
 <p align="center">
-    <img src="assets/react-smart-slider-usage-spacing.png" />
+    <img src="assets/react-smart-scroller-usage-spacing.png" />
 </p>
 
 ### trackProps
 
     export const Slider = () => (
-        <ReactSmartSlider
+        <ReactSmartScroller
             trackProps={{
                 height: 25
             }}
         >
             {renderImages()}
-        </ReactSmartSlider>
+        </ReactSmartScroller>
     )
     
 <p align="center">
-    <img src="assets/react-smart-slider-usage-trackProps.png" />
+    <img src="assets/react-smart-scroller-usage-trackProps.png" />
 </p>
 
 ### thumb
 
     export const Slider = () => (
-        <ReactSmartSlider
+        <ReactSmartScroller
             thumb={
                 <div
                     style={{
@@ -123,11 +123,11 @@ This is what you'll see in your browser:
             }
         >
             {renderImages()}
-        </ReactSmartSlider>
+        </ReactSmartScroller>
     )
     
 <p align="center">
-    <img src="assets/react-smart-slider-usage-thumb.png" />
+    <img src="assets/react-smart-scroller-usage-thumb.png" />
 </p>
 
 ### vertical
@@ -139,14 +139,14 @@ This is what you'll see in your browser:
                 height: 600
             }}
         >
-            <ReactSmartSlider vertical>
+            <ReactSmartScroller vertical>
                 {renderImages()}
-            </ReactSmartSlider>
+            </ReactSmartScroller>
         </div>
     )
 
 <p align="center">
-    <img src="assets/react-smart-slider-usage-vertical.png" />
+    <img src="assets/react-smart-scroller-usage-vertical.png" />
 </p>
 
 ## todo

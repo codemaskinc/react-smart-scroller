@@ -1,3 +1,3 @@
 import { ReactSmartSliderProps } from "./lib";
-import { ReactSmartSlider } from "./components";
-export { ReactSmartSlider, ReactSmartSliderProps };
+import { ReactSmartScroller } from "./components";
+export { ReactSmartScroller, ReactSmartSliderProps };
