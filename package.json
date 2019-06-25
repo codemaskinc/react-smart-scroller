@@ -17,7 +17,16 @@
     "url": "git+https://github.com/codegateinc/react-smart-slider.git"
   },
   "keywords": [
-    "react"
+    "react",
+    "react smart scroller",
+    "horizontal scroller",
+    "vertical scroller",
+    "scroller",
+    "react scroller",
+    "react-scroller",
+    "react-smart-scroller",
+    "smart scroller",
+    "smart-scroller"
   ],
   "author": "CodeGate",
   "license": "MIT",
