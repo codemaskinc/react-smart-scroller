@@ -1,6 +1,6 @@
 # react-smart-scroller
 
-React-smart-scroller is a library that allows you to create horizontal scroller in easy way.
+React-smart-scroller is a library that allows you to create horizontal and vertical scroller in easy way.
 
 <p align="center">
   <img src="assets/react-smart-scroller-demo-default.gif" />
