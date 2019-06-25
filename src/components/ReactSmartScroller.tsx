@@ -161,6 +161,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
     onScrollbarClick({ clientX }: React.MouseEvent) {
         const thumbRef = this.thumbRef.current as HTMLDivElement
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
+
         const shouldReturn = C.all(
             thumbRef,
             overflowRef,

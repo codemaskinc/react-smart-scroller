@@ -8,7 +8,8 @@
     "build:watch": "rimraf dist && tsc --watch",
     "tsc": "node_modules/typescript/bin/tsc",
     "tsc:watch": "node_modules/typescript/bin/tsc --watch",
-    "test": "react-scripts-ts test --env=jsdom",
+    "test": "react-scripts-ts test --env=jsdom --coverage",
+    "test:cov": "react-scripts-ts test --env=jsdom --coverage --coverageReporters=text-lcov | coveralls",
     "start": "react-scripts-ts start"
   },
   "typings": "index.d.ts",
@@ -53,6 +54,7 @@
     "@types/react-dom": "16.8.4",
     "@types/styled-components": "4.1.16",
     "babel-plugin-module-resolver": "^3.2.0",
+    "coveralls": "3.0.4",
     "enzyme": "3.9.0",
     "enzyme-adapter-react-16": "1.9.1",
     "jsdom": "15.1.0",
@@ -68,5 +70,11 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.ts?(x)",
+      "!src/**/index.ts"
+    ]
+  }
 }

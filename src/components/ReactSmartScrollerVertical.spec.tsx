@@ -104,20 +104,6 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         expect(onMouseDownSpy).toHaveBeenCalled()
     })
 
-    it('should invoke onScrollbarClick after CustomScrollbar clicked', () => {
-        ReactSmartScrollerVertical.prototype.onScrollbarClick = jest.fn()
-
-        const onScrollbarClickSpy = jest.spyOn(ReactSmartScrollerVertical.prototype, 'onScrollbarClick')
-        const wrapper = shallow(<ReactSmartScrollerVertical {...initialProps}/>)
-        const event = {
-            clientX: 123
-        } as React.MouseEvent
-
-        wrapper.find(Track).simulate('click', event)
-
-        expect(onScrollbarClickSpy).toHaveBeenCalled()
-    })
-
     it('should set state after measureContainers invoked', () => {
         const wrapper = shallow<ReactSmartScrollerVertical>(
             <ReactSmartScrollerVertical
@@ -297,5 +283,134 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         wrapperInstance.onOverflowContentScroll()
 
         expect(wrapperInstance[thumbRef].current!.style.top).toEqual(`${scrollTop * ratio}px`)
+    })
+
+    it('should render custom thumb if provided', () => {
+        React.cloneElement = jest.fn()
+
+        shallow<ReactSmartScrollerVertical>(
+            <ReactSmartScrollerVertical
+                {...initialProps}
+                numCols={undefined}
+                thumb={
+                    <div
+                        style={{
+                            width: 20,
+                            height: 20
+                        }}
+                    />
+                }
+            />
+        )
+
+        expect(React.cloneElement).toHaveBeenCalled()
+    })
+
+    it('should remove mousemove event', () => {
+        window.removeEventListener = jest.fn()
+
+        const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical/>)
+        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+
+        wrapperInstance.deleteMouseMoveEvent()
+
+        expect(window.removeEventListener).toHaveBeenCalled()
+    })
+
+    it('should invoke scroll on overflownRef', () => {
+        const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical {...initialProps}/>)
+        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
+        const state = {
+            deltaY: 50,
+            deltaYOrigin: 0,
+            scrollContainerHeight: 500,
+            thumbHeight: 100
+        }
+        const thumbRef = 'thumbRef'
+        const overflowContainerRef = 'overflowContainerRef'
+        const event = {
+            clientY: 123
+        } as React.MouseEvent
+
+        wrapper.setState(state)
+
+        getRefCurrent(overflowContainerRef , {
+            scroll: jest.fn(),
+            getBoundingClientRect: jest.fn(() => ({ top: 0 }))
+        })
+        getRefCurrent(thumbRef , {
+            style: {
+                top: 0
+            },
+            clientHeight: 100,
+            offsetTop: 0
+        })
+
+        wrapperInstance.onScrollbarClick(event)
+
+        expect(wrapperInstance[overflowContainerRef].current!.scroll).toHaveBeenCalled()
+    })
+
+    it('should return null if thumbClicked on onScrollbarClick response', () => {
+        const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical{...initialProps}/>)
+        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
+        const state = {
+            deltaY: 50,
+            deltaYOrigin: 0,
+            scrollContainerHeight: 500,
+            thumbHeight: 100
+        }
+        const thumbRef = 'thumbRef'
+        const overflowContainerRef = 'overflowContainerRef'
+        const event = {
+            clientY: 0
+        } as React.MouseEvent
+
+        wrapper.setState(state)
+
+        getRefCurrent(overflowContainerRef , {
+            scroll: jest.fn(),
+            getBoundingClientRect: jest.fn(() => ({ top: 0 }))
+        })
+        getRefCurrent(thumbRef , {
+            style: {
+                top: 0
+            },
+            clientHeight: 100,
+            offsetTop: 0
+        })
+
+        wrapperInstance.onScrollbarClick(event)
+
+        expect(wrapperInstance[overflowContainerRef].current!.scroll).not.toHaveBeenCalled()
+    })
+
+    it('should invoke onScrollbarClick after CustomScrollbar clicked', () => {
+        ReactSmartScrollerVertical.prototype.onScrollbarClick = jest.fn()
+
+        const onScrollbarClickSpy = jest.spyOn(ReactSmartScrollerVertical.prototype, 'onScrollbarClick')
+        const wrapper = shallow(<ReactSmartScrollerVertical {...initialProps}/>)
+        const event = {
+            clientY: 123
+        } as React.MouseEvent
+
+        wrapper.find(Track).simulate('click', event)
+
+        expect(onScrollbarClickSpy).toHaveBeenCalled()
+    })
+
+    it('should return not changed scrollContainerWidth', () => {
+        const wrapper = shallow(
+            <ReactSmartScrollerVertical
+                {...initialProps}
+                trackProps={undefined}
+            />
+        )
+        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const containerHeight = 100
+
+        expect(wrapperInstance.scrollContainerReducedHeight(containerHeight)).toEqual(containerHeight)
     })
 })
