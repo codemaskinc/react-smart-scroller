@@ -10,6 +10,8 @@ React-smart-scroller is a library that allows you to create horizontal and verti
   <img src="assets/react-smart-scroller-demo-default.gif" />
 </p>
 
+[![Coverage Status](https://coveralls.io/repos/github/codegateinc/react-smart-scroller/badge.svg?branch=features/Readme)](https://coveralls.io/github/codegateinc/react-smart-scroller?branch=features/Readme)
+
 ### Features
 
 - Full responsiveness
