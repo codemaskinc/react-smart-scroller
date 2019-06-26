@@ -25,6 +25,10 @@ Define your own spacing or columns per scroller width simply passing props.
   <img src="assets/react-smart-scroller-demo-default.gif" />
 </p>
 
+### Live demo
+
+[![Edit cold-bash-p4qsr](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/cold-bash-p4qsr?fontsize=14)
+
 ## Install
 `yarn add react-smart-scroller` or `npm install --save react-smart-scroller`
 
@@ -170,3 +174,4 @@ This is what you'll see in your browser:
 - [x] vertical scroll tests
 - [x] improve documentation
 - [x] more examples in usage
+- [ ] enable drag with mouse
