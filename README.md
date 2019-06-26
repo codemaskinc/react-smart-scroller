@@ -174,3 +174,4 @@ This is what you'll see in your browser:
 - [x] vertical scroll tests
 - [x] improve documentation
 - [x] more examples in usage
+- [ ] enable drag with mouse
