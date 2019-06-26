@@ -16,10 +16,10 @@ Define your own spacing or columns per scroller width simply passing props.
 - Full responsiveness
 - Every child is resized dependent on view cols
 - Highly customizable track
-- Possibility of passing own thumb (even images)
+- Possibility of passing own thumb (own component)
 - Vertical scroll
-- Spacing
-- Well typed
+- Spacing between columns
+- Well typed (Typescript)
 
 <p align="center">
   <img src="assets/react-smart-scroller-demo-default.gif" />
