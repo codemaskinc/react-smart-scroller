@@ -4,16 +4,26 @@
 
 ## <a href='https://coveralls.io/github/codegateinc/react-smart-scroller?branch=features/Readme'><img src='https://coveralls.io/repos/github/codegateinc/react-smart-scroller/badge.svg?branch=features/Readme' alt='Coverage Status' /></a> <a href='https://github.com/styled-components/styled-components'><img src='https://img.shields.io/badge/style-%F0%9F%92%85%20styled--components-orange.svg?colorB=daa357&colorA=db748e' alt='styled compoennts' /></a> <a href='https://www.typescriptlang.org/'><img src='https://badges.frapsoft.com/typescript/code/typescript.png?v=101' alt='typescript' height=20/></a> <a href='http://opensource.org/licenses/MIT'><img src='http://img.shields.io/badge/license-MIT-brightgreen.svg' alt='MIT' /></a> <a href="https://badge.fury.io/js/react-smart-scroller"><img src="https://badge.fury.io/js/react-smart-scroller.svg" alt="npm version"></a>
 
-React-smart-scroller is a library that allows you to create horizontal and vertical scroller in easy way.
+React-smart-scroller is a library that allows you to create highly customizable horizontal or vertical scroller in easy way.
 
-<p align="center">
-  <img src="assets/react-smart-scroller-demo-default.gif" />
-</p>
+You can modify scrollbar track just like you want, adding some styles to it, and change look of
+scrollbar thumb just simply passing styled JSX Element.
+
+Define your own spacing or columns per scroller width simply passing props.
 
 ### Features
 
 - Full responsiveness
 - Every child is resized dependent on view cols
+- Highly customizable track
+- Possibility of passing own thumb (even images)
+- Vertical scroll
+- Spacing
+- Well typed
+
+<p align="center">
+  <img src="assets/react-smart-scroller-demo-default.gif" />
+</p>
 
 ## Install
 `yarn add react-smart-scroller` or `npm install --save react-smart-scroller`
