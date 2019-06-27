@@ -9,7 +9,6 @@ type ReactSmartSliderVerticalState = {
     deltaYOrigin: number,
     deltaY: number,
     thumbWidth: number,
-    thumbHeight: number,
     trackWidth: number,
     scrollHeight: number
 }
@@ -20,7 +19,6 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         deltaYOrigin: 0,
         deltaY: 0,
         thumbWidth: 0,
-        thumbHeight: 0,
         trackWidth: 0,
         scrollHeight: 0
     }
@@ -113,17 +111,16 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         if (areRefsCurrent) {
             this.setState({
                 scrollContainerHeight: this.scrollContainerReducedHeight(overflownRef.clientHeight),
-                thumbWidth: thumbRef.clientWidth,
-                thumbHeight: thumbRef.clientHeight,
+                thumbWidth: thumbRef.offsetWidth,
                 trackWidth: trackRef.clientWidth,
                 scrollHeight: overflownRef.scrollHeight
             })
         }
 
-        if (areRefsCurrent && thumbRef.offsetTop + thumbRef.clientHeight > overflownRef.clientHeight) {
-            const scrollCircleTopOffset = thumbRef.offsetTop + thumbRef.clientHeight
+        if (areRefsCurrent && thumbRef.offsetTop + thumbRef.offsetHeight > overflownRef.clientHeight) {
+            const scrollCircleTopOffset = thumbRef.offsetTop + thumbRef.offsetHeight
             const scrollOffset = scrollCircleTopOffset > overflownRef.clientHeight
-                ? overflownRef.clientHeight - thumbRef.clientHeight
+                ? overflownRef.clientHeight - thumbRef.offsetHeight
                 : thumbRef.offsetTop
 
             overflownRef.scroll(0, overflownRef.scrollHeight)
@@ -159,7 +156,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
             thumbRef,
             overflowRef,
             clientY >= (thumbRef.offsetTop + overflowRef.getBoundingClientRect().top),
-            clientY <= (thumbRef.offsetTop + overflowRef.getBoundingClientRect().top + thumbRef.clientHeight)
+            clientY <= (thumbRef.offsetTop + overflowRef.getBoundingClientRect().top + thumbRef.offsetHeight)
         )
 
         // leave this function if thumb was clicked
@@ -167,9 +164,9 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
             return null
         }
 
-        const maximumOffset = this.state.scrollContainerHeight - thumbRef.clientHeight
+        const maximumOffset = this.state.scrollContainerHeight - thumbRef.offsetHeight
         const ratio = (overflowRef.scrollHeight - overflowRef.clientHeight) / maximumOffset
-        const deltaY = overflowRef.getBoundingClientRect().top + (thumbRef.clientHeight / 2)
+        const deltaY = overflowRef.getBoundingClientRect().top + (thumbRef.offsetHeight / 2)
 
         return overflowRef.scroll({
             top: ratio * (clientY - deltaY),
@@ -184,10 +181,10 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
 
     onMouseDrag(event: DragEvent | MouseEvent) {
         const zero = 0
-        const { deltaY, deltaYOrigin, scrollContainerHeight, thumbHeight } = this.state
+        const { deltaY, deltaYOrigin, scrollContainerHeight } = this.state
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const thumbRef = this.thumbRef.current as HTMLDivElement
-        const maximumOffset = scrollContainerHeight - thumbHeight
+        const maximumOffset = scrollContainerHeight - thumbRef.offsetHeight
         const offset = event.clientY - deltaY + deltaYOrigin
         const isBetweenClientHeight = offset >= zero && offset <= maximumOffset
         const areRefsCurrent = C.all(
@@ -214,12 +211,12 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
     }
 
     onOverflowContentScroll() {
-        const { scrollContainerHeight, thumbHeight } = this.state
+        const { scrollContainerHeight } = this.state
         const thumbRef = this.thumbRef.current  as HTMLDivElement
-        const maximumOffset = scrollContainerHeight - thumbHeight
         const overflowRef = this.overflowContainerRef.current
 
         if (overflowRef && thumbRef) {
+            const maximumOffset = scrollContainerHeight - thumbRef.offsetHeight
             const ratio = maximumOffset / (overflowRef.scrollHeight - overflowRef.clientHeight)
 
             thumbRef.style.top = `${overflowRef.scrollTop * ratio}px`

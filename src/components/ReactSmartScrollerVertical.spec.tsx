@@ -118,8 +118,8 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         const trackWidth = 50
 
         getRefCurrent('thumbRef' , {
-            clientWidth: value,
-            clientHeight: value
+            offsetWidth: value,
+            offsetHeight: value
         })
         getRefCurrent('overflowContainerRef' , {
             children: [],
@@ -132,7 +132,6 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         wrapperInstance.measureContainers()
 
         expect(wrapper.state().thumbWidth).toEqual(value)
-        expect(wrapper.state().thumbHeight).toEqual(value)
         expect(wrapper.state().trackWidth).toEqual(trackWidth)
         expect(wrapper.state().scrollContainerHeight).toEqual(documentHeight)
     })
@@ -154,8 +153,8 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         const thumbRef = 'thumbRef'
 
         getRefCurrent('thumbRef' , {
-            clientWidth: value,
-            clientHeight: value,
+            offsetWidth: value,
+            offsetHeight: value,
             offsetTop: thumbOffsetTop,
             style: {
                 top: 0
@@ -233,7 +232,8 @@ describe('ReactSmartSliderVertical: lib/components', () => {
             style: {
                 left: 0
             },
-            clientWidth: 100
+            offsetWidth: 100,
+            offsetHeight: 100
         })
 
         wrapperInstance.onMouseDrag(onMouseDragEvent)
@@ -256,14 +256,14 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const state = {
-            scrollContainerHeight: 500,
-            thumbHeight: 100
+            scrollContainerHeight: 500
         }
+        const thumbHeight = 100
         const scrollHeight = 1000
         const clientHeight = 100
         const scrollTop = 50
         const thumbRef = 'thumbRef'
-        const maximumOffset = state.scrollContainerHeight - state.thumbHeight
+        const maximumOffset = state.scrollContainerHeight - thumbHeight
         const ratio = maximumOffset / (scrollHeight - clientHeight)
 
         getRefCurrent('overflowContainerRef' , {
@@ -275,7 +275,8 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         getRefCurrent('thumbRef' , {
             style: {
                 top: scrollTop
-            }
+            },
+            offsetHeight: thumbHeight
         })
 
         wrapper.setState(state)
@@ -324,8 +325,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         const state = {
             deltaY: 50,
             deltaYOrigin: 0,
-            scrollContainerHeight: 500,
-            thumbHeight: 100
+            scrollContainerHeight: 500
         }
         const thumbRef = 'thumbRef'
         const overflowContainerRef = 'overflowContainerRef'
@@ -343,7 +343,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
             style: {
                 top: 0
             },
-            clientHeight: 100,
+            offsetHeight: 100,
             offsetTop: 0
         })
 
@@ -359,8 +359,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         const state = {
             deltaY: 50,
             deltaYOrigin: 0,
-            scrollContainerHeight: 500,
-            thumbHeight: 100
+            scrollContainerHeight: 500
         }
         const thumbRef = 'thumbRef'
         const overflowContainerRef = 'overflowContainerRef'
@@ -378,7 +377,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
             style: {
                 top: 0
             },
-            clientHeight: 100,
+            offsetHeight: 100,
             offsetTop: 0
         })
 
