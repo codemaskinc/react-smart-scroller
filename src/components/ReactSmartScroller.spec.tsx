@@ -133,7 +133,6 @@ describe('ReactSmartSlider: lib/components', () => {
 
         wrapperInstance.measureContainers()
 
-        expect(wrapper.state().thumbWidth).toEqual(value)
         expect(wrapper.state().thumbHeight).toEqual(value)
         expect(wrapper.state().trackHeight).toEqual(trackHeight)
         expect(wrapper.state().scrollContainerWidth).toEqual(documentWidth)
@@ -216,8 +215,7 @@ describe('ReactSmartSlider: lib/components', () => {
         const state = {
             deltaX: 50,
             deltaXOrigin: 0,
-            scrollContainerWidth: 500,
-            thumbWidth: 100
+            scrollContainerWidth: 500
         }
         const thumbRef = 'thumbRef'
         const onMouseDragEvent = {
@@ -257,14 +255,14 @@ describe('ReactSmartSlider: lib/components', () => {
         const wrapperInstance = wrapper.instance() as ReactSmartScroller
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const state = {
-            scrollContainerWidth: 500,
-            thumbWidth: 100
+            scrollContainerWidth: 500
         }
+        const thumbWidth = 100
         const scrollWidth = 1000
         const clientWidth = 100
         const scrollLeft = 50
         const thumbRef = 'thumbRef'
-        const maximumOffset = state.scrollContainerWidth - state.thumbWidth
+        const maximumOffset = state.scrollContainerWidth - thumbWidth
         const ratio = maximumOffset / (scrollWidth - clientWidth)
 
         getRefCurrent('overflowContainerRef' , {
@@ -274,6 +272,7 @@ describe('ReactSmartSlider: lib/components', () => {
             children: []
         })
         getRefCurrent('thumbRef' , {
+            clientWidth: thumbWidth,
             style: {
                 left: scrollLeft
             }
@@ -325,8 +324,7 @@ describe('ReactSmartSlider: lib/components', () => {
         const state = {
             deltaX: 50,
             deltaXOrigin: 0,
-            scrollContainerWidth: 500,
-            thumbWidth: 100
+            scrollContainerWidth: 500
         }
         const thumbRef = 'thumbRef'
         const overflowContainerRef = 'overflowContainerRef'
@@ -360,8 +358,7 @@ describe('ReactSmartSlider: lib/components', () => {
         const state = {
             deltaX: 50,
             deltaXOrigin: 0,
-            scrollContainerWidth: 500,
-            thumbWidth: 100
+            scrollContainerWidth: 500
         }
         const thumbRef = 'thumbRef'
         const overflowContainerRef = 'overflowContainerRef'

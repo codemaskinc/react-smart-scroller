@@ -13,7 +13,6 @@ export class ReactSmartScroller extends React.Component {
       scrollContainerWidth: 0,
       deltaXOrigin: 0,
       deltaX: 0,
-      thumbWidth: 0,
       thumbHeight: 0,
       trackHeight: 0,
       scrollWidth: 0
@@ -93,7 +92,6 @@ export class ReactSmartScroller extends React.Component {
     if (areRefsCurrent) {
       this.setState({
         scrollContainerWidth: this.scrollContainerReducedWidth(overflownRef.clientWidth),
-        thumbWidth: thumbRef.clientWidth,
         thumbHeight: thumbRef.clientHeight,
         trackHeight: trackRef.clientHeight,
         scrollWidth: overflownRef.scrollWidth
@@ -156,12 +154,11 @@ export class ReactSmartScroller extends React.Component {
     const {
       deltaX,
       deltaXOrigin,
-      scrollContainerWidth,
-      thumbWidth
+      scrollContainerWidth
     } = this.state;
     const overflowRef = this.overflowContainerRef.current;
     const thumbRef = this.thumbRef.current;
-    const maximumOffset = scrollContainerWidth - thumbWidth;
+    const maximumOffset = scrollContainerWidth - thumbRef.clientWidth;
     const offset = event.clientX - deltaX + deltaXOrigin;
     const isBetweenClientWidth = offset >= zero && offset <= maximumOffset;
     const areRefsCurrent = C.all(Boolean(this.overflowContainerRef.current), Boolean(this.thumbRef.current));
@@ -182,14 +179,13 @@ export class ReactSmartScroller extends React.Component {
 
   onOverflowContentScroll() {
     const {
-      scrollContainerWidth,
-      thumbWidth
+      scrollContainerWidth
     } = this.state;
     const thumbRef = this.thumbRef.current;
-    const maximumOffset = scrollContainerWidth - thumbWidth;
     const overflowRef = this.overflowContainerRef.current;
 
     if (overflowRef && thumbRef) {
+      const maximumOffset = scrollContainerWidth - thumbRef.clientWidth;
       const ratio = maximumOffset / (overflowRef.scrollWidth - overflowRef.clientWidth);
       thumbRef.style.left = `${overflowRef.scrollLeft * ratio}px`;
     }
