@@ -27,7 +27,7 @@ Define your own spacing or columns per scroller width simply passing props.
 
 ### Live demo
 
-[![Edit fancy-wood-3utiq](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/fancy-wood-3utiq?fontsize=14)
+https://codesandbox.io/embed/fancy-wood-3utiq
 
 ## Install
 `yarn add react-smart-scroller` or `npm install --save react-smart-scroller`

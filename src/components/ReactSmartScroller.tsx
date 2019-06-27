@@ -117,7 +117,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
         if (areRefsCurrent) {
             this.setState({
                 scrollContainerWidth: this.scrollContainerReducedWidth(overflownRef.clientWidth),
-                thumbHeight: thumbRef.clientHeight,
+                thumbHeight: thumbRef.offsetHeight,
                 trackHeight: trackRef.clientHeight,
                 scrollWidth: overflownRef.scrollWidth
             })
@@ -162,7 +162,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
             thumbRef,
             overflowRef,
             clientX >= (thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left),
-            clientX <= (thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left + thumbRef.clientWidth)
+            clientX <= (thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left + thumbRef.offsetWidth)
         )
 
         // leave this function if thumb was clicked
@@ -170,9 +170,9 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
             return null
         }
 
-        const maximumOffset = this.state.scrollContainerWidth - thumbRef.clientWidth
+        const maximumOffset = this.state.scrollContainerWidth - thumbRef.offsetWidth
         const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset
-        const deltaX = overflowRef.getBoundingClientRect().left + (thumbRef.clientWidth / 2)
+        const deltaX = overflowRef.getBoundingClientRect().left + (thumbRef.offsetWidth / 2)
 
         return overflowRef.scroll({
             left: ratio * (clientX - deltaX),
@@ -190,7 +190,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
         const { deltaX, deltaXOrigin, scrollContainerWidth } = this.state
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const thumbRef = this.thumbRef.current as HTMLDivElement
-        const maximumOffset = scrollContainerWidth - thumbRef.clientWidth
+        const maximumOffset = scrollContainerWidth - thumbRef.offsetWidth
         const offset = event.clientX - deltaX + deltaXOrigin
         const isBetweenClientWidth = offset >= zero && offset <= maximumOffset
         const areRefsCurrent = C.all(
@@ -222,7 +222,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
         const overflowRef = this.overflowContainerRef.current
 
         if (overflowRef && thumbRef) {
-            const maximumOffset = scrollContainerWidth - thumbRef.clientWidth
+            const maximumOffset = scrollContainerWidth - thumbRef.offsetWidth
             const ratio = maximumOffset / (overflowRef.scrollWidth - overflowRef.clientWidth)
 
             thumbRef.style.left = `${overflowRef.scrollLeft * ratio}px`

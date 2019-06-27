@@ -120,8 +120,8 @@ describe('ReactSmartSlider: lib/components', () => {
         const trackHeight = 50
 
         getRefCurrent('thumbRef' , {
-            clientWidth: value,
-            clientHeight: value
+            offsetWidth: value,
+            offsetHeight: value
         })
         getRefCurrent('overflowContainerRef' , {
             children: [],
@@ -233,7 +233,7 @@ describe('ReactSmartSlider: lib/components', () => {
             style: {
                 left: 0
             },
-            clientWidth: 100
+            offsetWidth: 100
         })
 
         wrapperInstance.onMouseDrag(onMouseDragEvent)
@@ -272,7 +272,7 @@ describe('ReactSmartSlider: lib/components', () => {
             children: []
         })
         getRefCurrent('thumbRef' , {
-            clientWidth: thumbWidth,
+            offsetWidth: thumbWidth,
             style: {
                 left: scrollLeft
             }
@@ -376,7 +376,7 @@ describe('ReactSmartSlider: lib/components', () => {
             style: {
                 left: 0
             },
-            clientWidth: 100,
+            offsetWidth: 100,
             offsetLeft: 0
         })
 

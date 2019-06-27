@@ -85,8 +85,8 @@ describe('ReactSmartSlider: lib/components', () => {
     const documentWidth = 1000;
     const trackHeight = 50;
     getRefCurrent('thumbRef', {
-      clientWidth: value,
-      clientHeight: value
+      offsetWidth: value,
+      offsetHeight: value
     });
     getRefCurrent('overflowContainerRef', {
       children: [],
@@ -184,7 +184,7 @@ describe('ReactSmartSlider: lib/components', () => {
       style: {
         left: 0
       },
-      clientWidth: 100
+      offsetWidth: 100
     });
     wrapperInstance.onMouseDrag(onMouseDragEvent);
     expect(wrapperInstance[thumbRef].current.style.left).toEqual(`${offset}px`);
@@ -218,7 +218,7 @@ describe('ReactSmartSlider: lib/components', () => {
       children: []
     });
     getRefCurrent('thumbRef', {
-      clientWidth: thumbWidth,
+      offsetWidth: thumbWidth,
       style: {
         left: scrollLeft
       }
@@ -307,7 +307,7 @@ describe('ReactSmartSlider: lib/components', () => {
       style: {
         left: 0
       },
-      clientWidth: 100,
+      offsetWidth: 100,
       offsetLeft: 0
     });
     wrapperInstance.onScrollbarClick(event);
