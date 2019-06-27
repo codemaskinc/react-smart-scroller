@@ -9,7 +9,6 @@ type ReactSmartSliderState = {
     scrollContainerWidth: number,
     deltaXOrigin: number,
     deltaX: number,
-    thumbWidth: number,
     thumbHeight: number,
     trackHeight: number,
     scrollWidth: number
@@ -25,7 +24,6 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
         scrollContainerWidth: 0,
         deltaXOrigin: 0,
         deltaX: 0,
-        thumbWidth: 0,
         thumbHeight: 0,
         trackHeight: 0,
         scrollWidth: 0
@@ -119,7 +117,6 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
         if (areRefsCurrent) {
             this.setState({
                 scrollContainerWidth: this.scrollContainerReducedWidth(overflownRef.clientWidth),
-                thumbWidth: thumbRef.clientWidth,
                 thumbHeight: thumbRef.clientHeight,
                 trackHeight: trackRef.clientHeight,
                 scrollWidth: overflownRef.scrollWidth
@@ -190,10 +187,10 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
 
     onMouseDrag(event: DragEvent | MouseEvent) {
         const zero = 0
-        const { deltaX, deltaXOrigin, scrollContainerWidth, thumbWidth } = this.state
+        const { deltaX, deltaXOrigin, scrollContainerWidth } = this.state
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const thumbRef = this.thumbRef.current as HTMLDivElement
-        const maximumOffset = scrollContainerWidth - thumbWidth
+        const maximumOffset = scrollContainerWidth - thumbRef.clientWidth
         const offset = event.clientX - deltaX + deltaXOrigin
         const isBetweenClientWidth = offset >= zero && offset <= maximumOffset
         const areRefsCurrent = C.all(
@@ -220,12 +217,12 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
     }
 
     onOverflowContentScroll() {
-        const { scrollContainerWidth, thumbWidth } = this.state
+        const { scrollContainerWidth } = this.state
         const thumbRef = this.thumbRef.current  as HTMLDivElement
-        const maximumOffset = scrollContainerWidth - thumbWidth
         const overflowRef = this.overflowContainerRef.current
 
         if (overflowRef && thumbRef) {
+            const maximumOffset = scrollContainerWidth - thumbRef.clientWidth
             const ratio = maximumOffset / (overflowRef.scrollWidth - overflowRef.clientWidth)
 
             thumbRef.style.left = `${overflowRef.scrollLeft * ratio}px`
