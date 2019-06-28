@@ -83,21 +83,41 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     const value = 100;
     const documentHeight = 1000;
     const trackWidth = 50;
-    getRefCurrent('thumbRef', {
+    const scrollHeight = 100;
+    const overflowRef = 'overflowContainerRef';
+    const thumbRef = 'thumbRef';
+    const trackRef = 'trackRef';
+    getRefCurrent(thumbRef, {
       offsetWidth: value,
       offsetHeight: value
     });
-    getRefCurrent('overflowContainerRef', {
+    getRefCurrent(overflowRef, {
       children: [],
-      clientHeight: documentHeight
+      clientHeight: documentHeight,
+      scroll: jest.fn(),
+      scrollHeight
     });
-    getRefCurrent('trackRef', {
+    getRefCurrent(trackRef, {
       clientWidth: trackWidth
     });
     wrapperInstance.measureContainers();
     expect(wrapper.state().thumbWidth).toEqual(value);
     expect(wrapper.state().trackWidth).toEqual(trackWidth);
     expect(wrapper.state().scrollContainerHeight).toEqual(documentHeight);
+    getRefCurrent(thumbRef, {
+      offsetWidth: value,
+      offsetHeight: value,
+      offsetTop: documentHeight,
+      style: {
+        top: 0
+      }
+    });
+    wrapperInstance.measureContainers();
+    const scrollCircleTopOffset = documentHeight + value;
+    const scrollOffset = scrollCircleTopOffset > documentHeight ? documentHeight - value : documentHeight;
+    expect(wrapperInstance[overflowRef].current.scroll).toHaveBeenCalled();
+    expect(wrapperInstance[overflowRef].current.scroll).toHaveBeenCalledWith(0, scrollHeight);
+    expect(wrapperInstance[thumbRef].current.style.top).toEqual(`${scrollOffset}px`);
   });
   it('should change thumbRef after measureContainers invoked', () => {
     const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
@@ -133,8 +153,12 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     expect(wrapperInstance[thumbRef].current.style.top).toEqual(`${documentHeight - value}px`);
   });
   it('should change state after onMouseDown', () => {
+    const padding = 20;
     const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
-      numCols: undefined
+      numCols: undefined,
+      trackProps: {
+        padding
+      }
     })));
     const wrapperInstance = wrapper.instance();
 
@@ -148,6 +172,17 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     };
     getRefCurrent('thumbRef', {
       offsetTop
+    });
+    getRefCurrent('overflowContainerRef', {
+      getBoundingClientRect: jest.fn(() => ({
+        top: 0
+      }))
+    });
+    wrapper.find(RectangleThumb).simulate('mousedown', onMouseDownEvent);
+    expect(wrapper.state().deltaYOrigin).toEqual(offsetTop);
+    expect(wrapper.state().deltaY).toEqual(clientY + padding);
+    wrapper.setProps({
+      trackProps: undefined
     });
     wrapper.find(RectangleThumb).simulate('mousedown', onMouseDownEvent);
     expect(wrapper.state().deltaYOrigin).toEqual(offsetTop);
@@ -193,6 +228,61 @@ describe('ReactSmartSliderVertical: lib/components', () => {
       clientY: -clientY
     });
     expect(wrapperInstance[thumbRef].current.style.top).toEqual(`${0}px`);
+  });
+  it('should set thumb critical dimensions after mouseDrag', () => {
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
+      numCols: undefined
+    })));
+    const wrapperInstance = wrapper.instance();
+
+    const getRefCurrent = (refName, refContent) => wrapperInstance[refName].current = refContent;
+
+    const clientY = -100;
+    const state = {
+      deltaY: 50,
+      deltaYOrigin: 0,
+      scrollContainerHeight: 500,
+      thumbWidth: 100
+    };
+    const thumbRef = 'thumbRef';
+    const overflownRef = 'overflowContainerRef';
+    const onMouseDragEvent = {
+      clientY
+    };
+    const offset = clientY - state.deltaY + state.deltaYOrigin;
+    const maximumOffset = state.scrollContainerHeight - 100;
+    const criticalDimension = offset < 0 ? 0 : maximumOffset;
+    const criticalScrollerDimensions = offset > 0 ? 1500 - state.scrollContainerHeight : 0;
+    wrapper.setState(state);
+    getRefCurrent(overflownRef, {
+      scroll: jest.fn(),
+      getBoundingClientRect: jest.fn(() => ({
+        top: 0
+      })),
+      scrollHeight: 1500,
+      offsetHeight: state.scrollContainerHeight
+    });
+    getRefCurrent(thumbRef, {
+      style: {
+        left: 0
+      },
+      offsetWidth: 100,
+      offsetHeight: 100
+    });
+    wrapperInstance.onMouseDrag(onMouseDragEvent);
+    expect(wrapperInstance[thumbRef].current.style.top).toEqual(`${criticalDimension}px`);
+    wrapperInstance.onMouseDrag({
+      clientY
+    });
+    expect(wrapperInstance[thumbRef].current.style.top).toEqual(`${0}px`);
+    expect(wrapperInstance[overflownRef].current.scroll).toHaveBeenCalled();
+    expect(wrapperInstance[overflownRef].current.scroll).toHaveBeenCalledWith(0, criticalScrollerDimensions);
+    wrapperInstance.onMouseDrag({
+      clientY: 1000000
+    });
+    expect(wrapperInstance[thumbRef].current.style.top).toEqual(`${maximumOffset}px`);
+    expect(wrapperInstance[overflownRef].current.scroll).toHaveBeenCalled();
+    expect(wrapperInstance[overflownRef].current.scroll).toHaveBeenCalledWith(0, criticalScrollerDimensions);
   });
   it('should set thumb left style when overflownScrollContent scrolled', () => {
     const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
@@ -315,6 +405,128 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     wrapperInstance.onScrollbarClick(event);
     expect(wrapperInstance[overflowContainerRef].current.scroll).not.toHaveBeenCalled();
   });
+  it('should return not changed scrollContainerWidth', () => {
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
+      trackProps: undefined
+    })));
+    const wrapperInstance = wrapper.instance();
+    const containerHeight = 100;
+    const padding = 20;
+    expect(wrapperInstance.scrollContainerReducedHeight(containerHeight)).toEqual(containerHeight);
+    wrapper.setProps({
+      trackProps: {
+        padding
+      }
+    });
+    expect(wrapperInstance.scrollContainerReducedHeight(containerHeight)).toEqual(containerHeight - 2 * padding);
+  });
+  it('should invoke scroll after content dragged', () => {
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
+    const wrapperInstance = wrapper.instance();
+
+    const getRefCurrent = (refName, refContent) => wrapperInstance[refName].current = refContent;
+
+    const state = {
+      deltaY: 50
+    };
+    const overflowContainerRef = 'overflowContainerRef';
+    const event = {
+      clientY: 123
+    };
+    wrapper.setState(state);
+    getRefCurrent(overflowContainerRef, {
+      scroll: jest.fn()
+    });
+    wrapperInstance.onOverflowContentDrag(event);
+    expect(wrapperInstance[overflowContainerRef].current.scroll).toHaveBeenCalled();
+  });
+  it('should not invoke scroll after content dragged', () => {
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
+    const wrapperInstance = wrapper.instance();
+
+    const getRefCurrent = (refName, refContent) => wrapperInstance[refName].current = refContent;
+
+    const state = {
+      deltaY: 50
+    };
+    const overflowContainerRef = 'overflowContainerRef';
+    const event = {
+      clientY: 0
+    };
+    wrapper.setState(state);
+    getRefCurrent(overflowContainerRef, {
+      scroll: jest.fn()
+    });
+    wrapperInstance.onOverflowContentDrag(event);
+    expect(wrapperInstance[overflowContainerRef].current.scroll).not.toHaveBeenCalled();
+  });
+  it('should invoke event listener and setState after onOverflowContentMouseDown', () => {
+    window.addEventListener = jest.fn();
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
+      draggable: true
+    })));
+    const wrapperInstance = wrapper.instance();
+
+    const getRefCurrent = (refName, refContent) => wrapperInstance[refName].current = refContent;
+
+    const overflowContainerRef = 'overflowContainerRef';
+    const state = {
+      deltaY: 123,
+      scrollTop: 0
+    };
+    const event = {
+      clientY: state.deltaY,
+      preventDefault: jest.fn()
+    };
+    getRefCurrent(overflowContainerRef, {
+      scrollTop: state.scrollTop,
+      children: []
+    });
+    wrapper.find(Content).simulate('mousedown', event);
+    expect(window.addEventListener).toHaveBeenCalled();
+    expect(wrapper.state().deltaY).toEqual(state.deltaY);
+    expect(wrapper.state().scrollTop).toEqual(state.scrollTop);
+  });
+  it('should invoke removeEventListener after deleteOverflowMouseMoveEvent', () => {
+    window.removeEventListener = jest.fn();
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
+    const wrapperInstance = wrapper.instance();
+    wrapperInstance.deleteOverflowMouseMoveEvent();
+    expect(window.removeEventListener).toHaveBeenCalled();
+  });
+  it('should not set state after onOverflowContentMouseDown invoked', () => {
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
+      draggable: true
+    })));
+    const state = {
+      deltaY: 0,
+      scrollTop: 0
+    };
+    const event = {
+      clientY: state.deltaY,
+      preventDefault: jest.fn()
+    };
+    wrapper.find(Content).simulate('mousedown', event);
+    expect(wrapper.state().deltaY).toEqual(state.deltaY);
+    expect(wrapper.state().scrollTop).toEqual(state.scrollTop);
+  });
+  it('should return margin after contentMargin invoked', () => {
+    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, initialProps));
+    const wrapperInstance = wrapper.instance();
+    const state = {
+      thumbWidth: 20,
+      trackWidth: 100
+    };
+    const windowsScrollWidth = 20;
+    wrapper.setState(state);
+    expect(wrapperInstance.contentMargin).toEqual(`${state.trackWidth + 10}px`);
+    wrapper.setState({
+      thumbWidth: 200
+    });
+    expect(wrapperInstance.contentMargin).toEqual(`${200 + 10}px`);
+    Object.defineProperty(window.navigator, agent, mockConfig('Mac'));
+    expect(wrapperInstance.contentMargin).toEqual(`${200 + windowsScrollWidth + 10}px`);
+  });
   it('should invoke onScrollbarClick after CustomScrollbar clicked', () => {
     ReactSmartScrollerVertical.prototype.onScrollbarClick = jest.fn();
     const onScrollbarClickSpy = jest.spyOn(ReactSmartScrollerVertical.prototype, 'onScrollbarClick');
@@ -324,13 +536,5 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     };
     wrapper.find(Track).simulate('click', event);
     expect(onScrollbarClickSpy).toHaveBeenCalled();
-  });
-  it('should return not changed scrollContainerWidth', () => {
-    const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
-      trackProps: undefined
-    })));
-    const wrapperInstance = wrapper.instance();
-    const containerHeight = 100;
-    expect(wrapperInstance.scrollContainerReducedHeight(containerHeight)).toEqual(containerHeight);
   });
 });

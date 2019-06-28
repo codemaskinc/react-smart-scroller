@@ -10,7 +10,8 @@ type ReactSmartSliderVerticalState = {
     deltaY: number,
     thumbWidth: number,
     trackWidth: number,
-    scrollHeight: number
+    scrollHeight: number,
+    scrollTop: number
 }
 
 export class ReactSmartScrollerVertical extends React.Component<ReactSmartSliderProps, ReactSmartSliderVerticalState> {
@@ -20,7 +21,8 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         deltaY: 0,
         thumbWidth: 0,
         trackWidth: 0,
-        scrollHeight: 0
+        scrollHeight: 0,
+        scrollTop: 0
     }
 
     private overflowContainerRef: React.RefObject<HTMLDivElement> = React.createRef()
@@ -36,17 +38,22 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         this.onOverflowContentScroll = this.onOverflowContentScroll.bind(this)
         this.deleteMouseMoveEvent = this.deleteMouseMoveEvent.bind(this)
         this.onScrollbarClick = this.onScrollbarClick.bind(this)
+        this.onOverflowContentMouseDown = this.onOverflowContentMouseDown.bind(this)
+        this.onOverflowContentDrag = this.onOverflowContentDrag.bind(this)
+        this.deleteOverflowMouseMoveEvent = this.deleteOverflowMouseMoveEvent.bind(this)
     }
 
     componentDidMount() {
         window.addEventListener('resize', this.measureContainers)
         window.addEventListener('mouseup', this.deleteMouseMoveEvent)
+        window.addEventListener('mouseup', this.deleteOverflowMouseMoveEvent)
         this.measureContainers()
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.measureContainers)
         window.removeEventListener('mouseup', this.deleteMouseMoveEvent)
+        window.removeEventListener('mouseup', this.deleteOverflowMouseMoveEvent)
     }
 
     get shouldRenderScrollbar() {
@@ -118,10 +125,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         }
 
         if (areRefsCurrent && thumbRef.offsetTop + thumbRef.offsetHeight > overflownRef.clientHeight) {
-            const scrollCircleTopOffset = thumbRef.offsetTop + thumbRef.offsetHeight
-            const scrollOffset = scrollCircleTopOffset > overflownRef.clientHeight
-                ? overflownRef.clientHeight - thumbRef.offsetHeight
-                : thumbRef.offsetTop
+            const scrollOffset = overflownRef.clientHeight - thumbRef.offsetHeight
 
             overflownRef.scroll(0, overflownRef.scrollHeight)
             thumbRef.style.top = `${scrollOffset}px`
@@ -132,6 +136,8 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         event.preventDefault()
 
         const { trackProps } = this.props
+        const thumbRef = this.thumbRef.current as HTMLDivElement
+        const overflownRef = this.overflowContainerRef.current as HTMLDivElement
         const scrollPadding = trackProps
             ? C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight) as Padding
             : null
@@ -139,10 +145,10 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
             ? scrollPadding.top
             : 0
 
-        if (this.thumbRef.current) {
+        if (thumbRef && overflownRef) {
             this.setState({
-                deltaYOrigin: this.thumbRef.current.offsetTop,
-                deltaY: event.clientY + padding
+                deltaYOrigin: thumbRef.offsetTop,
+                deltaY: event.clientY + padding + overflownRef.getBoundingClientRect().top
             })
         }
 
@@ -155,8 +161,8 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         const shouldReturn = C.all(
             thumbRef,
             overflowRef,
-            clientY >= (thumbRef.offsetTop + overflowRef.getBoundingClientRect().top),
-            clientY <= (thumbRef.offsetTop + overflowRef.getBoundingClientRect().top + thumbRef.offsetHeight)
+            clientY >= ((C.extractNumberFromStyle(thumbRef.style.top) || 0) + overflowRef.getBoundingClientRect().top),
+            clientY <= ((C.extractNumberFromStyle(thumbRef.style.top) || 0) + overflowRef.getBoundingClientRect().top + thumbRef.offsetHeight)
         )
 
         // leave this function if thumb was clicked
@@ -179,6 +185,10 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         window.removeEventListener('mousemove', this.onMouseDrag)
     }
 
+    deleteOverflowMouseMoveEvent() {
+        window.removeEventListener('mousemove', this.onOverflowContentDrag)
+    }
+
     onMouseDrag(event: DragEvent | MouseEvent) {
         const zero = 0
         const { deltaY, deltaYOrigin, scrollContainerHeight } = this.state
@@ -195,7 +205,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         if (areRefsCurrent && !isBetweenClientHeight) {
             const criticalDimension = offset < zero ? zero: maximumOffset
             const criticalScrollerDimensions = offset > zero
-                ? overflowRef.scrollHeight - overflowRef.clientHeight
+                ? overflowRef.scrollHeight - overflowRef.offsetHeight
                 : zero
 
             thumbRef.style.top = `${criticalDimension}px`
@@ -203,7 +213,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         }
 
         if (areRefsCurrent && isBetweenClientHeight) {
-            const ratio = (overflowRef.scrollHeight - overflowRef.clientHeight) / maximumOffset
+            const ratio = (overflowRef.scrollHeight - overflowRef.offsetHeight) / maximumOffset
 
             overflowRef.scroll(zero, ratio * offset)
             thumbRef.style.top = `${offset}px`
@@ -220,6 +230,30 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
             const ratio = maximumOffset / (overflowRef.scrollHeight - overflowRef.clientHeight)
 
             thumbRef.style.top = `${overflowRef.scrollTop * ratio}px`
+        }
+    }
+
+    onOverflowContentMouseDown(event: React.MouseEvent) {
+        event.preventDefault()
+
+        const overflowRef = this.overflowContainerRef.current
+
+        if (overflowRef) {
+            this.setState({
+                deltaY: event.clientY,
+                scrollTop: overflowRef.scrollTop
+            })
+        }
+
+        window.addEventListener('mousemove', this.onOverflowContentDrag)
+    }
+
+    onOverflowContentDrag(event: MouseEvent) {
+        const { deltaY, scrollTop } = this.state
+        const overflowRef = this.overflowContainerRef.current
+
+        if (overflowRef && event.clientY !== 0) {
+            overflowRef.scroll(0, scrollTop - (event.clientY - deltaY))
         }
     }
 
@@ -312,12 +346,17 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
     }
 
     render() {
+        const { draggable } = this.props
+        const cursor = draggable ? 'pointer' : 'unset'
+
         return (
             <Fragment>
                 <Content
                     ref={this.overflowContainerRef}
                     onScroll={this.onOverflowContentScroll}
                     onLoad={this.measureContainers}
+                    onMouseDown={draggable ? this.onOverflowContentMouseDown : C.noop}
+                    style={{ cursor }}
                 >
                     {this.renderChildren()}
                 </Content>

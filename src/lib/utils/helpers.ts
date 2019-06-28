@@ -10,13 +10,15 @@ const clearObject = (value: KeyValuePair) => Object
         ...acc,
         [curr]: value[curr]
     }), {})
+const noop = () => {}
 
 export {
     clearObject,
-    all
+    all,
+    noop
 }
 
-export const extractNumberFromStyle = (value?: string | number) => value
+export const extractNumberFromStyle = (value?: string | number | null) => value
     ? Number(value.toString().replace('px', ''))
     : undefined
 
