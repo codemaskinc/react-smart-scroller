@@ -111,7 +111,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
                 numCols={undefined}
             />
         )
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const value = 100
         const documentHeight = 1000
@@ -169,7 +169,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
                 numCols={undefined}
             />
         )
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const value = 100
         const documentHeight = 500
@@ -209,7 +209,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
                 trackProps={{ padding }}
             />
         )
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const offsetTop = 50
         const clientY = 100
@@ -247,7 +247,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
                 numCols={undefined}
             />
         )
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const clientY = 100
         const state = {
@@ -292,7 +292,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
                 numCols={undefined}
             />
         )
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const clientY = -100
         const state = {
@@ -308,7 +308,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         } as DragEvent
         const offset = clientY - state.deltaY + state.deltaYOrigin
         const maximumOffset = state.scrollContainerHeight - 100
-        const criticalDimension = offset < 0 ? 0: maximumOffset
+        const criticalDimension = offset < 0 ? 0 : maximumOffset
         const criticalScrollerDimensions = offset > 0
             ? 1500 - state.scrollContainerHeight
             : 0
@@ -354,7 +354,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
                 trackProps={undefined}
             />
         )
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const state = {
             scrollContainerHeight: 500
@@ -412,7 +412,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         window.removeEventListener = jest.fn()
 
         const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical/>)
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
 
         wrapperInstance.deleteMouseMoveEvent()
 
@@ -421,7 +421,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
 
     it('should invoke scroll on overflownRef', () => {
         const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical {...initialProps}/>)
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const state = {
             deltaY: 50,
@@ -455,7 +455,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
 
     it('should return null if thumbClicked on onScrollbarClick response', () => {
         const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical {...initialProps}/>)
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const state = {
             deltaY: 50,
@@ -488,13 +488,13 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     })
 
     it('should return not changed scrollContainerWidth', () => {
-        const wrapper = shallow(
+        const wrapper = shallow<ReactSmartScrollerVertical>(
             <ReactSmartScrollerVertical
                 {...initialProps}
                 trackProps={undefined}
             />
         )
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const containerHeight = 100
         const padding = 20
 
@@ -511,7 +511,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
 
     it('should invoke scroll after content dragged', () => {
         const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical {...initialProps}/>)
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const state = {
             deltaY: 50
@@ -534,7 +534,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
 
     it('should not invoke scroll after content dragged', () => {
         const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical {...initialProps}/>)
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const state = {
             deltaY: 50
@@ -564,7 +564,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
                 draggable
             />
         )
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
         const getRefCurrent = (refName: string, refContent: {}) => wrapperInstance[refName].current = refContent as HTMLDivElement
         const overflowContainerRef = 'overflowContainerRef'
         const state = {
@@ -592,7 +592,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
         window.removeEventListener = jest.fn()
 
         const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical{...initialProps}/>)
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapperInstance = wrapper.instance()
 
         wrapperInstance.deleteOverflowMouseMoveEvent()
 
@@ -622,8 +622,8 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     })
 
     it('should return margin after contentMargin invoked', () => {
-        const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical{...initialProps}/>)
-        const wrapperInstance = wrapper.instance() as ReactSmartScrollerVertical
+        const wrapper = shallow<ReactSmartScrollerVertical>(<ReactSmartScrollerVertical {...initialProps}/>)
+        const wrapperInstance = wrapper.instance()
         const state = {
             thumbWidth: 20,
             trackWidth: 100
