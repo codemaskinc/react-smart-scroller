@@ -7,7 +7,9 @@ const clearObject = value => Object.keys(value).filter(key => Boolean(value[key]
   [curr]: value[curr]
 }), {});
 
-export { clearObject, all };
+const noop = () => {};
+
+export { clearObject, all, noop };
 export const extractNumberFromStyle = value => value ? Number(value.toString().replace('px', '')) : undefined;
 export const getPaddingValues = (padding, paddingLeft, paddingRight, paddingTop, paddingBottom) => {
   if (!padding && !paddingLeft && !paddingRight && !paddingTop && !paddingBottom) {

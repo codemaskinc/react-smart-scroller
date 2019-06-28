@@ -39,6 +39,7 @@ spacing       | number              | Default: `0`.<br> Space in pixels between 
 trackProps    | React.CssProperties | Default: `undefined`.<br> CSS styles to original track.
 thumb         | JSX.Element         | Default: `rectangle`.<br> Element that if provided overrides default rectangle.
 vertical      | boolean             | Default: `false`.<br> Defines direction of scrollbar - horizontal by default.<br>If height of ReactSmartScroller is not defined it will automatically resize to 100% and scroll will not be visible. 
+draggable     | boolean             | Default: `false`.<br> Allows to drag content,
 
 ## Usage
 
@@ -165,6 +166,18 @@ This is what you'll see in your browser:
     <img src="assets/react-smart-scroller-usage-vertical.png" />
 </p>
 
+### draggable
+
+    export const Slider = () => (
+        <ReactSmartScroller draggable>
+            {renderImages()}
+        </ReactSmartScroller>
+    )
+    
+<p align="center">
+    <img src="assets/react-smart-scroller-usage-draggable.gif" />
+</p>
+
 ## todo
 
 - [x] thumb width dependent on scrollWidth
@@ -172,4 +185,4 @@ This is what you'll see in your browser:
 - [x] vertical scroll tests
 - [x] improve documentation
 - [x] more examples in usage
-- [ ] enable drag with mouse
+- [x] enable drag with mouse

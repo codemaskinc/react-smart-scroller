@@ -5,5 +5,6 @@ export type ReactSmartSliderProps = {
     spacing?: number,
     trackProps?: React.CSSProperties,
     thumb?: JSX.Element,
-    vertical?: boolean
+    vertical?: boolean,
+    draggable?: boolean
 }

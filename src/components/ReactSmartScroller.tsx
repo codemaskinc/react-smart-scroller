@@ -11,13 +11,15 @@ type ReactSmartSliderState = {
     deltaX: number,
     thumbHeight: number,
     trackHeight: number,
-    scrollWidth: number
+    scrollWidth: number,
+    scrollLeft: number
 }
 
 export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, ReactSmartSliderState> {
     static defaultProps: Partial<ReactSmartSliderProps> = {
         spacing: 0,
-        vertical: false
+        vertical: false,
+        draggable: false
     }
 
     state: ReactSmartSliderState = {
@@ -26,7 +28,8 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
         deltaX: 0,
         thumbHeight: 0,
         trackHeight: 0,
-        scrollWidth: 0
+        scrollWidth: 0,
+        scrollLeft: 0
     }
 
     private overflowContainerRef: React.RefObject<HTMLDivElement> = React.createRef()
@@ -42,17 +45,22 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
         this.onOverflowContentScroll = this.onOverflowContentScroll.bind(this)
         this.deleteMouseMoveEvent = this.deleteMouseMoveEvent.bind(this)
         this.onScrollbarClick = this.onScrollbarClick.bind(this)
+        this.onOverflowContentDrag = this.onOverflowContentDrag.bind(this)
+        this.onOverflowContentMouseDown = this.onOverflowContentMouseDown.bind(this)
+        this.deleteOverflowMouseMoveEvent = this.deleteOverflowMouseMoveEvent.bind(this)
     }
 
     componentDidMount() {
         window.addEventListener('resize', this.measureContainers)
         window.addEventListener('mouseup', this.deleteMouseMoveEvent)
+        window.addEventListener('mouseup', this.deleteOverflowMouseMoveEvent)
         this.measureContainers()
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.measureContainers)
         window.removeEventListener('mouseup', this.deleteMouseMoveEvent)
+        window.removeEventListener('mouseup', this.deleteOverflowMouseMoveEvent)
     }
 
     get shouldRenderScrollbar() {
@@ -124,10 +132,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
         }
 
         if (areRefsCurrent && thumbRef.offsetLeft + thumbRef.clientWidth > overflownRef.clientWidth) {
-            const scrollCircleLeftOffset = thumbRef.offsetLeft + thumbRef.clientWidth
-            const scrollOffset = scrollCircleLeftOffset > overflownRef.clientWidth
-                ? overflownRef.clientWidth - thumbRef.clientWidth
-                : thumbRef.offsetLeft
+            const scrollOffset = overflownRef.clientWidth - thumbRef.clientWidth
 
             overflownRef.scroll(overflownRef.scrollWidth, 0)
             thumbRef.style.left = `${scrollOffset}px`
@@ -185,6 +190,10 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
         window.removeEventListener('mousemove', this.onMouseDrag)
     }
 
+    deleteOverflowMouseMoveEvent() {
+        window.removeEventListener('mousemove', this.onOverflowContentDrag)
+    }
+
     onMouseDrag(event: DragEvent | MouseEvent) {
         const zero = 0
         const { deltaX, deltaXOrigin, scrollContainerWidth } = this.state
@@ -226,6 +235,30 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
             const ratio = maximumOffset / (overflowRef.scrollWidth - overflowRef.clientWidth)
 
             thumbRef.style.left = `${overflowRef.scrollLeft * ratio}px`
+        }
+    }
+
+    onOverflowContentMouseDown(event: React.MouseEvent) {
+        event.preventDefault()
+
+        const overflowRef = this.overflowContainerRef.current
+
+        if (overflowRef) {
+            this.setState({
+                deltaX: event.clientX,
+                scrollLeft: overflowRef.scrollLeft
+            })
+        }
+
+        window.addEventListener('mousemove', this.onOverflowContentDrag)
+    }
+
+    onOverflowContentDrag(event: MouseEvent | DragEvent) {
+        const { deltaX, scrollLeft } = this.state
+        const overflowRef = this.overflowContainerRef.current
+
+        if (overflowRef && event.clientX !== 0) {
+            overflowRef.scroll(scrollLeft - (event.clientX - deltaX), 0)
         }
     }
 
@@ -317,12 +350,17 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
     }
 
     renderContent() {
+        const { draggable } = this.props
+        const cursor = draggable ? 'pointer' : 'unset'
+
         return !this.props.vertical ? (
             <Fragment>
                 <SecondWrapper
                     ref={this.overflowContainerRef}
                     onScroll={this.onOverflowContentScroll}
                     onLoad={this.measureContainers}
+                    onMouseDown={draggable ? this.onOverflowContentMouseDown : C.noop}
+                    style={{ cursor }}
                 >
                     {this.renderChildren()}
                 </SecondWrapper>
