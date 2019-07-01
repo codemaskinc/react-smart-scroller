@@ -29,15 +29,15 @@ export const getPaddingValues = (
     paddingTop?: string | number,
     paddingBottom?: string | number
 ) => {
-    if (!padding && !paddingLeft && !paddingRight && !paddingTop && !paddingBottom) {
-        return null
-    }
-
     const zeroPadding = {
         top: 0,
         right: 0,
         bottom: 0,
         left: 0
+    }
+
+    if (!padding && !paddingLeft && !paddingRight && !paddingTop && !paddingBottom) {
+        return zeroPadding
     }
 
     if (!padding) {

@@ -12,16 +12,16 @@ const noop = () => {};
 export { clearObject, all, noop };
 export const extractNumberFromStyle = value => value ? Number(value.toString().replace('px', '')) : undefined;
 export const getPaddingValues = (padding, paddingLeft, paddingRight, paddingTop, paddingBottom) => {
-  if (!padding && !paddingLeft && !paddingRight && !paddingTop && !paddingBottom) {
-    return null;
-  }
-
   const zeroPadding = {
     top: 0,
     right: 0,
     bottom: 0,
     left: 0
   };
+
+  if (!padding && !paddingLeft && !paddingRight && !paddingTop && !paddingBottom) {
+    return zeroPadding;
+  }
 
   if (!padding) {
     return _objectSpread({}, zeroPadding, {

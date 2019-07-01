@@ -217,7 +217,7 @@ describe('ReactSmartSlider: lib/components', () => {
         wrapper.find(RectangleThumb).simulate('mousedown', onMouseDownEvent)
 
         expect(wrapper.state().deltaXOrigin).toEqual(offsetLeft)
-        expect(wrapper.state().deltaX).toEqual(clientX)
+        expect(wrapper.state().deltaX).toEqual(clientX + padding)
     })
 
     it('should set thumb left style', () => {
@@ -416,9 +416,12 @@ describe('ReactSmartSlider: lib/components', () => {
 
         expect(wrapperInstance.scrollContainerReducedWidth(containerWidth)).toEqual(containerWidth)
 
-        wrapper.setProps({
-            trackProps: {
-                padding
+        wrapper.setState({
+            padding: {
+                top: padding,
+                right: padding,
+                bottom: padding,
+                left: padding
             }
         })
 

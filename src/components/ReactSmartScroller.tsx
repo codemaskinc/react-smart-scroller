@@ -12,7 +12,8 @@ type ReactSmartSliderState = {
     thumbHeight: number,
     trackHeight: number,
     scrollWidth: number,
-    scrollLeft: number
+    scrollLeft: number,
+    padding: Padding
 }
 
 export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, ReactSmartSliderState> {
@@ -29,7 +30,8 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
         thumbHeight: 0,
         trackHeight: 0,
         scrollWidth: 0,
-        scrollLeft: 0
+        scrollLeft: 0,
+        padding: this.trackPadding
     }
 
     private overflowContainerRef: React.RefObject<HTMLDivElement> = React.createRef()
@@ -74,6 +76,24 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
         return !(overflownRef && overflownRef.children.length <= cols)
     }
 
+    get trackPadding() {
+        const { trackProps } = this.props
+
+        return trackProps
+            ? C.getPaddingValues(
+                trackProps.padding,
+                trackProps.paddingLeft,
+                trackProps.paddingRight,
+                trackProps.paddingTop,
+                trackProps.paddingBottom
+            ) as Padding : {
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
+            }
+    }
+
     get contentMargin() {
         const { thumbHeight, trackHeight } = this.state
         const windowsScrollHeight = 20
@@ -92,24 +112,9 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
     }
 
     scrollContainerReducedWidth(scrollContainerWidth: number) {
-        const { trackProps } = this.props
+        const { padding } = this.state
 
-        if (trackProps) {
-            const scrollPadding = C.getPaddingValues(
-                trackProps.padding,
-                trackProps.paddingLeft,
-                trackProps.paddingRight,
-                trackProps.paddingTop,
-                trackProps.paddingBottom
-            ) as Padding
-            const padding = scrollPadding
-                ? scrollPadding.left + scrollPadding.right
-                : 0
-
-            return scrollContainerWidth - padding
-        }
-
-        return scrollContainerWidth
+        return scrollContainerWidth - (padding.left + padding.right)
     }
 
     measureContainers() {
@@ -142,18 +147,10 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
     onMouseDown(event: React.MouseEvent) {
         event.preventDefault()
 
-        const { trackProps } = this.props
-        const scrollPadding = trackProps
-            ? C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight) as Padding
-            : null
-        const padding = scrollPadding
-            ? scrollPadding.left
-            : 0
-
         if (this.thumbRef.current) {
             this.setState({
                 deltaXOrigin: this.thumbRef.current.offsetLeft,
-                deltaX: event.clientX + padding
+                deltaX: event.clientX + this.state.padding.left
             })
         }
 
@@ -177,7 +174,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
 
         const maximumOffset = this.state.scrollContainerWidth - thumbRef.offsetWidth
         const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset
-        const deltaX = overflowRef.getBoundingClientRect().left + (thumbRef.offsetWidth / 2)
+        const deltaX = overflowRef.getBoundingClientRect().left + (thumbRef.offsetWidth / 2) + this.state.padding.left
 
         return overflowRef.scroll({
             left: ratio * (clientX - deltaX),
@@ -294,12 +291,9 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
     }
 
     renderThumb() {
-        const { scrollContainerWidth, scrollWidth, thumbHeight, trackHeight } = this.state
+        const { scrollContainerWidth, scrollWidth } = this.state
         const percentageWidth = Number(((scrollContainerWidth * 100) / scrollWidth).toFixed(0))
         const width = `${(percentageWidth * scrollContainerWidth) / 100}px`
-        const bottom = this.bottomOffset !== 0
-            ? this.bottomOffset
-            : (thumbHeight - trackHeight) / 2
 
         if (this.props.thumb) {
             return React.cloneElement(
@@ -311,7 +305,6 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
                         left: 0,
                         position: 'relative',
                         cursor: 'pointer',
-                        bottom,
                         ...this.props.thumb.props.style
                     }
                 }
@@ -322,10 +315,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
             <RectangleThumb
                 ref={this.thumbRef}
                 onMouseDown={this.onMouseDown}
-                style={{
-                    width,
-                    bottom
-                }}
+                style={{ width }}
             />
         )
     }
@@ -340,7 +330,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
                 style={{
                     color: colors.gray.mediumGray,
                     bottom: this.bottomOffset,
-                    display: display ? 'block' : 'none',
+                    display: display ? 'flex' : 'none',
                     ...this.props.trackProps
                 }}
             >
@@ -407,6 +397,8 @@ export const Track = styled.div`
     background-color: ${colors.gray.mediumGray};
     bottom: 0;
     height: 10px;
+    display: flex;
+    align-items: center;
 `
 
 export const RectangleThumb = styled.div`
