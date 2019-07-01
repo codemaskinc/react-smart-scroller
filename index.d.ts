@@ -41,7 +41,14 @@ export type ReactSmartScrollerProps = {
         then ReactSmartSlider will take parent's height.
     */
 
-    vertical?: boolean
+    vertical?: boolean,
+
+    /**
+        Default false.
+        If set to true allows to scroll by dragging content.
+    */
+
+    draggable?: boolean
 }
 
 export class ReactSmartScroller extends React.Component<ReactSmartScrollerProps> {}

@@ -387,6 +387,7 @@ export const SecondWrapper = styled.div`
 
 export const ChildrenWrapper = styled.div`
     flex: 0 0 auto;
+    box-sizing: border-box;
 `
 
 export const Track = styled.div`

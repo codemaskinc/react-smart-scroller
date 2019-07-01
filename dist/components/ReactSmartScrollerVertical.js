@@ -321,7 +321,9 @@ export const Content = styled.div`
     margin-right: -20px;
     -webkit-overflow-scrolling: touch;
 `;
-export const ChildrenWrapper = styled.div``;
+export const ChildrenWrapper = styled.div`
+    box-sizing: border-box;
+`;
 export const Track = styled.div`
     position: absolute;
     cursor: pointer;

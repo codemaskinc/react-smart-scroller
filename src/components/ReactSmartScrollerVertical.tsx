@@ -369,7 +369,9 @@ export const Content = styled.div`
     -webkit-overflow-scrolling: touch;
 `
 
-export const ChildrenWrapper = styled.div``
+export const ChildrenWrapper = styled.div`
+    box-sizing: border-box;
+`
 
 export const Track = styled.div`
     position: absolute;
