@@ -321,6 +321,15 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
                 ? `paddingTop: ${padding}px`
                 : undefined
             const height = cols ? `calc(100% / ${cols})` : 'auto'
+            const extendedChild = React.cloneElement(
+                children[index],
+                {
+                    style: {
+                        display: 'flex',
+                        ...children[index].props.style
+                    }
+                }
+            )
 
             return (
                 <ChildrenWrapper
@@ -332,7 +341,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
                         marginRight: this.contentMargin
                     }}
                 >
-                    {child}
+                    {extendedChild}
                 </ChildrenWrapper>
             )
         })

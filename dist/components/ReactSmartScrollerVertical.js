@@ -283,6 +283,11 @@ export class ReactSmartScrollerVertical extends React.Component {
       const paddingBottom = index !== React.Children.count(children) - 1 ? `paddingBottom: ${padding}px` : undefined;
       const paddingTop = index !== 0 ? `paddingTop: ${padding}px` : undefined;
       const height = cols ? `calc(100% / ${cols})` : 'auto';
+      const extendedChild = React.cloneElement(children[index], {
+        style: _objectSpread({
+          display: 'flex'
+        }, children[index].props.style)
+      });
       return React.createElement(ChildrenWrapper, {
         style: {
           padding: `${padding}px 0`,
@@ -291,7 +296,7 @@ export class ReactSmartScrollerVertical extends React.Component {
           paddingBottom,
           marginRight: this.contentMargin
         }
-      }, child);
+      }, extendedChild);
     });
   }
 
