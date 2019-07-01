@@ -148,7 +148,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         if (thumbRef && overflownRef) {
             this.setState({
                 deltaYOrigin: thumbRef.offsetTop,
-                deltaY: event.clientY + padding + overflownRef.getBoundingClientRect().top
+                deltaY: event.clientY + padding
             })
         }
 
@@ -258,12 +258,9 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
     }
 
     renderThumb() {
-        const { scrollContainerHeight, scrollHeight, thumbWidth, trackWidth } = this.state
+        const { scrollContainerHeight, scrollHeight } = this.state
         const percentageWidth = Number(((scrollContainerHeight * 100) / scrollHeight).toFixed(0))
         const height = `${(percentageWidth * scrollContainerHeight) / 100}px`
-        const right = this.rightOffset !== 0
-            ? this.rightOffset
-            : (thumbWidth - trackWidth) / 2
 
         if (this.props.thumb) {
             return React.cloneElement(
@@ -275,8 +272,6 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
                         top: 0,
                         position: 'relative',
                         cursor: 'pointer',
-                        right,
-                        boxSizing: 'border-box',
                         ...this.props.thumb.props.style
                     }
                 }
@@ -287,10 +282,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
             <RectangleThumb
                 ref={this.thumbRef}
                 onMouseDown={this.onMouseDown}
-                style={{
-                    height,
-                    right
-                }}
+                style={{ height }}
             />
         )
     }
@@ -305,11 +297,13 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
                 style={{
                     color: colors.gray.mediumGray,
                     right: this.rightOffset,
-                    display: display ? 'display' : 'none',
+                    display: display ? 'flex' : 'none',
                     ...this.props.trackProps
                 }}
             >
-                {this.renderThumb()}
+                <EmptyAbsolute>
+                    {this.renderThumb()}
+                </EmptyAbsolute>
             </Track>
         )
     }
@@ -388,6 +382,8 @@ export const Track = styled.div`
     background-color: ${colors.gray.mediumGray};
     top: 0;
     width: 10px;
+    display: flex;
+    justify-content: center;
 `
 
 export const RectangleThumb = styled.div`
@@ -396,4 +392,8 @@ export const RectangleThumb = styled.div`
     cursor: pointer;
     width: 10px;
     height: 100%;
+`
+
+export const EmptyAbsolute = styled.div`
+    position: absolute;
 `

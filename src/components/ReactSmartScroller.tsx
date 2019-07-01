@@ -294,12 +294,9 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
     }
 
     renderThumb() {
-        const { scrollContainerWidth, scrollWidth, thumbHeight, trackHeight } = this.state
+        const { scrollContainerWidth, scrollWidth } = this.state
         const percentageWidth = Number(((scrollContainerWidth * 100) / scrollWidth).toFixed(0))
         const width = `${(percentageWidth * scrollContainerWidth) / 100}px`
-        const bottom = this.bottomOffset !== 0
-            ? this.bottomOffset
-            : (thumbHeight - trackHeight) / 2
 
         if (this.props.thumb) {
             return React.cloneElement(
@@ -311,7 +308,6 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
                         left: 0,
                         position: 'relative',
                         cursor: 'pointer',
-                        bottom,
                         ...this.props.thumb.props.style
                     }
                 }
@@ -322,10 +318,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
             <RectangleThumb
                 ref={this.thumbRef}
                 onMouseDown={this.onMouseDown}
-                style={{
-                    width,
-                    bottom
-                }}
+                style={{ width }}
             />
         )
     }
@@ -340,7 +333,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
                 style={{
                     color: colors.gray.mediumGray,
                     bottom: this.bottomOffset,
-                    display: display ? 'block' : 'none',
+                    display: display ? 'flex' : 'none',
                     ...this.props.trackProps
                 }}
             >
@@ -407,6 +400,8 @@ export const Track = styled.div`
     background-color: ${colors.gray.mediumGray};
     bottom: 0;
     height: 10px;
+    display: flex;
+    align-items: center;
 `
 
 export const RectangleThumb = styled.div`
