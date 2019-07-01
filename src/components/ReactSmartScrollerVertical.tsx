@@ -11,7 +11,8 @@ type ReactSmartSliderVerticalState = {
     thumbWidth: number,
     trackWidth: number,
     scrollHeight: number,
-    scrollTop: number
+    scrollTop: number,
+    padding: Padding
 }
 
 export class ReactSmartScrollerVertical extends React.Component<ReactSmartSliderProps, ReactSmartSliderVerticalState> {
@@ -22,7 +23,8 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         thumbWidth: 0,
         trackWidth: 0,
         scrollHeight: 0,
-        scrollTop: 0
+        scrollTop: 0,
+        padding: this.trackPadding
     }
 
     private overflowContainerRef: React.RefObject<HTMLDivElement> = React.createRef()
@@ -67,6 +69,24 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
         return !(overflownRef && overflownRef.children.length <= cols)
     }
 
+    get trackPadding() {
+        const { trackProps } = this.props
+
+        return trackProps
+            ? C.getPaddingValues(
+                trackProps.padding,
+                trackProps.paddingLeft,
+                trackProps.paddingRight,
+                trackProps.paddingTop,
+                trackProps.paddingBottom
+            ) as Padding : {
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
+            }
+    }
+
     get contentMargin() {
         const { thumbWidth, trackWidth } = this.state
         const windowsScrollWidth = 20
@@ -85,24 +105,9 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
     }
 
     scrollContainerReducedHeight(scrollContainerHeight: number) {
-        const { trackProps } = this.props
+        const { padding } = this.state
 
-        if (trackProps) {
-            const scrollPadding = C.getPaddingValues(
-                trackProps.padding,
-                trackProps.paddingLeft,
-                trackProps.paddingRight,
-                trackProps.paddingTop,
-                trackProps.paddingBottom
-            ) as Padding
-            const padding = scrollPadding
-                ? scrollPadding.top + scrollPadding.bottom
-                : 0
-
-            return scrollContainerHeight - padding
-        }
-
-        return scrollContainerHeight
+        return scrollContainerHeight - (padding.top + padding.bottom)
     }
 
     measureContainers() {
@@ -135,20 +140,13 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
     onMouseDown(event: React.MouseEvent) {
         event.preventDefault()
 
-        const { trackProps } = this.props
         const thumbRef = this.thumbRef.current as HTMLDivElement
         const overflownRef = this.overflowContainerRef.current as HTMLDivElement
-        const scrollPadding = trackProps
-            ? C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight) as Padding
-            : null
-        const padding = scrollPadding
-            ? scrollPadding.top
-            : 0
 
         if (thumbRef && overflownRef) {
             this.setState({
                 deltaYOrigin: thumbRef.offsetTop,
-                deltaY: event.clientY + padding
+                deltaY: event.clientY + this.state.padding.top
             })
         }
 
@@ -156,13 +154,14 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
     }
 
     onScrollbarClick({ clientY }: React.MouseEvent) {
+        const { padding } = this.state
         const thumbRef = this.thumbRef.current as HTMLDivElement
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const shouldReturn = C.all(
             thumbRef,
             overflowRef,
-            clientY >= ((C.extractNumberFromStyle(thumbRef.style.top) || 0) + overflowRef.getBoundingClientRect().top),
-            clientY <= ((C.extractNumberFromStyle(thumbRef.style.top) || 0) + overflowRef.getBoundingClientRect().top + thumbRef.offsetHeight)
+            clientY >= ((C.extractNumberFromStyle(thumbRef.style.top) || 0) + overflowRef.getBoundingClientRect().top + padding.top),
+            clientY <= ((C.extractNumberFromStyle(thumbRef.style.top) || 0) + overflowRef.getBoundingClientRect().top + thumbRef.offsetHeight + padding.top)
         )
 
         // leave this function if thumb was clicked
@@ -172,7 +171,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
 
         const maximumOffset = this.state.scrollContainerHeight - thumbRef.offsetHeight
         const ratio = (overflowRef.scrollHeight - overflowRef.clientHeight) / maximumOffset
-        const deltaY = overflowRef.getBoundingClientRect().top + (thumbRef.offsetHeight / 2)
+        const deltaY = overflowRef.getBoundingClientRect().top + (thumbRef.offsetHeight / 2) + padding.top
 
         return overflowRef.scroll({
             top: ratio * (clientY - deltaY),
@@ -191,11 +190,11 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
 
     onMouseDrag(event: DragEvent | MouseEvent) {
         const zero = 0
-        const { deltaY, deltaYOrigin, scrollContainerHeight } = this.state
+        const { deltaY, deltaYOrigin, scrollContainerHeight, padding } = this.state
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const thumbRef = this.thumbRef.current as HTMLDivElement
         const maximumOffset = scrollContainerHeight - thumbRef.offsetHeight
-        const offset = event.clientY - deltaY + deltaYOrigin
+        const offset = event.clientY - deltaY + deltaYOrigin + padding.top
         const isBetweenClientHeight = offset >= zero && offset <= maximumOffset
         const areRefsCurrent = C.all(
             Boolean(this.overflowContainerRef.current),
@@ -321,7 +320,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartSlider
             const paddingTop = index !== 0
                 ? `paddingTop: ${padding}px`
                 : undefined
-            const height = cols ? `calc(100% / ${cols})` : 'unset'
+            const height = cols ? `calc(100% / ${cols})` : 'auto'
 
             return (
                 <ChildrenWrapper
@@ -370,9 +369,7 @@ export const Content = styled.div`
     -webkit-overflow-scrolling: touch;
 `
 
-export const ChildrenWrapper = styled.div`
-    display: flex;
-`
+export const ChildrenWrapper = styled.div``
 
 export const Track = styled.div`
     position: absolute;

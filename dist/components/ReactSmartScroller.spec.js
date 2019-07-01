@@ -167,7 +167,7 @@ describe('ReactSmartSlider: lib/components', () => {
     });
     wrapper.find(RectangleThumb).simulate('mousedown', onMouseDownEvent);
     expect(wrapper.state().deltaXOrigin).toEqual(offsetLeft);
-    expect(wrapper.state().deltaX).toEqual(clientX);
+    expect(wrapper.state().deltaX).toEqual(clientX + padding);
   });
   it('should set thumb left style', () => {
     const wrapper = shallow(React.createElement(ReactSmartScroller, _extends({}, initialProps, {
@@ -336,9 +336,12 @@ describe('ReactSmartSlider: lib/components', () => {
     const containerWidth = 100;
     const padding = 20;
     expect(wrapperInstance.scrollContainerReducedWidth(containerWidth)).toEqual(containerWidth);
-    wrapper.setProps({
-      trackProps: {
-        padding
+    wrapper.setState({
+      padding: {
+        top: padding,
+        right: padding,
+        bottom: padding,
+        left: padding
       }
     });
     expect(wrapperInstance.scrollContainerReducedWidth(containerWidth)).toEqual(containerWidth - 2 * padding);

@@ -22,7 +22,14 @@ describe('utils: clearObject', () => {
 
 describe('utils: getPaddingValues', () => {
     it('should return null', () => {
-        expect(getPaddingValues()).toEqual(null)
+        const outputValues = {
+            bottom: 0,
+            left: 0,
+            right: 0,
+            top: 0
+        }
+
+        expect(getPaddingValues()).toEqual(outputValues)
     })
 
     it('should return object with paddings', () => {

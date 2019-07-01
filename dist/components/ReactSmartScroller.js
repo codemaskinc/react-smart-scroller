@@ -16,7 +16,8 @@ export class ReactSmartScroller extends React.Component {
       thumbHeight: 0,
       trackHeight: 0,
       scrollWidth: 0,
-      scrollLeft: 0
+      scrollLeft: 0,
+      padding: this.trackPadding
     });
 
     _defineProperty(this, "overflowContainerRef", React.createRef());
@@ -60,6 +61,18 @@ export class ReactSmartScroller extends React.Component {
     return !(overflownRef && overflownRef.children.length <= cols);
   }
 
+  get trackPadding() {
+    const {
+      trackProps
+    } = this.props;
+    return trackProps ? C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight, trackProps.paddingTop, trackProps.paddingBottom) : {
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0
+    };
+  }
+
   get contentMargin() {
     const {
       thumbHeight,
@@ -77,16 +90,9 @@ export class ReactSmartScroller extends React.Component {
 
   scrollContainerReducedWidth(scrollContainerWidth) {
     const {
-      trackProps
-    } = this.props;
-
-    if (trackProps) {
-      const scrollPadding = C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight, trackProps.paddingTop, trackProps.paddingBottom);
-      const padding = scrollPadding ? scrollPadding.left + scrollPadding.right : 0;
-      return scrollContainerWidth - padding;
-    }
-
-    return scrollContainerWidth;
+      padding
+    } = this.state;
+    return scrollContainerWidth - (padding.left + padding.right);
   }
 
   measureContainers() {
@@ -113,16 +119,11 @@ export class ReactSmartScroller extends React.Component {
 
   onMouseDown(event) {
     event.preventDefault();
-    const {
-      trackProps
-    } = this.props;
-    const scrollPadding = trackProps ? C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight) : null;
-    const padding = scrollPadding ? scrollPadding.left : 0;
 
     if (this.thumbRef.current) {
       this.setState({
         deltaXOrigin: this.thumbRef.current.offsetLeft,
-        deltaX: event.clientX + padding
+        deltaX: event.clientX + this.state.padding.left
       });
     }
 
@@ -142,7 +143,7 @@ export class ReactSmartScroller extends React.Component {
 
     const maximumOffset = this.state.scrollContainerWidth - thumbRef.offsetWidth;
     const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset;
-    const deltaX = overflowRef.getBoundingClientRect().left + thumbRef.offsetWidth / 2;
+    const deltaX = overflowRef.getBoundingClientRect().left + thumbRef.offsetWidth / 2 + this.state.padding.left;
     return overflowRef.scroll({
       left: ratio * (clientX - deltaX),
       top: 0,

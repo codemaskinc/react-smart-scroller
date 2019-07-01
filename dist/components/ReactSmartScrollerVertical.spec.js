@@ -186,7 +186,7 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     });
     wrapper.find(RectangleThumb).simulate('mousedown', onMouseDownEvent);
     expect(wrapper.state().deltaYOrigin).toEqual(offsetTop);
-    expect(wrapper.state().deltaY).toEqual(clientY);
+    expect(wrapper.state().deltaY).toEqual(clientY + padding);
   });
   it('should set thumb left style', () => {
     const wrapper = shallow(React.createElement(ReactSmartScrollerVertical, _extends({}, initialProps, {
@@ -413,9 +413,12 @@ describe('ReactSmartSliderVertical: lib/components', () => {
     const containerHeight = 100;
     const padding = 20;
     expect(wrapperInstance.scrollContainerReducedHeight(containerHeight)).toEqual(containerHeight);
-    wrapper.setProps({
-      trackProps: {
-        padding
+    wrapper.setState({
+      padding: {
+        top: padding,
+        right: padding,
+        bottom: padding,
+        left: padding
       }
     });
     expect(wrapperInstance.scrollContainerReducedHeight(containerHeight)).toEqual(containerHeight - 2 * padding);
