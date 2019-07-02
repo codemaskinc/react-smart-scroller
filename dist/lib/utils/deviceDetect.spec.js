@@ -1,40 +1,44 @@
-import { isIOS, isAndroid, isMobile, isMsEdge } from "./deviceDetect";
+"use strict";
 
-const mockConfig = device => ({
-  value: device,
-  configurable: true
-});
+var _deviceDetect = require("./deviceDetect");
 
-const agent = 'userAgent';
-describe('utils: deviceDetect', () => {
-  it('should return corresponding values for Android device', () => {
+var mockConfig = function mockConfig(device) {
+  return {
+    value: device,
+    configurable: true
+  };
+};
+
+var agent = 'userAgent';
+describe('utils: deviceDetect', function () {
+  it('should return corresponding values for Android device', function () {
     Object.defineProperty(window.navigator, agent, mockConfig('Android'));
-    expect(isIOS()).toEqual(false);
-    expect(isAndroid()).toEqual(true);
-    expect(isMobile()).toEqual(true);
+    expect((0, _deviceDetect.isIOS)()).toEqual(false);
+    expect((0, _deviceDetect.isAndroid)()).toEqual(true);
+    expect((0, _deviceDetect.isMobile)()).toEqual(true);
   });
-  it('should return corresponding values for iOS device', () => {
+  it('should return corresponding values for iOS device', function () {
     Object.defineProperty(window.navigator, agent, mockConfig('iPhone'));
-    expect(isIOS()).toEqual(true);
-    expect(isAndroid()).toEqual(false);
-    expect(isMobile()).toEqual(true);
+    expect((0, _deviceDetect.isIOS)()).toEqual(true);
+    expect((0, _deviceDetect.isAndroid)()).toEqual(false);
+    expect((0, _deviceDetect.isMobile)()).toEqual(true);
   });
-  it('should return corresponding values for iPad', () => {
+  it('should return corresponding values for iPad', function () {
     Object.defineProperty(window.navigator, agent, mockConfig('iPad'));
-    expect(isIOS()).toEqual(true);
-    expect(isAndroid()).toEqual(false);
-    expect(isMobile()).toEqual(true);
+    expect((0, _deviceDetect.isIOS)()).toEqual(true);
+    expect((0, _deviceDetect.isAndroid)()).toEqual(false);
+    expect((0, _deviceDetect.isMobile)()).toEqual(true);
   });
-  it('should return false for unmated platforms', () => {
+  it('should return false for unmated platforms', function () {
     Object.defineProperty(window.navigator, agent, {
       value: ''
     });
-    expect(isIOS()).toEqual(false);
-    expect(isAndroid()).toEqual(false);
-    expect(isMobile()).toEqual(false);
+    expect((0, _deviceDetect.isIOS)()).toEqual(false);
+    expect((0, _deviceDetect.isAndroid)()).toEqual(false);
+    expect((0, _deviceDetect.isMobile)()).toEqual(false);
   });
-  it('should return true for Edge browser', () => {
+  it('should return true for Edge browser', function () {
     Object.defineProperty(window.navigator, agent, mockConfig('Edge'));
-    expect(isMsEdge()).toEqual(true);
+    expect((0, _deviceDetect.isMsEdge)()).toEqual(true);
   });
 });

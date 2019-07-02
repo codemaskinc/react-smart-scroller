@@ -1,15 +1,103 @@
-import _objectSpread from "@babel/runtime/helpers/objectSpread";
-import _defineProperty from "@babel/runtime/helpers/defineProperty";
-import React, { Fragment } from 'react';
-import styled from 'styled-components';
-import { colors } from "../lib/styles";
-import { C, isMobile, isMacOs } from "../lib/utils";
-import { ReactSmartScrollerVertical } from "./ReactSmartScrollerVertical";
-export class ReactSmartScroller extends React.Component {
-  constructor(props) {
-    super(props);
+"use strict";
 
-    _defineProperty(this, "state", {
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RectangleThumb = exports.Track = exports.ChildrenWrapper = exports.SecondWrapper = exports.Wrapper = exports.ReactSmartScroller = void 0;
+
+var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
+
+var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
+
+var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _styles = require("../lib/styles");
+
+var _utils = require("../lib/utils");
+
+var _ReactSmartScrollerVertical = require("./ReactSmartScrollerVertical");
+
+function _templateObject5() {
+  var data = (0, _taggedTemplateLiteral2.default)(["\n    position: relative;\n    left: 0;\n    background-color: ", ";\n    cursor: pointer;\n    width: 100px;\n    height: 10px;\n"]);
+
+  _templateObject5 = function _templateObject5() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject4() {
+  var data = (0, _taggedTemplateLiteral2.default)(["\n    position: absolute;\n    cursor: pointer;\n    left: 0;\n    width: 100%;\n    background-color: ", ";\n    bottom: 0;\n    height: 10px;\n    display: flex;\n    align-items: center;\n"]);
+
+  _templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject3() {
+  var data = (0, _taggedTemplateLiteral2.default)(["\n    flex: 0 0 auto;\n    box-sizing: border-box;\n"]);
+
+  _templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject2() {
+  var data = (0, _taggedTemplateLiteral2.default)(["\n    display: flex;\n    overflow-x: scroll;\n    overflow-y: hidden;\n    margin-bottom: -20px;\n    -webkit-overflow-scrolling: touch;\n"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = (0, _taggedTemplateLiteral2.default)(["\n    width: 100%;\n    height: 100%;\n    overflow: hidden;\n    position: relative;\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+var ReactSmartScroller =
+/*#__PURE__*/
+function (_React$Component) {
+  (0, _inherits2.default)(ReactSmartScroller, _React$Component);
+
+  function ReactSmartScroller(props) {
+    var _this;
+
+    (0, _classCallCheck2.default)(this, ReactSmartScroller);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ReactSmartScroller).call(this, props));
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "state", {
       scrollContainerWidth: 0,
       deltaXOrigin: 0,
       deltaX: 0,
@@ -17,340 +105,337 @@ export class ReactSmartScroller extends React.Component {
       trackHeight: 0,
       scrollWidth: 0,
       scrollLeft: 0,
-      padding: this.trackPadding
+      padding: _this.trackPadding
     });
-
-    _defineProperty(this, "overflowContainerRef", React.createRef());
-
-    _defineProperty(this, "thumbRef", React.createRef());
-
-    _defineProperty(this, "trackRef", React.createRef());
-
-    this.measureContainers = this.measureContainers.bind(this);
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseDrag = this.onMouseDrag.bind(this);
-    this.onOverflowContentScroll = this.onOverflowContentScroll.bind(this);
-    this.deleteMouseMoveEvent = this.deleteMouseMoveEvent.bind(this);
-    this.onScrollbarClick = this.onScrollbarClick.bind(this);
-    this.onOverflowContentDrag = this.onOverflowContentDrag.bind(this);
-    this.onOverflowContentMouseDown = this.onOverflowContentMouseDown.bind(this);
-    this.deleteOverflowMouseMoveEvent = this.deleteOverflowMouseMoveEvent.bind(this);
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "overflowContainerRef", _react.default.createRef());
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "thumbRef", _react.default.createRef());
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "trackRef", _react.default.createRef());
+    _this.measureContainers = _this.measureContainers.bind((0, _assertThisInitialized2.default)(_this));
+    _this.onMouseDown = _this.onMouseDown.bind((0, _assertThisInitialized2.default)(_this));
+    _this.onMouseDrag = _this.onMouseDrag.bind((0, _assertThisInitialized2.default)(_this));
+    _this.onOverflowContentScroll = _this.onOverflowContentScroll.bind((0, _assertThisInitialized2.default)(_this));
+    _this.deleteMouseMoveEvent = _this.deleteMouseMoveEvent.bind((0, _assertThisInitialized2.default)(_this));
+    _this.onScrollbarClick = _this.onScrollbarClick.bind((0, _assertThisInitialized2.default)(_this));
+    _this.onOverflowContentDrag = _this.onOverflowContentDrag.bind((0, _assertThisInitialized2.default)(_this));
+    _this.onOverflowContentMouseDown = _this.onOverflowContentMouseDown.bind((0, _assertThisInitialized2.default)(_this));
+    _this.deleteOverflowMouseMoveEvent = _this.deleteOverflowMouseMoveEvent.bind((0, _assertThisInitialized2.default)(_this));
+    return _this;
   }
 
-  componentDidMount() {
-    window.addEventListener('resize', this.measureContainers);
-    window.addEventListener('mouseup', this.deleteMouseMoveEvent);
-    window.addEventListener('mouseup', this.deleteOverflowMouseMoveEvent);
-    this.measureContainers();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.measureContainers);
-    window.removeEventListener('mouseup', this.deleteMouseMoveEvent);
-    window.removeEventListener('mouseup', this.deleteOverflowMouseMoveEvent);
-  }
-
-  get shouldRenderScrollbar() {
-    const overflownRef = this.overflowContainerRef.current;
-    const cols = this.props.numCols;
-
-    if (!cols && overflownRef) {
-      return overflownRef.clientWidth < overflownRef.scrollWidth;
+  (0, _createClass2.default)(ReactSmartScroller, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      window.addEventListener('resize', this.measureContainers);
+      window.addEventListener('mouseup', this.deleteMouseMoveEvent);
+      window.addEventListener('mouseup', this.deleteOverflowMouseMoveEvent);
+      this.measureContainers();
     }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      window.removeEventListener('resize', this.measureContainers);
+      window.removeEventListener('mouseup', this.deleteMouseMoveEvent);
+      window.removeEventListener('mouseup', this.deleteOverflowMouseMoveEvent);
+    }
+  }, {
+    key: "scrollContainerReducedWidth",
+    value: function scrollContainerReducedWidth(scrollContainerWidth) {
+      var padding = this.state.padding;
+      return scrollContainerWidth - (padding.left + padding.right);
+    }
+  }, {
+    key: "measureContainers",
+    value: function measureContainers() {
+      var overflownRef = this.overflowContainerRef.current;
+      var thumbRef = this.thumbRef.current;
+      var trackRef = this.trackRef.current;
 
-    return !(overflownRef && overflownRef.children.length <= cols);
-  }
+      var areRefsCurrent = _utils.C.all(overflownRef, thumbRef, trackRef);
 
-  get trackPadding() {
-    const {
-      trackProps
-    } = this.props;
-    return trackProps ? C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight, trackProps.paddingTop, trackProps.paddingBottom) : {
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0
-    };
-  }
+      if (areRefsCurrent) {
+        this.setState({
+          scrollContainerWidth: this.scrollContainerReducedWidth(overflownRef.clientWidth),
+          thumbHeight: thumbRef.offsetHeight,
+          trackHeight: trackRef.clientHeight,
+          scrollWidth: overflownRef.scrollWidth
+        });
+      }
 
-  get contentMargin() {
-    const {
-      thumbHeight,
-      trackHeight
-    } = this.state;
-    const windowsScrollHeight = 20;
-    const marginHeight = trackHeight > thumbHeight ? trackHeight : thumbHeight;
-    const margin = isMacOs() ? marginHeight + windowsScrollHeight : marginHeight;
-    return !isMobile() && this.shouldRenderScrollbar ? `${margin + 10}px` : '20px';
-  }
+      if (areRefsCurrent && thumbRef.offsetLeft + thumbRef.clientWidth > overflownRef.clientWidth) {
+        var scrollOffset = overflownRef.clientWidth - thumbRef.clientWidth;
+        overflownRef.scroll(overflownRef.scrollWidth, 0);
+        thumbRef.style.left = "".concat(scrollOffset, "px");
+      }
+    }
+  }, {
+    key: "onMouseDown",
+    value: function onMouseDown(event) {
+      event.preventDefault();
 
-  get bottomOffset() {
-    return this.state.thumbHeight > this.state.trackHeight ? (this.state.thumbHeight - this.state.trackHeight) / 2 : 0;
-  }
+      if (this.thumbRef.current) {
+        this.setState({
+          deltaXOrigin: this.thumbRef.current.offsetLeft,
+          deltaX: event.clientX + this.state.padding.left
+        });
+      }
 
-  scrollContainerReducedWidth(scrollContainerWidth) {
-    const {
-      padding
-    } = this.state;
-    return scrollContainerWidth - (padding.left + padding.right);
-  }
+      window.addEventListener('mousemove', this.onMouseDrag);
+    }
+  }, {
+    key: "onScrollbarClick",
+    value: function onScrollbarClick(_ref) {
+      var clientX = _ref.clientX;
+      var thumbRef = this.thumbRef.current;
+      var overflowRef = this.overflowContainerRef.current;
 
-  measureContainers() {
-    const overflownRef = this.overflowContainerRef.current;
-    const thumbRef = this.thumbRef.current;
-    const trackRef = this.trackRef.current;
-    const areRefsCurrent = C.all(overflownRef, thumbRef, trackRef);
+      var shouldReturn = _utils.C.all(thumbRef, overflowRef, clientX >= thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left, clientX <= thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left + thumbRef.offsetWidth); // leave this function if thumb was clicked
 
-    if (areRefsCurrent) {
-      this.setState({
-        scrollContainerWidth: this.scrollContainerReducedWidth(overflownRef.clientWidth),
-        thumbHeight: thumbRef.offsetHeight,
-        trackHeight: trackRef.clientHeight,
-        scrollWidth: overflownRef.scrollWidth
+
+      if (shouldReturn) {
+        return null;
+      }
+
+      var maximumOffset = this.state.scrollContainerWidth - thumbRef.offsetWidth;
+      var ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset;
+      var deltaX = overflowRef.getBoundingClientRect().left + thumbRef.offsetWidth / 2 + this.state.padding.left;
+      return overflowRef.scroll({
+        left: ratio * (clientX - deltaX),
+        top: 0,
+        behavior: 'smooth'
       });
     }
-
-    if (areRefsCurrent && thumbRef.offsetLeft + thumbRef.clientWidth > overflownRef.clientWidth) {
-      const scrollOffset = overflownRef.clientWidth - thumbRef.clientWidth;
-      overflownRef.scroll(overflownRef.scrollWidth, 0);
-      thumbRef.style.left = `${scrollOffset}px`;
+  }, {
+    key: "deleteMouseMoveEvent",
+    value: function deleteMouseMoveEvent() {
+      window.removeEventListener('mousemove', this.onMouseDrag);
     }
-  }
+  }, {
+    key: "deleteOverflowMouseMoveEvent",
+    value: function deleteOverflowMouseMoveEvent() {
+      window.removeEventListener('mousemove', this.onOverflowContentDrag);
+    }
+  }, {
+    key: "onMouseDrag",
+    value: function onMouseDrag(event) {
+      var zero = 0;
+      var _this$state = this.state,
+          deltaX = _this$state.deltaX,
+          deltaXOrigin = _this$state.deltaXOrigin,
+          scrollContainerWidth = _this$state.scrollContainerWidth;
+      var overflowRef = this.overflowContainerRef.current;
+      var thumbRef = this.thumbRef.current;
+      var maximumOffset = scrollContainerWidth - thumbRef.offsetWidth;
+      var offset = event.clientX - deltaX + deltaXOrigin;
+      var isBetweenClientWidth = offset >= zero && offset <= maximumOffset;
 
-  onMouseDown(event) {
-    event.preventDefault();
+      var areRefsCurrent = _utils.C.all(Boolean(this.overflowContainerRef.current), Boolean(this.thumbRef.current));
 
-    if (this.thumbRef.current) {
-      this.setState({
-        deltaXOrigin: this.thumbRef.current.offsetLeft,
-        deltaX: event.clientX + this.state.padding.left
+      if (areRefsCurrent && !isBetweenClientWidth) {
+        var criticalDimension = offset < zero ? zero : maximumOffset;
+        var criticalScrollerDimensions = offset > zero ? overflowRef.scrollWidth - overflowRef.clientWidth : zero;
+        thumbRef.style.left = "".concat(criticalDimension, "px");
+        overflowRef.scroll(criticalScrollerDimensions, zero);
+      }
+
+      if (areRefsCurrent && isBetweenClientWidth) {
+        var ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset;
+        overflowRef.scroll(ratio * offset, zero);
+        thumbRef.style.left = "".concat(offset, "px");
+      }
+    }
+  }, {
+    key: "onOverflowContentScroll",
+    value: function onOverflowContentScroll() {
+      var scrollContainerWidth = this.state.scrollContainerWidth;
+      var thumbRef = this.thumbRef.current;
+      var overflowRef = this.overflowContainerRef.current;
+
+      if (overflowRef && thumbRef) {
+        var maximumOffset = scrollContainerWidth - thumbRef.offsetWidth;
+        var ratio = maximumOffset / (overflowRef.scrollWidth - overflowRef.clientWidth);
+        thumbRef.style.left = "".concat(overflowRef.scrollLeft * ratio, "px");
+      }
+    }
+  }, {
+    key: "onOverflowContentMouseDown",
+    value: function onOverflowContentMouseDown(event) {
+      event.preventDefault();
+      var overflowRef = this.overflowContainerRef.current;
+
+      if (overflowRef) {
+        this.setState({
+          deltaX: event.clientX,
+          scrollLeft: overflowRef.scrollLeft
+        });
+      }
+
+      window.addEventListener('mousemove', this.onOverflowContentDrag);
+    }
+  }, {
+    key: "onOverflowContentDrag",
+    value: function onOverflowContentDrag(event) {
+      var _this$state2 = this.state,
+          deltaX = _this$state2.deltaX,
+          scrollLeft = _this$state2.scrollLeft;
+      var overflowRef = this.overflowContainerRef.current;
+
+      if (overflowRef && event.clientX !== 0) {
+        overflowRef.scroll(scrollLeft - (event.clientX - deltaX), 0);
+      }
+    }
+  }, {
+    key: "renderChildren",
+    value: function renderChildren() {
+      var _this2 = this;
+
+      var cols = this.props.numCols;
+      var spacing = this.props.spacing;
+      var padding = spacing / 2;
+      var children = this.props.children;
+      return _react.default.Children.map(children, function (child, index) {
+        var paddingRight = index !== _react.default.Children.count(children) - 1 ? "paddingRight: ".concat(padding, "px") : undefined;
+        var paddingLeft = index !== 0 ? "paddingLeft: ".concat(padding, "px") : undefined;
+        var flexBasis = cols ? "calc(100% / ".concat(cols, ")") : 'unset';
+        return _react.default.createElement(ChildrenWrapper, {
+          style: {
+            padding: "0 ".concat(padding, "px"),
+            flexBasis: flexBasis,
+            paddingRight: paddingRight,
+            paddingLeft: paddingLeft,
+            marginBottom: _this2.contentMargin
+          }
+        }, child);
       });
     }
+  }, {
+    key: "renderThumb",
+    value: function renderThumb() {
+      var _this$state3 = this.state,
+          scrollContainerWidth = _this$state3.scrollContainerWidth,
+          scrollWidth = _this$state3.scrollWidth;
+      var percentageWidth = Number((scrollContainerWidth * 100 / scrollWidth).toFixed(0));
+      var width = "".concat(percentageWidth * scrollContainerWidth / 100, "px");
 
-    window.addEventListener('mousemove', this.onMouseDrag);
-  }
+      if (this.props.thumb) {
+        return _react.default.cloneElement(this.props.thumb, {
+          ref: this.thumbRef,
+          onMouseDown: this.onMouseDown,
+          style: (0, _objectSpread2.default)({
+            left: 0,
+            position: 'relative',
+            cursor: 'pointer'
+          }, this.props.thumb.props.style)
+        });
+      }
 
-  onScrollbarClick({
-    clientX
-  }) {
-    const thumbRef = this.thumbRef.current;
-    const overflowRef = this.overflowContainerRef.current;
-    const shouldReturn = C.all(thumbRef, overflowRef, clientX >= thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left, clientX <= thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left + thumbRef.offsetWidth); // leave this function if thumb was clicked
-
-    if (shouldReturn) {
-      return null;
-    }
-
-    const maximumOffset = this.state.scrollContainerWidth - thumbRef.offsetWidth;
-    const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset;
-    const deltaX = overflowRef.getBoundingClientRect().left + thumbRef.offsetWidth / 2 + this.state.padding.left;
-    return overflowRef.scroll({
-      left: ratio * (clientX - deltaX),
-      top: 0,
-      behavior: 'smooth'
-    });
-  }
-
-  deleteMouseMoveEvent() {
-    window.removeEventListener('mousemove', this.onMouseDrag);
-  }
-
-  deleteOverflowMouseMoveEvent() {
-    window.removeEventListener('mousemove', this.onOverflowContentDrag);
-  }
-
-  onMouseDrag(event) {
-    const zero = 0;
-    const {
-      deltaX,
-      deltaXOrigin,
-      scrollContainerWidth
-    } = this.state;
-    const overflowRef = this.overflowContainerRef.current;
-    const thumbRef = this.thumbRef.current;
-    const maximumOffset = scrollContainerWidth - thumbRef.offsetWidth;
-    const offset = event.clientX - deltaX + deltaXOrigin;
-    const isBetweenClientWidth = offset >= zero && offset <= maximumOffset;
-    const areRefsCurrent = C.all(Boolean(this.overflowContainerRef.current), Boolean(this.thumbRef.current));
-
-    if (areRefsCurrent && !isBetweenClientWidth) {
-      const criticalDimension = offset < zero ? zero : maximumOffset;
-      const criticalScrollerDimensions = offset > zero ? overflowRef.scrollWidth - overflowRef.clientWidth : zero;
-      thumbRef.style.left = `${criticalDimension}px`;
-      overflowRef.scroll(criticalScrollerDimensions, zero);
-    }
-
-    if (areRefsCurrent && isBetweenClientWidth) {
-      const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset;
-      overflowRef.scroll(ratio * offset, zero);
-      thumbRef.style.left = `${offset}px`;
-    }
-  }
-
-  onOverflowContentScroll() {
-    const {
-      scrollContainerWidth
-    } = this.state;
-    const thumbRef = this.thumbRef.current;
-    const overflowRef = this.overflowContainerRef.current;
-
-    if (overflowRef && thumbRef) {
-      const maximumOffset = scrollContainerWidth - thumbRef.offsetWidth;
-      const ratio = maximumOffset / (overflowRef.scrollWidth - overflowRef.clientWidth);
-      thumbRef.style.left = `${overflowRef.scrollLeft * ratio}px`;
-    }
-  }
-
-  onOverflowContentMouseDown(event) {
-    event.preventDefault();
-    const overflowRef = this.overflowContainerRef.current;
-
-    if (overflowRef) {
-      this.setState({
-        deltaX: event.clientX,
-        scrollLeft: overflowRef.scrollLeft
-      });
-    }
-
-    window.addEventListener('mousemove', this.onOverflowContentDrag);
-  }
-
-  onOverflowContentDrag(event) {
-    const {
-      deltaX,
-      scrollLeft
-    } = this.state;
-    const overflowRef = this.overflowContainerRef.current;
-
-    if (overflowRef && event.clientX !== 0) {
-      overflowRef.scroll(scrollLeft - (event.clientX - deltaX), 0);
-    }
-  }
-
-  renderChildren() {
-    const cols = this.props.numCols;
-    const spacing = this.props.spacing;
-    const padding = spacing / 2;
-    const children = this.props.children;
-    return React.Children.map(children, (child, index) => {
-      const paddingRight = index !== React.Children.count(children) - 1 ? `paddingRight: ${padding}px` : undefined;
-      const paddingLeft = index !== 0 ? `paddingLeft: ${padding}px` : undefined;
-      const flexBasis = cols ? `calc(100% / ${cols})` : 'unset';
-      return React.createElement(ChildrenWrapper, {
-        style: {
-          padding: `0 ${padding}px`,
-          flexBasis,
-          paddingRight,
-          paddingLeft,
-          marginBottom: this.contentMargin
-        }
-      }, child);
-    });
-  }
-
-  renderThumb() {
-    const {
-      scrollContainerWidth,
-      scrollWidth
-    } = this.state;
-    const percentageWidth = Number((scrollContainerWidth * 100 / scrollWidth).toFixed(0));
-    const width = `${percentageWidth * scrollContainerWidth / 100}px`;
-
-    if (this.props.thumb) {
-      return React.cloneElement(this.props.thumb, {
+      return _react.default.createElement(RectangleThumb, {
         ref: this.thumbRef,
         onMouseDown: this.onMouseDown,
-        style: _objectSpread({
-          left: 0,
-          position: 'relative',
-          cursor: 'pointer'
-        }, this.props.thumb.props.style)
+        style: {
+          width: width
+        }
       });
     }
+  }, {
+    key: "renderScrollbar",
+    value: function renderScrollbar() {
+      var display = !(0, _utils.isMobile)() && this.shouldRenderScrollbar;
+      return _react.default.createElement(Track, {
+        ref: this.trackRef,
+        onClick: this.onScrollbarClick,
+        style: (0, _objectSpread2.default)({
+          color: _styles.colors.gray.mediumGray,
+          bottom: this.bottomOffset,
+          display: display ? 'flex' : 'none'
+        }, this.props.trackProps)
+      }, this.renderThumb());
+    }
+  }, {
+    key: "renderContent",
+    value: function renderContent() {
+      var draggable = this.props.draggable;
+      var cursor = draggable ? 'pointer' : 'unset';
+      return !this.props.vertical ? _react.default.createElement(_react.Fragment, null, _react.default.createElement(SecondWrapper, {
+        ref: this.overflowContainerRef,
+        onScroll: this.onOverflowContentScroll,
+        onLoad: this.measureContainers,
+        onMouseDown: draggable ? this.onOverflowContentMouseDown : _utils.C.noop,
+        style: {
+          cursor: cursor
+        }
+      }, this.renderChildren()), this.renderScrollbar()) : _react.default.createElement(_ReactSmartScrollerVertical.ReactSmartScrollerVertical, this.props);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return _react.default.createElement(Wrapper, null, this.renderContent());
+    }
+  }, {
+    key: "shouldRenderScrollbar",
+    get: function get() {
+      var overflownRef = this.overflowContainerRef.current;
+      var cols = this.props.numCols;
 
-    return React.createElement(RectangleThumb, {
-      ref: this.thumbRef,
-      onMouseDown: this.onMouseDown,
-      style: {
-        width
+      if (!cols && overflownRef) {
+        return overflownRef.clientWidth < overflownRef.scrollWidth;
       }
-    });
-  }
 
-  renderScrollbar() {
-    const display = !isMobile() && this.shouldRenderScrollbar;
-    return React.createElement(Track, {
-      ref: this.trackRef,
-      onClick: this.onScrollbarClick,
-      style: _objectSpread({
-        color: colors.gray.mediumGray,
-        bottom: this.bottomOffset,
-        display: display ? 'flex' : 'none'
-      }, this.props.trackProps)
-    }, this.renderThumb());
-  }
+      return !(overflownRef && overflownRef.children.length <= cols);
+    }
+  }, {
+    key: "trackPadding",
+    get: function get() {
+      var trackProps = this.props.trackProps;
+      return trackProps ? _utils.C.getPaddingValues(trackProps.padding, trackProps.paddingLeft, trackProps.paddingRight, trackProps.paddingTop, trackProps.paddingBottom) : {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+      };
+    }
+  }, {
+    key: "contentMargin",
+    get: function get() {
+      var _this$state4 = this.state,
+          thumbHeight = _this$state4.thumbHeight,
+          trackHeight = _this$state4.trackHeight;
+      var windowsScrollHeight = 20;
+      var marginHeight = trackHeight > thumbHeight ? trackHeight : thumbHeight;
+      var margin = (0, _utils.isMacOs)() ? marginHeight + windowsScrollHeight : marginHeight;
+      return !(0, _utils.isMobile)() && this.shouldRenderScrollbar ? "".concat(margin + 10, "px") : '20px';
+    }
+  }, {
+    key: "bottomOffset",
+    get: function get() {
+      return this.state.thumbHeight > this.state.trackHeight ? (this.state.thumbHeight - this.state.trackHeight) / 2 : 0;
+    }
+  }]);
+  return ReactSmartScroller;
+}(_react.default.Component);
 
-  renderContent() {
-    const {
-      draggable
-    } = this.props;
-    const cursor = draggable ? 'pointer' : 'unset';
-    return !this.props.vertical ? React.createElement(Fragment, null, React.createElement(SecondWrapper, {
-      ref: this.overflowContainerRef,
-      onScroll: this.onOverflowContentScroll,
-      onLoad: this.measureContainers,
-      onMouseDown: draggable ? this.onOverflowContentMouseDown : C.noop,
-      style: {
-        cursor
-      }
-    }, this.renderChildren()), this.renderScrollbar()) : React.createElement(ReactSmartScrollerVertical, this.props);
-  }
-
-  render() {
-    return React.createElement(Wrapper, null, this.renderContent());
-  }
-
-}
-
-_defineProperty(ReactSmartScroller, "defaultProps", {
+exports.ReactSmartScroller = ReactSmartScroller;
+(0, _defineProperty2.default)(ReactSmartScroller, "defaultProps", {
   spacing: 0,
   vertical: false,
   draggable: false
 });
 
-export const Wrapper = styled.div`
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-`;
-export const SecondWrapper = styled.div`
-    display: flex;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    margin-bottom: -20px;
-    -webkit-overflow-scrolling: touch;
-`;
-export const ChildrenWrapper = styled.div`
-    flex: 0 0 auto;
-    box-sizing: border-box;
-`;
-export const Track = styled.div`
-    position: absolute;
-    cursor: pointer;
-    left: 0;
-    width: 100%;
-    background-color: ${colors.gray.mediumGray};
-    bottom: 0;
-    height: 10px;
-    display: flex;
-    align-items: center;
-`;
-export const RectangleThumb = styled.div`
-    position: relative;
-    left: 0;
-    background-color: ${colors.primary};
-    cursor: pointer;
-    width: 100px;
-    height: 10px;
-`;
+var Wrapper = _styledComponents.default.div(_templateObject());
+
+exports.Wrapper = Wrapper;
+
+var SecondWrapper = _styledComponents.default.div(_templateObject2());
+
+exports.SecondWrapper = SecondWrapper;
+
+var ChildrenWrapper = _styledComponents.default.div(_templateObject3());
+
+exports.ChildrenWrapper = ChildrenWrapper;
+
+var Track = _styledComponents.default.div(_templateObject4(), _styles.colors.gray.mediumGray);
+
+exports.Track = Track;
+
+var RectangleThumb = _styledComponents.default.div(_templateObject5(), _styles.colors.primary);
+
+exports.RectangleThumb = RectangleThumb;

@@ -1,15 +1,20 @@
-import _objectSpread from "@babel/runtime/helpers/objectSpread";
-import { configure } from 'enzyme';
-import ReactSixteenAdapter from 'enzyme-adapter-react-16';
+"use strict";
 
-const {
-  JSDOM
-} = require('jsdom');
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
-const {
-  window
-} = jsdom;
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
+var _objectSpread3 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
+
+var _enzyme = require("enzyme");
+
+var _enzymeAdapterReact = _interopRequireDefault(require("enzyme-adapter-react-16"));
+
+var _require = require('jsdom'),
+    JSDOM = _require.JSDOM;
+
+var jsdom = new JSDOM('<!doctype html><html><body></body></html>');
+var window = jsdom.window;
 window.Object = Object;
 window.Math = Math;
 global.window = window;
@@ -19,20 +24,24 @@ global.navigator = {
 };
 
 function copyProps(src, target) {
-  const props = Object.getOwnPropertyNames(src).filter(prop => typeof target[prop] === 'undefined').reduce((result, prop) => _objectSpread({}, result, {
-    [prop]: Object.getOwnPropertyDescriptor(src, prop)
-  }), {});
+  var props = Object.getOwnPropertyNames(src).filter(function (prop) {
+    return typeof target[prop] === 'undefined';
+  }).reduce(function (result, prop) {
+    return (0, _objectSpread3.default)({}, result, (0, _defineProperty2.default)({}, prop, Object.getOwnPropertyDescriptor(src, prop)));
+  }, {});
   Object.defineProperties(target, props);
 }
 
-const matchMediaPolyfill = () => ({
-  matches: false,
-  addListener: () => {},
-  removeListener: () => {}
-});
+var matchMediaPolyfill = function matchMediaPolyfill() {
+  return {
+    matches: false,
+    addListener: function addListener() {},
+    removeListener: function removeListener() {}
+  };
+};
 
 window.matchMedia = window.matchMedia || matchMediaPolyfill;
 copyProps(window, global);
-configure({
-  adapter: new ReactSixteenAdapter()
+(0, _enzyme.configure)({
+  adapter: new _enzymeAdapterReact.default()
 });

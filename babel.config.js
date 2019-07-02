@@ -12,9 +12,10 @@ module.exports = {
         "@babel/plugin-transform-runtime",
         "@babel/proposal-class-properties",
         "@babel/proposal-object-rest-spread",
+        "@babel/plugin-transform-react-jsx",
     ],
     "presets": [
-        "module:@babel/preset-react",
+        "module:@babel/preset-env",
         "module:@babel/preset-typescript",
     ],
 };

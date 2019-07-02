@@ -1,18 +1,53 @@
-import _objectSpread from "@babel/runtime/helpers/objectSpread";
-import { PaddingCount } from "../common"; // tslint:disable-next-line:no-any
+"use strict";
 
-const all = (...params) => params.every(Boolean);
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-const clearObject = value => Object.keys(value).filter(key => Boolean(value[key])).reduce((acc, curr) => _objectSpread({}, acc, {
-  [curr]: value[curr]
-}), {});
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getPaddingValues = exports.extractNumberFromStyle = exports.noop = exports.all = exports.clearObject = void 0;
 
-const noop = () => {};
+var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 
-export { clearObject, all, noop };
-export const extractNumberFromStyle = value => value ? Number(value.toString().replace('px', '')) : undefined;
-export const getPaddingValues = (padding, paddingLeft, paddingRight, paddingTop, paddingBottom) => {
-  const zeroPadding = {
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
+var _objectSpread3 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
+
+var _common = require("../common");
+
+// tslint:disable-next-line:no-any
+var all = function all() {
+  for (var _len = arguments.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
+    params[_key] = arguments[_key];
+  }
+
+  return params.every(Boolean);
+};
+
+exports.all = all;
+
+var clearObject = function clearObject(value) {
+  return Object.keys(value).filter(function (key) {
+    return Boolean(value[key]);
+  }).reduce(function (acc, curr) {
+    return (0, _objectSpread3.default)({}, acc, (0, _defineProperty2.default)({}, curr, value[curr]));
+  }, {});
+};
+
+exports.clearObject = clearObject;
+
+var noop = function noop() {};
+
+exports.noop = noop;
+
+var extractNumberFromStyle = function extractNumberFromStyle(value) {
+  return value ? Number(value.toString().replace('px', '')) : undefined;
+};
+
+exports.extractNumberFromStyle = extractNumberFromStyle;
+
+var getPaddingValues = function getPaddingValues(padding, paddingLeft, paddingRight, paddingTop, paddingBottom) {
+  var zeroPadding = {
     top: 0,
     right: 0,
     bottom: 0,
@@ -24,7 +59,7 @@ export const getPaddingValues = (padding, paddingLeft, paddingRight, paddingTop,
   }
 
   if (!padding) {
-    return _objectSpread({}, zeroPadding, {
+    return (0, _objectSpread3.default)({}, zeroPadding, {
       right: extractNumberFromStyle(paddingRight),
       left: extractNumberFromStyle(paddingLeft),
       top: extractNumberFromStyle(paddingTop),
@@ -32,25 +67,30 @@ export const getPaddingValues = (padding, paddingLeft, paddingRight, paddingTop,
     });
   }
 
-  const splittedPadding = padding.toString().split(' ');
-  const paddingValuesCount = splittedPadding.length;
-  const paddingValues = splittedPadding.map(extractNumberFromStyle);
+  var splittedPadding = padding.toString().split(' ');
+  var paddingValuesCount = splittedPadding.length;
+  var paddingValues = splittedPadding.map(extractNumberFromStyle);
 
   switch (paddingValuesCount) {
-    case PaddingCount.One:
+    case _common.PaddingCount.One:
       {
-        const [padding] = paddingValues;
+        var _paddingValues = (0, _slicedToArray2.default)(paddingValues, 1),
+            _padding = _paddingValues[0];
+
         return {
-          top: padding,
-          right: padding,
-          bottom: padding,
-          left: padding
+          top: _padding,
+          right: _padding,
+          bottom: _padding,
+          left: _padding
         };
       }
 
-    case PaddingCount.Two:
+    case _common.PaddingCount.Two:
       {
-        const [paddingVertical, paddingHorizontal] = paddingValues;
+        var _paddingValues2 = (0, _slicedToArray2.default)(paddingValues, 2),
+            paddingVertical = _paddingValues2[0],
+            paddingHorizontal = _paddingValues2[1];
+
         return {
           top: paddingVertical,
           right: paddingHorizontal,
@@ -59,27 +99,38 @@ export const getPaddingValues = (padding, paddingLeft, paddingRight, paddingTop,
         };
       }
 
-    case PaddingCount.Three:
+    case _common.PaddingCount.Three:
       {
-        const [paddingTop, paddingHorizontal, paddingBottom] = paddingValues;
+        var _paddingValues3 = (0, _slicedToArray2.default)(paddingValues, 3),
+            _paddingTop = _paddingValues3[0],
+            _paddingHorizontal = _paddingValues3[1],
+            _paddingBottom = _paddingValues3[2];
+
         return {
-          top: paddingTop,
-          right: paddingHorizontal,
-          bottom: paddingBottom,
-          left: paddingHorizontal
+          top: _paddingTop,
+          right: _paddingHorizontal,
+          bottom: _paddingBottom,
+          left: _paddingHorizontal
         };
       }
 
-    case PaddingCount.Four:
+    case _common.PaddingCount.Four:
     default:
       {
-        const [top, right, bottom, left] = paddingValues;
+        var _paddingValues4 = (0, _slicedToArray2.default)(paddingValues, 4),
+            top = _paddingValues4[0],
+            right = _paddingValues4[1],
+            bottom = _paddingValues4[2],
+            left = _paddingValues4[3];
+
         return {
-          top,
-          right,
-          bottom,
-          left
+          top: top,
+          right: right,
+          bottom: bottom,
+          left: left
         };
       }
   }
 };
+
+exports.getPaddingValues = getPaddingValues;
