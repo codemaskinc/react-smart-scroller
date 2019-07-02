@@ -26,3 +26,16 @@ Object.keys(_deviceDetect).forEach(function (key) {
     }
   });
 });
+
+var _server = require("./server");
+
+Object.keys(_server).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _server[key];
+    }
+  });
+});

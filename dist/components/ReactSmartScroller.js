@@ -368,7 +368,7 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      return _react.default.createElement(Wrapper, null, this.renderContent());
+      return !_utils.isServer ? _react.default.createElement(Wrapper, null, this.renderContent()) : null;
     }
   }, {
     key: "shouldRenderScrollbar",
