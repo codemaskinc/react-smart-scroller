@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import styled from 'styled-components'
 import { colors } from 'lib/styles'
 import { Padding, ReactSmartSliderProps } from 'lib/types'
-import { C, isMobile, isMacOs } from 'lib/utils'
+import { C, isMobile, isMacOs, isServer } from 'lib/utils'
 import { ReactSmartScrollerVertical } from './ReactSmartScrollerVertical'
 
 type ReactSmartSliderState = {
@@ -362,11 +362,11 @@ export class ReactSmartScroller extends React.Component<ReactSmartSliderProps, R
     }
 
     render() {
-        return (
+        return !isServer ? (
             <Wrapper>
                 {this.renderContent()}
             </Wrapper>
-        )
+        ) : null
     }
 }
 
