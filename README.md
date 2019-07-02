@@ -2,7 +2,7 @@
     <img src="assets/react-smart-scroller.png" width="400"/>
 </p>
 
-## <a href='https://coveralls.io/github/codegateinc/react-smart-scroller?branch=features/Readme'><img src='https://coveralls.io/repos/github/codegateinc/react-smart-scroller/badge.svg?branch=features/Readme' alt='Coverage Status' /></a> <a href='https://github.com/styled-components/styled-components'><img src='https://img.shields.io/badge/style-%F0%9F%92%85%20styled--components-orange.svg?colorB=daa357&colorA=db748e' alt='styled compoennts' /></a> <a href='https://www.typescriptlang.org/'><img src='https://badges.frapsoft.com/typescript/code/typescript.png?v=101' alt='typescript' height=20/></a> <a href='http://opensource.org/licenses/MIT'><img src='http://img.shields.io/badge/license-MIT-brightgreen.svg' alt='MIT' /></a> <a href="https://badge.fury.io/js/react-smart-scroller"><img src="https://badge.fury.io/js/react-smart-scroller.svg" alt="npm version"></a>
+## <a href='https://coveralls.io/github/codegateinc/react-smart-scroller?branch=master'><img src='https://coveralls.io/repos/github/codegateinc/react-smart-scroller/badge.svg?branch=master' alt='Coverage Status' /></a> <a href='https://github.com/styled-components/styled-components'><img src='https://img.shields.io/badge/style-%F0%9F%92%85%20styled--components-orange.svg?colorB=daa357&colorA=db748e' alt='styled compoennts' /></a> <a href='https://www.typescriptlang.org/'><img src='https://badges.frapsoft.com/typescript/code/typescript.png?v=101' alt='typescript' height=20/></a> <a href='http://opensource.org/licenses/MIT'><img src='http://img.shields.io/badge/license-MIT-brightgreen.svg' alt='MIT' /></a> <a href="https://badge.fury.io/js/react-smart-scroller"><img src="https://badge.fury.io/js/react-smart-scroller.svg" alt="npm version"></a>
 
 React-smart-scroller is a library that allows you to create highly customizable horizontal or vertical scroller in easy way.
 
@@ -19,15 +19,15 @@ Define your own spacing or columns per scroller width simply passing props.
 - Possibility of passing own thumb (own component)
 - Vertical scroll
 - Spacing between columns
+- Draggable content
 - Well typed (Typescript)
+- Server Side Rendering friendly
 
 <p align="center">
   <img src="assets/react-smart-scroller-demo-default.gif" />
 </p>
 
-### Live demo
-
-[![Edit cold-bash-p4qsr](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/cold-bash-p4qsr?fontsize=14)
+### [Live demo](https://codesandbox.io/embed/dark-cookies-gvh6p)
 
 ## Install
 `yarn add react-smart-scroller` or `npm install --save react-smart-scroller`
@@ -41,6 +41,7 @@ spacing       | number              | Default: `0`.<br> Space in pixels between 
 trackProps    | React.CssProperties | Default: `undefined`.<br> CSS styles to original track.
 thumb         | JSX.Element         | Default: `rectangle`.<br> Element that if provided overrides default rectangle.
 vertical      | boolean             | Default: `false`.<br> Defines direction of scrollbar - horizontal by default.<br>If height of ReactSmartScroller is not defined it will automatically resize to 100% and scroll will not be visible. 
+draggable     | boolean             | Default: `false`.<br> Allows to scroll by dragging content.
 
 ## Usage
 
@@ -167,6 +168,18 @@ This is what you'll see in your browser:
     <img src="assets/react-smart-scroller-usage-vertical.png" />
 </p>
 
+### draggable
+
+    export const Slider = () => (
+        <ReactSmartScroller draggable>
+            {renderImages()}
+        </ReactSmartScroller>
+    )
+    
+<p align="center">
+    <img src="assets/react-smart-scroller-usage-draggable.gif" />
+</p>
+
 ## todo
 
 - [x] thumb width dependent on scrollWidth
@@ -174,4 +187,4 @@ This is what you'll see in your browser:
 - [x] vertical scroll tests
 - [x] improve documentation
 - [x] more examples in usage
-- [ ] enable drag with mouse
+- [x] enable drag with mouse
