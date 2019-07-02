@@ -3,40 +3,48 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.isMacOs = exports.isMsEdge = exports.isMobile = exports.isAndroid = exports.isIOS = exports.isIpad = void 0;
+exports.isMobile = exports.isMacOs = exports.isMsEdge = exports.isAndroid = exports.isIOS = exports.isIpad = exports.checkAgent = void 0;
+
+var _server = require("./server");
+
+var checkAgent = function checkAgent(agentName) {
+  return !_server.isServer ? navigator.userAgent.includes(agentName) : false;
+};
+
+exports.checkAgent = checkAgent;
 
 var isIpad = function isIpad() {
-  return navigator.userAgent.includes('iPad');
+  return checkAgent('iPad');
 };
 
 exports.isIpad = isIpad;
 
 var isIOS = function isIOS() {
-  return navigator.userAgent.includes('iPhone') || isIpad();
+  return checkAgent('iPhone') || isIpad();
 };
 
 exports.isIOS = isIOS;
 
 var isAndroid = function isAndroid() {
-  return navigator.userAgent.includes('Android');
+  return checkAgent('Android');
 };
 
 exports.isAndroid = isAndroid;
+
+var isMsEdge = function isMsEdge() {
+  return checkAgent('Edge');
+};
+
+exports.isMsEdge = isMsEdge;
+
+var isMacOs = function isMacOs() {
+  return checkAgent('Mac');
+};
+
+exports.isMacOs = isMacOs;
 
 var isMobile = function isMobile() {
   return isAndroid() || isIOS();
 };
 
 exports.isMobile = isMobile;
-
-var isMsEdge = function isMsEdge() {
-  return navigator.userAgent.includes('Edge');
-};
-
-exports.isMsEdge = isMsEdge;
-
-var isMacOs = function isMacOs() {
-  return navigator.userAgent.includes('Mac');
-};
-
-exports.isMacOs = isMacOs;

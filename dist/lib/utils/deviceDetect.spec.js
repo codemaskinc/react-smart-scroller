@@ -2,6 +2,8 @@
 
 var _deviceDetect = require("./deviceDetect");
 
+var serverUtils = require("./server");
+
 var mockConfig = function mockConfig(device) {
   return {
     value: device,
@@ -40,5 +42,9 @@ describe('utils: deviceDetect', function () {
   it('should return true for Edge browser', function () {
     Object.defineProperty(window.navigator, agent, mockConfig('Edge'));
     expect((0, _deviceDetect.isMsEdge)()).toEqual(true);
+  });
+  it('should return false if window is undefined', function () {
+    serverUtils.isServer = true;
+    expect((0, _deviceDetect.checkAgent)('Edge')).toEqual(false);
   });
 });

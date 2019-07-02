@@ -21,6 +21,7 @@ Define your own spacing or columns per scroller width simply passing props.
 - Spacing between columns
 - Draggable content
 - Well typed (Typescript)
+- Server Side Rendering friendly
 
 <p align="center">
   <img src="assets/react-smart-scroller-demo-default.gif" />
