@@ -27,7 +27,7 @@ Define your own spacing or columns per scroller width simply passing props.
   <img src="assets/react-smart-scroller-demo-default.gif" />
 </p>
 
-### [Live demo](https://codesandbox.io/embed/dark-cookies-gvh6p)
+### [Live demo](https://codesandbox.io/embed/beautiful-blackburn-bpl64)
 
 ## Install
 `yarn add react-smart-scroller` or `npm install --save react-smart-scroller`
