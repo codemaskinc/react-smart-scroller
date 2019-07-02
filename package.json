@@ -1,6 +1,6 @@
 {
   "name": "react-smart-scroller",
-  "version": "1.0.5",
+  "version": "1.0.17-beta",
   "description": "React-smart-scroller is a library that allows you to create highly customizable horizontal or vertical scroller in easy way. You can modify track styles or pass your own thumb (own component)",
   "main": "dist/index.js",
   "scripts": {
@@ -44,8 +44,9 @@
     "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/plugin-transform-react-jsx": "^7.3.0",
     "@babel/plugin-transform-runtime": "^7.4.4",
-    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-env": "^7.4.5",
     "@babel/preset-typescript": "^7.3.3",
     "@types/enzyme": "3.1.15",
     "@types/enzyme-adapter-react-16": "1.0.3",
@@ -60,7 +61,9 @@
     "jsdom": "15.1.0",
     "react-scripts-ts": "4.0.8",
     "tslint": "5.17.0",
-    "typescript": "3.4.5"
+    "typescript": "3.4.5",
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   },
   "dependencies": {
     "styled-components": "4.3.1"

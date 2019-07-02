@@ -1,4 +1,6 @@
-import { isIOS, isAndroid, isMobile, isMsEdge } from './deviceDetect'
+import { isIOS, isAndroid, isMobile, isMsEdge, checkAgent } from './deviceDetect'
+
+const serverUtils = require('./server')
 
 const mockConfig = (device: string) => ({
     value: device,
@@ -43,5 +45,11 @@ describe('utils: deviceDetect', () => {
         Object.defineProperty(window.navigator, agent, mockConfig('Edge'))
 
         expect(isMsEdge()).toEqual(true)
+    })
+
+    it('should return false if window is undefined', () => {
+        serverUtils.isServer = true
+
+        expect(checkAgent('Edge')).toEqual(false)
     })
 })
