@@ -1,6 +1,42 @@
-export const isIpad = () => navigator.userAgent.includes('iPad');
-export const isIOS = () => navigator.userAgent.includes('iPhone') || isIpad();
-export const isAndroid = () => navigator.userAgent.includes('Android');
-export const isMobile = () => isAndroid() || isIOS();
-export const isMsEdge = () => navigator.userAgent.includes('Edge');
-export const isMacOs = () => navigator.userAgent.includes('Mac');
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isMacOs = exports.isMsEdge = exports.isMobile = exports.isAndroid = exports.isIOS = exports.isIpad = void 0;
+
+var isIpad = function isIpad() {
+  return navigator.userAgent.includes('iPad');
+};
+
+exports.isIpad = isIpad;
+
+var isIOS = function isIOS() {
+  return navigator.userAgent.includes('iPhone') || isIpad();
+};
+
+exports.isIOS = isIOS;
+
+var isAndroid = function isAndroid() {
+  return navigator.userAgent.includes('Android');
+};
+
+exports.isAndroid = isAndroid;
+
+var isMobile = function isMobile() {
+  return isAndroid() || isIOS();
+};
+
+exports.isMobile = isMobile;
+
+var isMsEdge = function isMsEdge() {
+  return navigator.userAgent.includes('Edge');
+};
+
+exports.isMsEdge = isMsEdge;
+
+var isMacOs = function isMacOs() {
+  return navigator.userAgent.includes('Mac');
+};
+
+exports.isMacOs = isMacOs;
