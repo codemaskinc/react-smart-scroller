@@ -2,7 +2,7 @@
     <img src="assets/react-smart-scroller.png" width="400"/>
 </p>
 
-## <a href='https://coveralls.io/github/codegateinc/react-smart-scroller?branch=feature/Scroller'><img src='https://coveralls.io/repos/github/codegateinc/react-smart-scroller/badge.svg?branch=feature/Scroller' alt='Coverage Status' /></a> <a href='https://github.com/styled-components/styled-components'><img src='https://img.shields.io/badge/style-%F0%9F%92%85%20styled--components-orange.svg?colorB=daa357&colorA=db748e' alt='styled compoennts' /></a> <a href='https://www.typescriptlang.org/'><img src='https://badges.frapsoft.com/typescript/code/typescript.png?v=101' alt='typescript' height=20/></a> <a href='http://opensource.org/licenses/MIT'><img src='http://img.shields.io/badge/license-MIT-brightgreen.svg' alt='MIT' /></a> <a href="https://badge.fury.io/js/react-smart-scroller"><img src="https://badge.fury.io/js/react-smart-scroller.svg" alt="npm version"></a>
+## <a href='https://coveralls.io/github/codegateinc/react-smart-scroller?branch=master'><img src='https://coveralls.io/repos/github/codegateinc/react-smart-scroller/badge.svg?branch=master' alt='Coverage Status' /></a> <a href='https://github.com/styled-components/styled-components'><img src='https://img.shields.io/badge/style-%F0%9F%92%85%20styled--components-orange.svg?colorB=daa357&colorA=db748e' alt='styled compoennts' /></a> <a href='https://www.typescriptlang.org/'><img src='https://badges.frapsoft.com/typescript/code/typescript.png?v=101' alt='typescript' height=20/></a> <a href='http://opensource.org/licenses/MIT'><img src='http://img.shields.io/badge/license-MIT-brightgreen.svg' alt='MIT' /></a> <a href="https://badge.fury.io/js/react-smart-scroller"><img src="https://badge.fury.io/js/react-smart-scroller.svg" alt="npm version"></a>
 
 React-smart-scroller is a library that allows you to create highly customizable horizontal or vertical scroller in easy way.
 
@@ -27,7 +27,7 @@ Define your own spacing or columns per scroller width simply passing props.
   <img src="assets/react-smart-scroller-demo-default.gif" />
 </p>
 
-### [Live demo](https://codesandbox.io/embed/dark-cookies-gvh6p)
+### [Live demo](https://codesandbox.io/embed/beautiful-blackburn-bpl64)
 
 ## Install
 `yarn add react-smart-scroller` or `npm install --save react-smart-scroller`
