@@ -1,3 +1,3 @@
 export * from './common'
 export { Padding } from './padding'
-export { ReactSmartSliderProps } from './reactSmartScroller'
+export { ReactSmartScrollerProps } from './reactSmartScroller'

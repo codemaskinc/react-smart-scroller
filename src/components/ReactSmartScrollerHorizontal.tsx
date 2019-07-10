@@ -1,29 +1,36 @@
 import React, { Fragment } from 'react'
 import styled from 'styled-components'
-import { Padding, ReactSmartScrollerProps } from 'lib/types'
-import { C, isMacOs, isMobile } from 'lib/utils'
 import { colors } from 'lib/styles'
+import { Padding, ReactSmartScrollerProps } from 'lib/types'
+import { C, isMobile, isMacOs } from 'lib/utils'
 
-type ReactSmartSliderVerticalState = {
-    scrollContainerHeight: number,
-    deltaYOrigin: number,
-    deltaY: number,
-    thumbWidth: number,
-    trackWidth: number,
-    scrollHeight: number,
-    scrollTop: number,
+type ReactSmartScrollerHorizontalState = {
+    scrollContainerWidth: number,
+    deltaXOrigin: number,
+    deltaX: number,
+    thumbHeight: number,
+    trackHeight: number,
+    scrollWidth: number,
+    scrollLeft: number,
     padding: Padding
 }
 
-export class ReactSmartScrollerVertical extends React.Component<ReactSmartScrollerProps, ReactSmartSliderVerticalState> {
-    state: ReactSmartSliderVerticalState = {
-        scrollContainerHeight: 0,
-        deltaYOrigin: 0,
-        deltaY: 0,
-        thumbWidth: 0,
-        trackWidth: 0,
-        scrollHeight: 0,
-        scrollTop: 0,
+export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScrollerProps, ReactSmartScrollerHorizontalState> {
+    static defaultProps: Partial<ReactSmartScrollerProps> = {
+        spacing: 0,
+        vertical: false,
+        draggable: false,
+        pagination: false
+    }
+
+    state: ReactSmartScrollerHorizontalState = {
+        scrollContainerWidth: 0,
+        deltaXOrigin: 0,
+        deltaX: 0,
+        thumbHeight: 0,
+        trackHeight: 0,
+        scrollWidth: 0,
+        scrollLeft: 0,
         padding: this.trackPadding
     }
 
@@ -40,8 +47,8 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
         this.onOverflowContentScroll = this.onOverflowContentScroll.bind(this)
         this.deleteMouseMoveEvent = this.deleteMouseMoveEvent.bind(this)
         this.onScrollbarClick = this.onScrollbarClick.bind(this)
-        this.onOverflowContentMouseDown = this.onOverflowContentMouseDown.bind(this)
         this.onOverflowContentDrag = this.onOverflowContentDrag.bind(this)
+        this.onOverflowContentMouseDown = this.onOverflowContentMouseDown.bind(this)
         this.deleteOverflowMouseMoveEvent = this.deleteOverflowMouseMoveEvent.bind(this)
     }
 
@@ -63,7 +70,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
         const cols = this.props.numCols as number
 
         if (!cols && overflownRef) {
-            return overflownRef.clientHeight < overflownRef.scrollHeight
+            return overflownRef.clientWidth < overflownRef.scrollWidth
         }
 
         return !(overflownRef && overflownRef.children.length <= cols)
@@ -88,26 +95,26 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
     }
 
     get contentMargin() {
-        const { thumbWidth, trackWidth } = this.state
-        const windowsScrollWidth = 20
-        const marginWidth = trackWidth > thumbWidth ? trackWidth : thumbWidth
-        const margin = isMacOs() ? marginWidth + windowsScrollWidth : marginWidth
+        const { thumbHeight, trackHeight } = this.state
+        const windowsScrollHeight = 20
+        const marginHeight = trackHeight > thumbHeight ? trackHeight : thumbHeight
+        const margin = isMacOs() ? marginHeight + windowsScrollHeight : marginHeight
 
         return !isMobile() && this.shouldRenderScrollbar
             ? `${margin + 10}px`
             : '20px'
     }
 
-    get rightOffset() {
-        return this.state.thumbWidth > this.state.trackWidth
-            ? (this.state.thumbWidth - this.state.trackWidth) / 2
+    get bottomOffset() {
+        return this.state.thumbHeight > this.state.trackHeight
+            ? (this.state.thumbHeight - this.state.trackHeight) / 2
             : 0
     }
 
-    scrollContainerReducedHeight(scrollContainerHeight: number) {
+    scrollContainerReducedWidth(scrollContainerWidth: number) {
         const { padding } = this.state
 
-        return scrollContainerHeight - (padding.top + padding.bottom)
+        return scrollContainerWidth - (padding.left + padding.right)
     }
 
     measureContainers() {
@@ -122,46 +129,42 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
 
         if (areRefsCurrent) {
             this.setState({
-                scrollContainerHeight: this.scrollContainerReducedHeight(overflownRef.clientHeight),
-                thumbWidth: thumbRef.offsetWidth,
-                trackWidth: trackRef.clientWidth,
-                scrollHeight: overflownRef.scrollHeight
+                scrollContainerWidth: this.scrollContainerReducedWidth(overflownRef.clientWidth),
+                thumbHeight: thumbRef.offsetHeight,
+                trackHeight: trackRef.clientHeight,
+                scrollWidth: overflownRef.scrollWidth
             })
         }
 
-        if (areRefsCurrent && thumbRef.offsetTop + thumbRef.offsetHeight > overflownRef.clientHeight) {
-            const scrollOffset = overflownRef.clientHeight - thumbRef.offsetHeight
+        if (areRefsCurrent && thumbRef.offsetLeft + thumbRef.clientWidth > overflownRef.clientWidth) {
+            const scrollOffset = overflownRef.clientWidth - thumbRef.clientWidth
 
-            overflownRef.scroll(0, overflownRef.scrollHeight)
-            thumbRef.style.top = `${scrollOffset}px`
+            overflownRef.scroll(overflownRef.scrollWidth, 0)
+            thumbRef.style.left = `${scrollOffset}px`
         }
     }
 
     onMouseDown(event: React.MouseEvent) {
         event.preventDefault()
 
-        const thumbRef = this.thumbRef.current as HTMLDivElement
-        const overflownRef = this.overflowContainerRef.current as HTMLDivElement
-
-        if (thumbRef && overflownRef) {
+        if (this.thumbRef.current) {
             this.setState({
-                deltaYOrigin: thumbRef.offsetTop,
-                deltaY: event.clientY + this.state.padding.top
+                deltaXOrigin: this.thumbRef.current.offsetLeft,
+                deltaX: event.clientX + this.state.padding.left
             })
         }
 
         window.addEventListener('mousemove', this.onMouseDrag)
     }
 
-    onScrollbarClick({ clientY }: React.MouseEvent) {
-        const { padding } = this.state
+    onScrollbarClick({ clientX }: React.MouseEvent) {
         const thumbRef = this.thumbRef.current as HTMLDivElement
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const shouldReturn = C.all(
             thumbRef,
             overflowRef,
-            clientY >= ((C.extractNumberFromStyle(thumbRef.style.top) || 0) + overflowRef.getBoundingClientRect().top + padding.top),
-            clientY <= ((C.extractNumberFromStyle(thumbRef.style.top) || 0) + overflowRef.getBoundingClientRect().top + thumbRef.offsetHeight + padding.top)
+            clientX >= (thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left),
+            clientX <= (thumbRef.offsetLeft + overflowRef.getBoundingClientRect().left + thumbRef.offsetWidth)
         )
 
         // leave this function if thumb was clicked
@@ -169,13 +172,13 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
             return null
         }
 
-        const maximumOffset = this.state.scrollContainerHeight - thumbRef.offsetHeight
-        const ratio = (overflowRef.scrollHeight - overflowRef.clientHeight) / maximumOffset
-        const deltaY = overflowRef.getBoundingClientRect().top + (thumbRef.offsetHeight / 2) + padding.top
+        const maximumOffset = this.state.scrollContainerWidth - thumbRef.offsetWidth
+        const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset
+        const deltaX = overflowRef.getBoundingClientRect().left + (thumbRef.offsetWidth / 2) + this.state.padding.left
 
         return overflowRef.scroll({
-            top: ratio * (clientY - deltaY),
-            left: 0,
+            left: ratio * (clientX - deltaX),
+            top: 0,
             behavior: 'smooth'
         })
     }
@@ -190,45 +193,45 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
 
     onMouseDrag(event: DragEvent | MouseEvent) {
         const zero = 0
-        const { deltaY, deltaYOrigin, scrollContainerHeight, padding } = this.state
+        const { deltaX, deltaXOrigin, scrollContainerWidth } = this.state
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const thumbRef = this.thumbRef.current as HTMLDivElement
-        const maximumOffset = scrollContainerHeight - thumbRef.offsetHeight
-        const offset = event.clientY - deltaY + deltaYOrigin + padding.top
-        const isBetweenClientHeight = offset >= zero && offset <= maximumOffset
+        const maximumOffset = scrollContainerWidth - thumbRef.offsetWidth
+        const offset = event.clientX - deltaX + deltaXOrigin
+        const isBetweenClientWidth = offset >= zero && offset <= maximumOffset
         const areRefsCurrent = C.all(
             Boolean(this.overflowContainerRef.current),
             Boolean(this.thumbRef.current)
         )
 
-        if (areRefsCurrent && !isBetweenClientHeight) {
-            const criticalDimension = offset < zero ? zero: maximumOffset
+        if (areRefsCurrent && !isBetweenClientWidth) {
+            const criticalDimension = offset < zero ? zero : maximumOffset
             const criticalScrollerDimensions = offset > zero
-                ? overflowRef.scrollHeight - overflowRef.offsetHeight
+                ? overflowRef.scrollWidth - overflowRef.clientWidth
                 : zero
 
-            thumbRef.style.top = `${criticalDimension}px`
-            overflowRef.scroll(zero, criticalScrollerDimensions)
+            thumbRef.style.left = `${criticalDimension}px`
+            overflowRef.scroll(criticalScrollerDimensions, zero)
         }
 
-        if (areRefsCurrent && isBetweenClientHeight) {
-            const ratio = (overflowRef.scrollHeight - overflowRef.offsetHeight) / maximumOffset
+        if (areRefsCurrent && isBetweenClientWidth) {
+            const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset
 
-            overflowRef.scroll(zero, ratio * offset)
-            thumbRef.style.top = `${offset}px`
+            overflowRef.scroll(ratio * offset, zero)
+            thumbRef.style.left = `${offset}px`
         }
     }
 
     onOverflowContentScroll() {
-        const { scrollContainerHeight } = this.state
+        const { scrollContainerWidth } = this.state
         const thumbRef = this.thumbRef.current  as HTMLDivElement
         const overflowRef = this.overflowContainerRef.current
 
         if (overflowRef && thumbRef) {
-            const maximumOffset = scrollContainerHeight - thumbRef.offsetHeight
-            const ratio = maximumOffset / (overflowRef.scrollHeight - overflowRef.clientHeight)
+            const maximumOffset = scrollContainerWidth - thumbRef.offsetWidth
+            const ratio = maximumOffset / (overflowRef.scrollWidth - overflowRef.clientWidth)
 
-            thumbRef.style.top = `${overflowRef.scrollTop * ratio}px`
+            thumbRef.style.left = `${overflowRef.scrollLeft * ratio}px`
         }
     }
 
@@ -239,27 +242,58 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
 
         if (overflowRef) {
             this.setState({
-                deltaY: event.clientY,
-                scrollTop: overflowRef.scrollTop
+                deltaX: event.clientX,
+                scrollLeft: overflowRef.scrollLeft
             })
         }
 
         window.addEventListener('mousemove', this.onOverflowContentDrag)
     }
 
-    onOverflowContentDrag(event: MouseEvent) {
-        const { deltaY, scrollTop } = this.state
+    onOverflowContentDrag(event: MouseEvent | DragEvent) {
+        const { deltaX, scrollLeft } = this.state
         const overflowRef = this.overflowContainerRef.current
 
-        if (overflowRef && event.clientY !== 0) {
-            overflowRef.scroll(0, scrollTop - (event.clientY - deltaY))
+        if (overflowRef && event.clientX !== 0) {
+            overflowRef.scroll(scrollLeft - (event.clientX - deltaX), 0)
         }
     }
 
+    renderChildren() {
+        const cols = this.props.numCols as number
+        const spacing = this.props.spacing as number
+        const padding = spacing / 2
+        const children = this.props.children as ChildNode
+
+        return React.Children.map(children, (child: ChildNode, index: number) => {
+            const paddingRight = index !== React.Children.count(children) - 1
+                ? `paddingRight: ${padding}px`
+                : undefined
+            const paddingLeft = index !== 0
+                ? `paddingLeft: ${padding}px`
+                : undefined
+            const flexBasis = cols ? `calc(100% / ${cols})` : 'unset'
+
+            return (
+                <ChildrenWrapper
+                    style={{
+                        padding: `0 ${padding}px`,
+                        flexBasis,
+                        paddingRight,
+                        paddingLeft,
+                        marginBottom: this.contentMargin
+                    }}
+                >
+                    {child}
+                </ChildrenWrapper>
+            )
+        })
+    }
+
     renderThumb() {
-        const { scrollContainerHeight, scrollHeight } = this.state
-        const percentageWidth = Number(((scrollContainerHeight * 100) / scrollHeight).toFixed(0))
-        const height = `${(percentageWidth * scrollContainerHeight) / 100}px`
+        const { scrollContainerWidth, scrollWidth } = this.state
+        const percentageWidth = Number(((scrollContainerWidth * 100) / scrollWidth).toFixed(0))
+        const width = `${(percentageWidth * scrollContainerWidth) / 100}px`
 
         if (this.props.thumb) {
             return React.cloneElement(
@@ -268,7 +302,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
                     ref: this.thumbRef,
                     onMouseDown: this.onMouseDown,
                     style: {
-                        top: 0,
+                        left: 0,
                         position: 'relative',
                         cursor: 'pointer',
                         ...this.props.thumb.props.style
@@ -281,13 +315,13 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
             <RectangleThumb
                 ref={this.thumbRef}
                 onMouseDown={this.onMouseDown}
-                style={{ height }}
+                style={{ width }}
             />
         )
     }
 
     renderScrollbar() {
-        const display = !isMobile() && this.shouldRenderScrollbar
+        const display = !isMobile() && this.shouldRenderScrollbar && !this.props.pagination
 
         return (
             <Track
@@ -295,56 +329,14 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
                 onClick={this.onScrollbarClick}
                 style={{
                     color: colors.gray.mediumGray,
-                    right: this.rightOffset,
+                    bottom: this.bottomOffset,
                     display: display ? 'flex' : 'none',
                     ...this.props.trackProps
                 }}
             >
-                <EmptyAbsolute>
-                    {this.renderThumb()}
-                </EmptyAbsolute>
+                {this.renderThumb()}
             </Track>
         )
-    }
-
-    renderChildren() {
-        const cols = this.props.numCols as number
-        const spacing = this.props.spacing as number
-        const padding = spacing / 2
-        const children = this.props.children as ChildNode
-
-        return React.Children.map(children, (child: ChildNode, index: number) => {
-            const paddingBottom = index !== React.Children.count(children) - 1
-                ? `paddingBottom: ${padding}px`
-                : undefined
-            const paddingTop = index !== 0
-                ? `paddingTop: ${padding}px`
-                : undefined
-            const height = cols ? `calc(100% / ${cols})` : 'auto'
-            const extendedChild = React.cloneElement(
-                children[index],
-                {
-                    style: {
-                        display: 'flex',
-                        ...children[index].props.style
-                    }
-                }
-            )
-
-            return (
-                <ChildrenWrapper
-                    style={{
-                        padding: `${padding}px 0`,
-                        height,
-                        paddingTop,
-                        paddingBottom,
-                        marginRight: this.contentMargin
-                    }}
-                >
-                    {extendedChild}
-                </ChildrenWrapper>
-            )
-        })
     }
 
     render() {
@@ -353,7 +345,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
 
         return (
             <Fragment>
-                <Content
+                <SecondWrapper
                     ref={this.overflowContainerRef}
                     onScroll={this.onOverflowContentScroll}
                     onLoad={this.measureContainers}
@@ -361,47 +353,43 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
                     style={{ cursor }}
                 >
                     {this.renderChildren()}
-                </Content>
+                </SecondWrapper>
                 {this.renderScrollbar()}
             </Fragment>
         )
     }
 }
 
-export const Content = styled.div`
-    height: 100%;
+export const SecondWrapper = styled.div`
     display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    margin-right: -20px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    margin-bottom: -20px;
     -webkit-overflow-scrolling: touch;
 `
 
 export const ChildrenWrapper = styled.div`
+    flex: 0 0 auto;
     box-sizing: border-box;
 `
 
 export const Track = styled.div`
     position: absolute;
     cursor: pointer;
-    right: 0;
-    height: 100%;
+    left: 0;
+    width: 100%;
     background-color: ${colors.gray.mediumGray};
-    top: 0;
-    width: 10px;
+    bottom: 0;
+    height: 10px;
     display: flex;
-    justify-content: center;
+    align-items: center;
 `
 
 export const RectangleThumb = styled.div`
     position: relative;
+    left: 0;
     background-color: ${colors.primary};
     cursor: pointer;
-    width: 10px;
-    height: 100%;
-`
-
-export const EmptyAbsolute = styled.div`
-    position: absolute;
+    width: 100px;
+    height: 10px;
 `
