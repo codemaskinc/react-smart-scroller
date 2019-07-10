@@ -6,14 +6,16 @@ import { colors } from 'lib/styles'
 type ReactSmartScrollerPaginationState = {
     numberOfViews: number,
     paginationIndex: number,
-    scrollValue: number
+    scrollValue: number,
+    children: React.ReactNode
 }
 
 export class ReactSmartScrollerPagination extends React.Component<ReactSmartScrollerProps, ReactSmartScrollerPaginationState> {
     state: ReactSmartScrollerPaginationState = {
         paginationIndex: 0,
         numberOfViews: 0,
-        scrollValue: 0
+        scrollValue: 0,
+        children: this.props.children
     }
 
     private overflowContainerRef: React.RefObject<HTMLDivElement> = React.createRef()
@@ -31,25 +33,34 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         })
     }
 
-    get numberOfViews() {
-        const overflowRef = this.overflowContainerRef.current
-
-        if (overflowRef) {
-            return Math.ceil(overflowRef.scrollWidth / overflowRef.clientWidth)
-        }
-
-        return 1
-    }
-
     get childrenCount() {
         return React.Children.count(this.props.children)
+    }
+
+    get numberOfViews() {
+        const numCols = this.props.numCols || 0
+
+        return Math.ceil(this.childrenCount / numCols)
     }
 
     onNext() {
         const overflowRef = this.overflowContainerRef.current
         const { paginationIndex, scrollValue } = this.state
+        const { paginationConfig } = this.props
 
-        if (overflowRef && paginationIndex < this.childrenCount - 1) {
+        if (overflowRef && paginationIndex === this.numberOfViews - 1 && paginationConfig && paginationConfig.infinite) {
+            const index = 0
+            const newScrollValue = index * overflowRef.offsetWidth
+
+            overflowRef.style.transform = `translate(-${newScrollValue}px)`
+
+            return this.setState({
+                paginationIndex: index,
+                scrollValue: newScrollValue
+            })
+        }
+
+        if (overflowRef && paginationIndex < this.numberOfViews - 1) {
             const newScrollValue = scrollValue - overflowRef.offsetWidth
             const index = scrollValue + overflowRef.offsetWidth >= overflowRef.scrollWidth
                 ? paginationIndex
@@ -57,7 +68,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
 
             overflowRef.style.transform = `translate(${newScrollValue}px)`
 
-            this.setState({
+            return this.setState({
                 paginationIndex: index,
                 scrollValue: newScrollValue
             })
@@ -67,6 +78,19 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
     onPrevious() {
         const overflowRef = this.overflowContainerRef.current
         const { paginationIndex, scrollValue } = this.state
+        const { paginationConfig } = this.props
+
+        if (overflowRef && paginationIndex === 0 && paginationConfig && paginationConfig.infinite) {
+            const index = this.numberOfViews - 1
+            const newScrollValue = index * overflowRef.offsetWidth
+
+            overflowRef.style.transform = `translate(-${newScrollValue}px)`
+
+            return this.setState({
+                paginationIndex: index,
+                scrollValue: -newScrollValue
+            })
+        }
 
         if (overflowRef && paginationIndex > 0) {
             const index = paginationIndex - 1
@@ -74,7 +98,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
 
             overflowRef.style.transform = `translate(${newScrollValue}px)`
 
-            this.setState({
+            return this.setState({
                 paginationIndex: index,
                 scrollValue: newScrollValue
             })
@@ -101,7 +125,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const cols = this.props.numCols as number
         const spacing = this.props.spacing as number
         const padding = spacing / 2
-        const children = this.props.children as ChildNode
+        const children = this.state.children as ChildNode
 
         return React.Children.map(children, (child: ChildNode, index: number) => {
             const paddingRight = index !== React.Children.count(children) - 1
@@ -128,10 +152,12 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
     }
 
     renderDots() {
-        return Array.from(Array(this.childrenCount)).map((_, index) => {
+        const { paginationConfig } = this.props
+
+        return Array.from(Array(this.numberOfViews)).map((_, index) => {
             const backgroundColor = this.state.paginationIndex === index
-                ? colors.primary
-                : colors.gray.mediumGray
+                ? paginationConfig && paginationConfig.activeDotColor || colors.primary
+                : paginationConfig && paginationConfig.unactiveDotsColor || colors.gray.mediumGray
 
             return (
                 <Dot
