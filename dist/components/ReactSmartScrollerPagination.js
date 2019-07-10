@@ -112,7 +112,8 @@ function (_React$Component) {
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "state", {
       paginationIndex: 0,
       numberOfViews: 0,
-      scrollValue: 0
+      scrollValue: 0,
+      children: _this.props.children
     });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "overflowContainerRef", _react.default.createRef());
     _this.onNext = _this.onNext.bind((0, _assertThisInitialized2.default)(_this));
@@ -134,14 +135,27 @@ function (_React$Component) {
       var _this$state = this.state,
           paginationIndex = _this$state.paginationIndex,
           scrollValue = _this$state.scrollValue;
+      var paginationConfig = this.props.paginationConfig;
 
-      if (overflowRef && paginationIndex < this.childrenCount - 1) {
-        var newScrollValue = scrollValue - overflowRef.offsetWidth;
-        var index = scrollValue + overflowRef.offsetWidth >= overflowRef.scrollWidth ? paginationIndex : paginationIndex + 1;
-        overflowRef.style.transform = "translate(".concat(newScrollValue, "px)");
-        this.setState({
+      if (overflowRef && paginationIndex === this.numberOfViews - 1 && paginationConfig && paginationConfig.infinite) {
+        var index = 0;
+        var newScrollValue = index * overflowRef.offsetWidth;
+        overflowRef.style.transform = "translate(-".concat(newScrollValue, "px)");
+        return this.setState({
           paginationIndex: index,
           scrollValue: newScrollValue
+        });
+      }
+
+      if (overflowRef && paginationIndex < this.numberOfViews - 1) {
+        var _newScrollValue = scrollValue - overflowRef.offsetWidth;
+
+        var _index = scrollValue + overflowRef.offsetWidth >= overflowRef.scrollWidth ? paginationIndex : paginationIndex + 1;
+
+        overflowRef.style.transform = "translate(".concat(_newScrollValue, "px)");
+        return this.setState({
+          paginationIndex: _index,
+          scrollValue: _newScrollValue
         });
       }
     }
@@ -152,14 +166,27 @@ function (_React$Component) {
       var _this$state2 = this.state,
           paginationIndex = _this$state2.paginationIndex,
           scrollValue = _this$state2.scrollValue;
+      var paginationConfig = this.props.paginationConfig;
+
+      if (overflowRef && paginationIndex === 0 && paginationConfig && paginationConfig.infinite) {
+        var index = this.numberOfViews - 1;
+        var newScrollValue = index * overflowRef.offsetWidth;
+        overflowRef.style.transform = "translate(-".concat(newScrollValue, "px)");
+        return this.setState({
+          paginationIndex: index,
+          scrollValue: -newScrollValue
+        });
+      }
 
       if (overflowRef && paginationIndex > 0) {
-        var index = paginationIndex - 1;
-        var newScrollValue = scrollValue + overflowRef.offsetWidth;
-        overflowRef.style.transform = "translate(".concat(newScrollValue, "px)");
-        this.setState({
-          paginationIndex: index,
-          scrollValue: newScrollValue
+        var _index2 = paginationIndex - 1;
+
+        var _newScrollValue2 = scrollValue + overflowRef.offsetWidth;
+
+        overflowRef.style.transform = "translate(".concat(_newScrollValue2, "px)");
+        return this.setState({
+          paginationIndex: _index2,
+          scrollValue: _newScrollValue2
         });
       }
     }
@@ -184,7 +211,7 @@ function (_React$Component) {
       var cols = this.props.numCols;
       var spacing = this.props.spacing;
       var padding = spacing / 2;
-      var children = this.props.children;
+      var children = this.state.children;
       return _react.default.Children.map(children, function (child, index) {
         var paddingRight = index !== _react.default.Children.count(children) - 1 ? "paddingRight: ".concat(padding, "px") : undefined;
         var paddingLeft = index !== 0 ? "paddingLeft: ".concat(padding, "px") : undefined;
@@ -204,8 +231,9 @@ function (_React$Component) {
     value: function renderDots() {
       var _this2 = this;
 
-      return Array.from(Array(this.childrenCount)).map(function (_, index) {
-        var backgroundColor = _this2.state.paginationIndex === index ? _styles.colors.primary : _styles.colors.gray.mediumGray;
+      var paginationConfig = this.props.paginationConfig;
+      return Array.from(Array(this.numberOfViews)).map(function (_, index) {
+        var backgroundColor = _this2.state.paginationIndex === index ? paginationConfig && paginationConfig.activeDotColor || _styles.colors.primary : paginationConfig && paginationConfig.unactiveDotsColor || _styles.colors.gray.mediumGray;
         return _react.default.createElement(Dot, {
           key: index,
           style: {
@@ -234,20 +262,15 @@ function (_React$Component) {
       }, this.renderChildren()), this.renderPagination());
     }
   }, {
-    key: "numberOfViews",
-    get: function get() {
-      var overflowRef = this.overflowContainerRef.current;
-
-      if (overflowRef) {
-        return Math.ceil(overflowRef.scrollWidth / overflowRef.clientWidth);
-      }
-
-      return 1;
-    }
-  }, {
     key: "childrenCount",
     get: function get() {
       return _react.default.Children.count(this.props.children);
+    }
+  }, {
+    key: "numberOfViews",
+    get: function get() {
+      var numCols = this.props.numCols || 0;
+      return Math.ceil(this.childrenCount / numCols);
     }
   }]);
   return ReactSmartScrollerPagination;

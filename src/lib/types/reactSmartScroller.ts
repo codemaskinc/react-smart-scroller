@@ -9,6 +9,9 @@ export type ReactSmartScrollerProps = {
     draggable?: boolean,
     pagination?: boolean,
     paginationConfig?: {
-        paginationDots?: number
-    }
+        infinite?: boolean,
+        unactiveDotsColor?: string,
+        activeDotColor?: string
+    },
+    renderPagination?(onNext: () => void, onPrev: () => void, selectedDot: number): JSX.Element
 }
