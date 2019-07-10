@@ -10,9 +10,7 @@ var _enzyme = require("enzyme");
 
 var _styles = require("../lib/styles");
 
-var _ReactSmartScroller = require("./ReactSmartScroller");
-
-var _ReactSmartScrollerVertical = require("./ReactSmartScrollerVertical");
+var _ReactSmartScrollerHorizontal = require("./ReactSmartScrollerHorizontal");
 
 var mockConfig = function mockConfig(device) {
   return {
@@ -43,56 +41,51 @@ var initialProps = {
 };
 describe('ReactSmartSlider: lib/components', function () {
   it('should render itself', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
-    expect(wrapper.find(_ReactSmartScroller.Wrapper).exists()).toEqual(true);
-    expect(wrapper.find(_ReactSmartScroller.SecondWrapper).exists()).toEqual(true);
-    expect(wrapper.find(_ReactSmartScroller.RectangleThumb).exists()).toEqual(true);
-    expect(wrapper.find(_ReactSmartScroller.Track).exists()).toEqual(true);
-    wrapper.setProps({
-      vertical: true
-    });
-    expect(wrapper.find(_ReactSmartScrollerVertical.ReactSmartScrollerVertical).exists()).toEqual(true);
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
+    expect(wrapper.find(_ReactSmartScrollerHorizontal.SecondWrapper).exists()).toEqual(true);
+    expect(wrapper.find(_ReactSmartScrollerHorizontal.RectangleThumb).exists()).toEqual(true);
+    expect(wrapper.find(_ReactSmartScrollerHorizontal.Track).exists()).toEqual(true);
   });
   it('should not render Scrollbar', function () {
     Object.defineProperty(window.navigator, agent, mockConfig('iPhone'));
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
-    expect(wrapper.find(_ReactSmartScroller.Track).props().style.display).toEqual('none');
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
+    expect(wrapper.find(_ReactSmartScrollerHorizontal.Track).props().style.display).toEqual('none');
   });
   it('should invoke onOverflowContentScroll onScroll', function () {
-    var onOverflowContentScrollSpy = jest.spyOn(_ReactSmartScroller.ReactSmartScroller.prototype, 'onOverflowContentScroll');
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
-    wrapper.find(_ReactSmartScroller.SecondWrapper).simulate('scroll');
+    var onOverflowContentScrollSpy = jest.spyOn(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal.prototype, 'onOverflowContentScroll');
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
+    wrapper.find(_ReactSmartScrollerHorizontal.SecondWrapper).simulate('scroll');
     expect(onOverflowContentScrollSpy).toHaveBeenCalled();
   });
   it('should invoke measureContainers onLoad', function () {
-    var measureContainersSpy = jest.spyOn(_ReactSmartScroller.ReactSmartScroller.prototype, 'measureContainers');
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
-    wrapper.find(_ReactSmartScroller.SecondWrapper).simulate('load');
+    var measureContainersSpy = jest.spyOn(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal.prototype, 'measureContainers');
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
+    wrapper.find(_ReactSmartScrollerHorizontal.SecondWrapper).simulate('load');
     expect(measureContainersSpy).toHaveBeenCalled();
   });
   it('should invoke addEventListener', function () {
     window.addEventListener = jest.fn();
-    (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
+    (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
     expect(window.addEventListener).toHaveBeenCalled();
   });
   it('should invoke removeEventListener', function () {
     window.removeEventListener = jest.fn();
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
     wrapper.unmount();
     expect(window.removeEventListener).toHaveBeenCalled();
   });
   it('should invoke onMouseDown', function () {
     Object.defineProperty(window.navigator, agent, mockConfig('web'));
-    var onMouseDownSpy = jest.spyOn(_ReactSmartScroller.ReactSmartScroller.prototype, 'onMouseDown');
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
+    var onMouseDownSpy = jest.spyOn(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal.prototype, 'onMouseDown');
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
     var event = {
       preventDefault: jest.fn()
     };
-    wrapper.find(_ReactSmartScroller.RectangleThumb).simulate('mousedown', event);
+    wrapper.find(_ReactSmartScrollerHorizontal.RectangleThumb).simulate('mousedown', event);
     expect(onMouseDownSpy).toHaveBeenCalled();
   });
   it('should set state after measureContainers invoked', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, (0, _extends2.default)({}, initialProps, {
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, (0, _extends2.default)({}, initialProps, {
       numCols: undefined
     })));
     var wrapperInstance = wrapper.instance();
@@ -121,7 +114,7 @@ describe('ReactSmartSlider: lib/components', function () {
     expect(wrapper.state().scrollContainerWidth).toEqual(documentWidth);
   });
   it('should change thumbRef after measureContainers invoked', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, (0, _extends2.default)({}, initialProps, {
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, (0, _extends2.default)({}, initialProps, {
       numCols: undefined
     })));
     var wrapperInstance = wrapper.instance();
@@ -157,7 +150,7 @@ describe('ReactSmartSlider: lib/components', function () {
   });
   it('should change state after onMouseDown', function () {
     var padding = 20;
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, (0, _extends2.default)({}, initialProps, {
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, (0, _extends2.default)({}, initialProps, {
       numCols: undefined,
       trackProps: {
         padding: padding
@@ -178,18 +171,18 @@ describe('ReactSmartSlider: lib/components', function () {
     getRefCurrent('thumbRef', {
       offsetLeft: offsetLeft
     });
-    wrapper.find(_ReactSmartScroller.RectangleThumb).simulate('mousedown', onMouseDownEvent);
+    wrapper.find(_ReactSmartScrollerHorizontal.RectangleThumb).simulate('mousedown', onMouseDownEvent);
     expect(wrapper.state().deltaXOrigin).toEqual(offsetLeft);
     expect(wrapper.state().deltaX).toEqual(clientX + padding);
     wrapper.setProps({
       trackProps: undefined
     });
-    wrapper.find(_ReactSmartScroller.RectangleThumb).simulate('mousedown', onMouseDownEvent);
+    wrapper.find(_ReactSmartScrollerHorizontal.RectangleThumb).simulate('mousedown', onMouseDownEvent);
     expect(wrapper.state().deltaXOrigin).toEqual(offsetLeft);
     expect(wrapper.state().deltaX).toEqual(clientX + padding);
   });
   it('should set thumb left style', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, (0, _extends2.default)({}, initialProps, {
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, (0, _extends2.default)({}, initialProps, {
       numCols: undefined
     })));
     var wrapperInstance = wrapper.instance();
@@ -232,7 +225,7 @@ describe('ReactSmartSlider: lib/components', function () {
     expect(wrapperInstance[thumbRef].current.style.left).toEqual("".concat(0, "px"));
   });
   it('should set thumb left style when overflownScrollContent scrolled', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, (0, _extends2.default)({}, initialProps, {
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, (0, _extends2.default)({}, initialProps, {
       numCols: undefined
     })));
     var wrapperInstance = wrapper.instance();
@@ -269,7 +262,7 @@ describe('ReactSmartSlider: lib/components', function () {
   });
   it('should render custom thumb if provided', function () {
     _react.default.cloneElement = jest.fn();
-    (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, (0, _extends2.default)({}, initialProps, {
+    (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, (0, _extends2.default)({}, initialProps, {
       numCols: undefined,
       thumb: _react.default.createElement("div", {
         style: {
@@ -282,13 +275,13 @@ describe('ReactSmartSlider: lib/components', function () {
   });
   it('should remove mousemove event', function () {
     window.removeEventListener = jest.fn();
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, null));
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, null));
     var wrapperInstance = wrapper.instance();
     wrapperInstance.deleteMouseMoveEvent();
     expect(window.removeEventListener).toHaveBeenCalled();
   });
   it('should invoke scroll on overflownRef', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
     var wrapperInstance = wrapper.instance();
 
     var getRefCurrent = function getRefCurrent(refName, refContent) {
@@ -325,7 +318,7 @@ describe('ReactSmartSlider: lib/components', function () {
     expect(wrapperInstance[overflowContainerRef].current.scroll).toHaveBeenCalled();
   });
   it('should return null if thumbClicked on onScrollbarClick response', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
     var wrapperInstance = wrapper.instance();
 
     var getRefCurrent = function getRefCurrent(refName, refContent) {
@@ -362,7 +355,7 @@ describe('ReactSmartSlider: lib/components', function () {
     expect(wrapperInstance[overflowContainerRef].current.scroll).not.toHaveBeenCalled();
   });
   it('should return not changed scrollContainerWidth', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, (0, _extends2.default)({}, initialProps, {
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, (0, _extends2.default)({}, initialProps, {
       trackProps: undefined
     })));
     var wrapperInstance = wrapper.instance();
@@ -380,7 +373,7 @@ describe('ReactSmartSlider: lib/components', function () {
     expect(wrapperInstance.scrollContainerReducedWidth(containerWidth)).toEqual(containerWidth - 2 * padding);
   });
   it('should invoke scroll after content dragged', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
     var wrapperInstance = wrapper.instance();
 
     var getRefCurrent = function getRefCurrent(refName, refContent) {
@@ -402,7 +395,7 @@ describe('ReactSmartSlider: lib/components', function () {
     expect(wrapperInstance[overflowContainerRef].current.scroll).toHaveBeenCalled();
   });
   it('should not invoke scroll after component dragged', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
     var wrapperInstance = wrapper.instance();
 
     var getRefCurrent = function getRefCurrent(refName, refContent) {
@@ -421,7 +414,7 @@ describe('ReactSmartSlider: lib/components', function () {
   });
   it('should invoke event listener and setState after onOverflowContentMouseDown', function () {
     window.addEventListener = jest.fn();
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, (0, _extends2.default)({}, initialProps, {
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, (0, _extends2.default)({}, initialProps, {
       draggable: true
     })));
     var wrapperInstance = wrapper.instance();
@@ -443,13 +436,13 @@ describe('ReactSmartSlider: lib/components', function () {
       scrollLeft: state.scrollLeft,
       children: []
     });
-    wrapper.find(_ReactSmartScroller.SecondWrapper).simulate('mousedown', event);
+    wrapper.find(_ReactSmartScrollerHorizontal.SecondWrapper).simulate('mousedown', event);
     expect(window.addEventListener).toHaveBeenCalled();
     expect(wrapper.state().deltaX).toEqual(state.deltaX);
     expect(wrapper.state().scrollLeft).toEqual(state.scrollLeft);
   });
   it('should not setState after onOverflowContentMouseDown invoked', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, (0, _extends2.default)({}, initialProps, {
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, (0, _extends2.default)({}, initialProps, {
       draggable: true
     })));
     var state = {
@@ -460,19 +453,19 @@ describe('ReactSmartSlider: lib/components', function () {
       clientX: state.deltaX,
       preventDefault: jest.fn()
     };
-    wrapper.find(_ReactSmartScroller.SecondWrapper).simulate('mousedown', event);
+    wrapper.find(_ReactSmartScrollerHorizontal.SecondWrapper).simulate('mousedown', event);
     expect(wrapper.state().deltaX).toEqual(state.deltaX);
     expect(wrapper.state().scrollLeft).toEqual(state.scrollLeft);
   });
   it('should invoke removeEventListener after deleteOverflowMouseMoveEvent', function () {
     window.removeEventListener = jest.fn();
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
     var wrapperInstance = wrapper.instance();
     wrapperInstance.deleteOverflowMouseMoveEvent();
     expect(window.removeEventListener).toHaveBeenCalled();
   });
   it('should set thumb critical dimensions after mouseDrag', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, (0, _extends2.default)({}, initialProps, {
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, (0, _extends2.default)({}, initialProps, {
       numCols: undefined
     })));
     var wrapperInstance = wrapper.instance();
@@ -531,7 +524,7 @@ describe('ReactSmartSlider: lib/components', function () {
     expect(wrapperInstance[overflownRef].current.scroll).toHaveBeenCalledWith(criticalScrollerDimensions, 0);
   });
   it('should return margin after contentMargin invoked', function () {
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
     var wrapperInstance = wrapper.instance();
     var state = {
       thumbHeight: 20,
@@ -548,13 +541,13 @@ describe('ReactSmartSlider: lib/components', function () {
     expect(wrapperInstance.contentMargin).toEqual("".concat(200 + windowsScrollWidth + 10, "px"));
   });
   it('should invoke onScrollbarClick after CustomScrollbar clicked', function () {
-    _ReactSmartScroller.ReactSmartScroller.prototype.onScrollbarClick = jest.fn();
-    var onScrollbarClickSpy = jest.spyOn(_ReactSmartScroller.ReactSmartScroller.prototype, 'onScrollbarClick');
-    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScroller.ReactSmartScroller, initialProps));
+    _ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal.prototype.onScrollbarClick = jest.fn();
+    var onScrollbarClickSpy = jest.spyOn(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal.prototype, 'onScrollbarClick');
+    var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
     var event = {
       clientX: 123
     };
-    wrapper.find(_ReactSmartScroller.Track).simulate('click', event);
+    wrapper.find(_ReactSmartScrollerHorizontal.Track).simulate('click', event);
     expect(onScrollbarClickSpy).toHaveBeenCalled();
   });
 });

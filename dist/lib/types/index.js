@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var _exportNames = {
   Padding: true,
-  ReactSmartSliderProps: true
+  ReactSmartScrollerProps: true
 };
 Object.defineProperty(exports, "Padding", {
   enumerable: true,
@@ -13,10 +13,10 @@ Object.defineProperty(exports, "Padding", {
     return _padding.Padding;
   }
 });
-Object.defineProperty(exports, "ReactSmartSliderProps", {
+Object.defineProperty(exports, "ReactSmartScrollerProps", {
   enumerable: true,
   get: function get() {
-    return _reactSmartScroller.ReactSmartSliderProps;
+    return _reactSmartScroller.ReactSmartScrollerProps;
   }
 });
 

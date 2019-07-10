@@ -1,10 +1,14 @@
 import React from 'react'
 
-export type ReactSmartSliderProps = {
+export type ReactSmartScrollerProps = {
     numCols?: number,
     spacing?: number,
     trackProps?: React.CSSProperties,
     thumb?: JSX.Element,
     vertical?: boolean,
-    draggable?: boolean
+    draggable?: boolean,
+    pagination?: boolean,
+    paginationConfig?: {
+        paginationDots?: number
+    }
 }
