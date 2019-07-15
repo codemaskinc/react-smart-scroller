@@ -2,12 +2,19 @@ import React from 'react'
 import styled from 'styled-components'
 import { ReactSmartScrollerProps } from 'lib/types'
 import { colors } from 'lib/styles'
+import { C, isMobile } from 'lib/utils'
 
 type ReactSmartScrollerPaginationState = {
     numberOfViews: number,
     paginationIndex: number,
     scrollValue: number,
-    children: React.ReactNode
+    children: React.ReactNode,
+    deltaX: number,
+    deltaY: number,
+    scrollLeft: number,
+    dragScroll: number,
+    lockedMove: boolean,
+    horizontal: boolean
 }
 
 export class ReactSmartScrollerPagination extends React.Component<ReactSmartScrollerProps, ReactSmartScrollerPaginationState> {
@@ -15,7 +22,13 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         paginationIndex: 0,
         numberOfViews: 0,
         scrollValue: 0,
-        children: this.props.children
+        children: this.props.children,
+        deltaX: 0,
+        scrollLeft: 0,
+        dragScroll: 0,
+        deltaY: 0,
+        horizontal: false,
+        lockedMove: false
     }
 
     private overflowContainerRef: React.RefObject<HTMLDivElement> = React.createRef()
@@ -25,12 +38,30 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
 
         this.onNext = this.onNext.bind(this)
         this.onPrevious = this.onPrevious.bind(this)
+        this.onDotClick = this.onDotClick.bind(this)
+        this.onTouchMove = this.onTouchMove.bind(this)
+        this.onTouchStart = this.onTouchStart.bind(this)
+        this.onOverflowContentDrag = this.onOverflowContentDrag.bind(this)
+        this.onOverflowContentMouseDown = this.onOverflowContentMouseDown.bind(this)
+        this.deleteOverflowMouseMoveEvent = this.deleteOverflowMouseMoveEvent.bind(this)
     }
 
     componentDidMount() {
         this.setState({
             numberOfViews: this.numberOfViews
         })
+
+        window.addEventListener('touchstart', this.onTouchStart)
+        window.addEventListener('touchmove', this.onTouchMove, { passive: false })
+        window.addEventListener('touchend', this.deleteOverflowMouseMoveEvent)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('touchstart', this.onTouchStart)
+        window.removeEventListener('mousemove', this.onOverflowContentDrag)
+        window.removeEventListener('mouseup', this.deleteOverflowMouseMoveEvent)
+        window.removeEventListener('touchmove', this.onTouchMove)
+        window.removeEventListener('touchend', this.deleteOverflowMouseMoveEvent)
     }
 
     get childrenCount() {
@@ -121,6 +152,151 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         }
     }
 
+    onOverflowContentMouseDown(event: React.MouseEvent) {
+        event.preventDefault()
+
+        const overflowRef = this.overflowContainerRef.current
+
+        if (overflowRef) {
+            overflowRef.style.transition = 'unset'
+            overflowRef.style.transform = `translate(${this.state.scrollValue}px)`
+
+            this.setState({
+                deltaX: event.clientX,
+                scrollLeft: this.state.scrollValue,
+                dragScroll: this.state.scrollValue
+            })
+
+            window.addEventListener('mousemove', this.onOverflowContentDrag)
+            window.addEventListener('mouseup', this.deleteOverflowMouseMoveEvent)
+        }
+    }
+
+    onOverflowContentDrag(event: MouseEvent | DragEvent) {
+        const { deltaX, scrollLeft } = this.state
+        const overflowRef = this.overflowContainerRef.current
+        const dragScroll = scrollLeft + (event.clientX - deltaX)
+
+        if (overflowRef && event.clientX !== 0) {
+            overflowRef.style.transform = `translate(${dragScroll}px)`
+
+            this.setState({
+                dragScroll
+            })
+        }
+    }
+
+    onTouchStart(event: TouchEvent) {
+        const { scrollValue} = this.state
+        const touch = event.touches.item(0) as Touch
+        const overflowRef = this.overflowContainerRef.current
+
+        this.setState({
+            deltaX: touch.clientX,
+            scrollLeft: scrollValue,
+            dragScroll: scrollValue,
+            deltaY: touch.clientY,
+            horizontal: false,
+            lockedMove: false
+        })
+
+        if (overflowRef) {
+            overflowRef.style.transition = 'unset'
+        }
+    }
+
+    onTouchMove(event: TouchEvent) {
+        const { deltaX, scrollLeft, deltaY, horizontal, lockedMove } = this.state
+        const touch = event.touches.item(0) as Touch
+        const overflowRef = this.overflowContainerRef.current
+        const dragScroll = scrollLeft + (touch.clientX - deltaX)
+        const element = touch.target as Element
+        const { paginationConfig } = this.props
+        const minOffset = paginationConfig && paginationConfig.minOffsetToChangeSlide || 50
+
+        if (overflowRef && element.parentNode!.parentNode !== overflowRef || !horizontal && lockedMove) {
+            return null
+        }
+
+        if (Math.abs(touch.clientY - deltaY) > minOffset && !lockedMove) {
+            this.setState({
+                horizontal: false,
+                lockedMove: true
+            })
+        }
+
+        if (Math.abs(touch.clientX - deltaX) > minOffset && !lockedMove) {
+            this.setState({
+                horizontal: true,
+                lockedMove: true
+            })
+        }
+
+        if (Math.abs(touch.clientX - deltaX) > minOffset) {
+            event.preventDefault()
+        }
+
+        if (overflowRef && touch.clientX !== 0) {
+            overflowRef.style.transform = `translate(${dragScroll}px)`
+
+            this.setState({
+                dragScroll
+            })
+        }
+    }
+
+    deleteOverflowMouseMoveEvent() {
+        const overflowRef = this.overflowContainerRef.current
+        const { dragScroll, paginationIndex, scrollLeft } = this.state
+        const { paginationConfig } = this.props
+        const minOffset = paginationConfig && paginationConfig.minOffsetToChangeSlide || 150
+        const transition = paginationConfig && paginationConfig.transitionTime || 1
+
+        if (overflowRef && -scrollLeft + dragScroll < -minOffset) {
+            const isLastSlide = paginationIndex === this.childrenCount - 1
+            const newValue = isLastSlide
+                ? paginationIndex * overflowRef.clientWidth
+                : (paginationIndex + 1) * overflowRef.clientWidth
+
+            overflowRef.style.transition = `all ${transition}s`
+            overflowRef.style.transform = `translate(-${newValue}px)`
+
+            this.setState({
+                paginationIndex: isLastSlide ? paginationIndex : paginationIndex + 1,
+                scrollValue: -newValue
+            })
+        }
+
+        if (overflowRef && -scrollLeft + dragScroll > minOffset) {
+            const isFirstSlide = paginationIndex === 0
+            const newValue = isFirstSlide
+                ? 0
+                : (paginationIndex - 1) * overflowRef.clientWidth
+
+            overflowRef.style.transition = `all ${transition}s`
+            overflowRef.style.transform = `translate(-${newValue}px)`
+
+            this.setState({
+                paginationIndex: isFirstSlide ? paginationIndex : paginationIndex - 1,
+                scrollValue: -newValue
+            })
+        }
+
+        const shouldReturn = C.all(
+            overflowRef,
+            -scrollLeft + dragScroll > -minOffset,
+            -scrollLeft + dragScroll < minOffset
+        )
+
+        if (shouldReturn) {
+            overflowRef!.style.transition = `all ${transition}s`
+            overflowRef!.style.transform = `translate(-${paginationIndex * overflowRef!.clientWidth}px)`
+        }
+
+        window.removeEventListener('mousemove', this.onOverflowContentDrag)
+        window.removeEventListener('mouseup', this.deleteOverflowMouseMoveEvent)
+    }
+
     renderChildren() {
         const cols = this.props.numCols as number
         const spacing = this.props.spacing as number
@@ -170,6 +346,18 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
     }
 
     renderPagination() {
+        const { renderPagination } = this.props
+
+        if (renderPagination) {
+            return renderPagination({
+                selectedDot: this.state.paginationIndex,
+                onPrev: this.onPrevious,
+                onNext: this.onNext,
+                childrenCount: this.childrenCount,
+                onDotClick: this.onDotClick
+            })
+        }
+
         return (
             <Pagination>
                 <LeftArrow onClick={this.onPrevious}/>
@@ -180,9 +368,18 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
     }
 
     render() {
+        const { paginationConfig } = this.props
+        const transition = paginationConfig && paginationConfig.transitionTime || 1
+
         return (
             <ContainerWrapper>
-                <Container ref={this.overflowContainerRef}>
+                <Container
+                    ref={this.overflowContainerRef}
+                    style={{
+                        transition: `all ${transition}s`
+                    }}
+                    onMouseDown={isMobile() ? C.noop : this.onOverflowContentMouseDown}
+                >
                     {this.renderChildren()}
                 </Container>
                 {this.renderPagination()}
@@ -199,7 +396,6 @@ export const ContainerWrapper = styled.div`
 export const Container = styled.div`
     display: flex;
     position: relative;
-    transition: all 1s;
 `
 
 export const ChildrenWrapper = styled.div`

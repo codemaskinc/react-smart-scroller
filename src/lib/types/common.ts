@@ -9,3 +9,5 @@ export interface Global extends NodeJS.Global {
         userAgent: string
     }
 }
+
+export type Noop = () => void
