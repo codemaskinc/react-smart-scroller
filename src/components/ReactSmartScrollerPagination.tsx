@@ -252,7 +252,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const minOffset = paginationConfig && paginationConfig.minOffsetToChangeSlide || 150
         const transition = paginationConfig && paginationConfig.transitionTime || 1
 
-        if (overflowRef && -scrollLeft + dragScroll < -minOffset) {
+        if (overflowRef && (-scrollLeft + dragScroll < -minOffset)) {
             const isLastSlide = paginationIndex === this.childrenCount - 1
             const newValue = isLastSlide
                 ? paginationIndex * overflowRef.clientWidth
@@ -267,7 +267,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
             })
         }
 
-        if (overflowRef && -scrollLeft + dragScroll > minOffset) {
+        if (overflowRef && (-scrollLeft + dragScroll > minOffset)) {
             const isFirstSlide = paginationIndex === 0
             const newValue = isFirstSlide
                 ? 0
