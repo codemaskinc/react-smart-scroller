@@ -1,5 +1,8 @@
 import { ReactSmartScroller } from './components'
+import { ReactSmartScrollerProps, RenderPaginationProps } from './lib'
 
 export {
-    ReactSmartScroller
+    ReactSmartScroller,
+    RenderPaginationProps,
+    ReactSmartScrollerProps
 }

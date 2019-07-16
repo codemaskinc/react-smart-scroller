@@ -59,11 +59,11 @@
     "enzyme": "3.9.0",
     "enzyme-adapter-react-16": "1.9.1",
     "jsdom": "15.1.0",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
     "react-scripts-ts": "4.0.8",
     "tslint": "5.17.0",
-    "typescript": "3.4.5",
-    "react": "16.8.6",
-    "react-dom": "16.8.6"
+    "typescript": "3.4.5"
   },
   "dependencies": {
     "styled-components": "4.3.1"

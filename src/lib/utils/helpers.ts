@@ -18,7 +18,7 @@ export {
     noop
 }
 
-export const extractNumberFromStyle = (value?: string | number | null) => value
+export const extractNumberFromStyle = (value?: string | number | null | undefined) => value
     ? Number(value.toString().replace('px', ''))
     : undefined
 
