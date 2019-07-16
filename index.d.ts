@@ -34,7 +34,14 @@ type PaginationConfig = {
         Distance needed to trigger next or previous slide after touch/mouse up.
     */
 
-    minOffsetToChangeSlide?: number
+    minOffsetToChangeSlide?: number,
+
+    /**
+        Default false.
+        Allows to drag each slide by mouse in web or by touch on mobile.
+    */
+
+    draggable?: boolean
 }
 
 type RenderPaginationProps = {

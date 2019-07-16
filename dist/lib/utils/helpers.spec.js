@@ -20,6 +20,19 @@ describe('utils: clearObject', function () {
     expect((0, _helpers.clearObject)(undefinedObject)).toEqual({});
   });
 });
+describe('utils: all', function () {
+  it('should return true', function () {
+    expect((0, _helpers.all)(true, true)).toEqual(true);
+  });
+  it('should return false', function () {
+    expect((0, _helpers.all)(true, false)).toEqual(false);
+  });
+});
+describe('utils: noop', function () {
+  it('should return empty function', function () {
+    expect((0, _helpers.noop)()).toEqual(undefined);
+  });
+});
 describe('utils: getPaddingValues', function () {
   it('should return null', function () {
     var outputValues = {

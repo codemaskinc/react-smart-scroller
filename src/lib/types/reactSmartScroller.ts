@@ -22,7 +22,8 @@ export type ReactSmartScrollerProps = {
         unactiveDotsColor?: string,
         activeDotColor?: string,
         transitionTime?: number,
-        minOffsetToChangeSlide?: number
+        minOffsetToChangeSlide?: number,
+        draggable?: boolean
     },
     renderPagination?(options: RenderPaginationProps): JSX.Element
 }

@@ -10,7 +10,7 @@ var _enzyme = require("enzyme");
 
 var _styles = require("../lib/styles");
 
-var _ReactSmartScrollerHorizontal = require("./ReactSmartScrollerHorizontal");
+var _ReactSmartScrollerHorizontal = require("../components/ReactSmartScrollerHorizontal");
 
 var mockConfig = function mockConfig(device) {
   return {
@@ -39,7 +39,7 @@ var initialProps = {
   },
   children: renderImages()
 };
-describe('ReactSmartSlider: lib/components', function () {
+describe('ReactSmartScrollerHorizontal: lib/components', function () {
   it('should render itself', function () {
     var wrapper = (0, _enzyme.shallow)(_react.default.createElement(_ReactSmartScrollerHorizontal.ReactSmartScrollerHorizontal, initialProps));
     expect(wrapper.find(_ReactSmartScrollerHorizontal.SecondWrapper).exists()).toEqual(true);

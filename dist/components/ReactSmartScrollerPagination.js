@@ -72,7 +72,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = (0, _taggedTemplateLiteral2.default)(["\n    flex: 0 0 auto;\n    box-sizing: border-box;\n"]);
+  var data = (0, _taggedTemplateLiteral2.default)(["\n    flex: 0 0 auto;\n    box-sizing: border-box;\n    width: 100%;\n"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -166,24 +166,20 @@ function (_React$Component) {
       var paginationConfig = this.props.paginationConfig;
 
       if (overflowRef && paginationIndex === this.numberOfViews - 1 && paginationConfig && paginationConfig.infinite) {
-        var index = 0;
-        var newScrollValue = index * overflowRef.offsetWidth;
-        overflowRef.style.transform = "translate(-".concat(newScrollValue, "px)");
+        overflowRef.style.transform = "translate(0px)";
         return this.setState({
-          paginationIndex: index,
-          scrollValue: newScrollValue
+          paginationIndex: 0,
+          scrollValue: 0
         });
       }
 
       if (overflowRef && paginationIndex < this.numberOfViews - 1) {
-        var _newScrollValue = scrollValue - overflowRef.offsetWidth;
-
-        var _index = scrollValue + overflowRef.offsetWidth >= overflowRef.scrollWidth ? paginationIndex : paginationIndex + 1;
-
-        overflowRef.style.transform = "translate(".concat(_newScrollValue, "px)");
+        var newScrollValue = scrollValue - overflowRef.offsetWidth;
+        var index = paginationIndex + 1;
+        overflowRef.style.transform = "translate(".concat(newScrollValue, "px)");
         return this.setState({
-          paginationIndex: _index,
-          scrollValue: _newScrollValue
+          paginationIndex: index,
+          scrollValue: newScrollValue
         });
       }
     }
@@ -207,14 +203,14 @@ function (_React$Component) {
       }
 
       if (overflowRef && paginationIndex > 0) {
-        var _index2 = paginationIndex - 1;
+        var _index = paginationIndex - 1;
 
-        var _newScrollValue2 = scrollValue + overflowRef.offsetWidth;
+        var _newScrollValue = scrollValue + overflowRef.offsetWidth;
 
-        overflowRef.style.transform = "translate(".concat(_newScrollValue2, "px)");
+        overflowRef.style.transform = "translate(".concat(_newScrollValue, "px)");
         return this.setState({
-          paginationIndex: _index2,
-          scrollValue: _newScrollValue2
+          paginationIndex: _index,
+          scrollValue: _newScrollValue
         });
       }
     }
@@ -238,8 +234,9 @@ function (_React$Component) {
     value: function onOverflowContentMouseDown(event) {
       event.preventDefault();
       var overflowRef = this.overflowContainerRef.current;
+      var paginationConfig = this.props.paginationConfig;
 
-      if (overflowRef) {
+      if (overflowRef && paginationConfig && paginationConfig.draggable) {
         overflowRef.style.transition = 'unset';
         overflowRef.style.transform = "translate(".concat(this.state.scrollValue, "px)");
         this.setState({
@@ -459,7 +456,7 @@ function (_React$Component) {
   }, {
     key: "numberOfViews",
     get: function get() {
-      var numCols = this.props.numCols || 0;
+      var numCols = this.props.numCols || 1;
       return Math.ceil(this.childrenCount / numCols);
     }
   }]);
