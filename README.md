@@ -244,7 +244,7 @@ This is what you'll see in your browser:
     )
     
 <p align="center">
-    <img src="assets/react-smart-scroller-pagination-renderPagination.png" />
+    <img src="assets/react-smart-scroller-pagination-renderPagination.gif" />
 </p>
 
 ### paginationConfig
