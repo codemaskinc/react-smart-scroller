@@ -1,4 +1,4 @@
-import { clearObject, getPaddingValues, extractNumberFromStyle } from './helpers'
+import { clearObject, getPaddingValues, extractNumberFromStyle, all, noop } from './helpers'
 
 describe('utils: clearObject', () => {
     it('should return object without undefined fields', () => {
@@ -17,6 +17,22 @@ describe('utils: clearObject', () => {
 
         expect(clearObject(inputObject)).toEqual(expectedObject)
         expect(clearObject(undefinedObject)).toEqual({})
+    })
+})
+
+describe('utils: all', () => {
+    it('should return true', () => {
+        expect(all(true, true)).toEqual(true)
+    })
+
+    it('should return false', () => {
+        expect(all(true, false)).toEqual(false)
+    })
+})
+
+describe('utils: noop', () => {
+    it('should return empty function', () => {
+        expect(noop()).toEqual(undefined)
     })
 })
 

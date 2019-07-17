@@ -6,7 +6,7 @@ import {
     RectangleThumb,
     Track,
     SecondWrapper
-} from './ReactSmartScrollerHorizontal'
+} from '../components/ReactSmartScrollerHorizontal'
 
 const mockConfig = (device: string) => ({
     value: device,
@@ -36,7 +36,7 @@ const initialProps = {
     children: renderImages()
 }
 
-describe('ReactSmartSlider: lib/components', () => {
+describe('ReactSmartScrollerHorizontal: lib/components', () => {
     it('should render itself', () => {
         const wrapper = shallow(<ReactSmartScrollerHorizontal {...initialProps}/>)
 
