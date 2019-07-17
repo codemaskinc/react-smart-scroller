@@ -22,6 +22,7 @@ Define your own spacing or columns per scroller width simply passing props.
 - Draggable content
 - Well typed (Typescript)
 - Server Side Rendering friendly
+- Horizontal Slider with arrows and dots
 
 <p align="center">
   <img src="assets/react-smart-scroller-demo-default.gif" />
@@ -34,14 +35,17 @@ Define your own spacing or columns per scroller width simply passing props.
 
 ## Props
 
-Property      | Type                | Description
-------------- | ------------------- | ------------------------
-numCols       | number              | Default: `undefined`.<br> Number of columns per container width.<br>If 1, width of each child is 100%.<br>If not provided, column has childs width.
-spacing       | number              | Default: `0`.<br> Space in pixels between elements.
-trackProps    | React.CssProperties | Default: `undefined`.<br> CSS styles to original track.
-thumb         | JSX.Element         | Default: `rectangle`.<br> Element that if provided overrides default rectangle.
-vertical      | boolean             | Default: `false`.<br> Defines direction of scrollbar - horizontal by default.<br>If height of ReactSmartScroller is not defined it will automatically resize to 100% and scroll will not be visible. 
-draggable     | boolean             | Default: `false`.<br> Allows to scroll by dragging content.
+Property         | Type                                                     | Description
+---------------- | ------------------------------------------------------   | ------------------------
+numCols          | number                                                   | Default: `undefined`.<br> Number of columns per container width.<br>If 1, width of each child is 100%.<br>If not provided, column has childs width.
+spacing          | number                                                   | Default: `0`.<br> Space in pixels between elements.
+trackProps       | React.CssProperties                                      | Default: `undefined`.<br> CSS styles to original track.
+thumb            | JSX.Element                                              | Default: `rectangle`.<br> Element that if provided overrides default rectangle.
+vertical         | boolean                                                  | Default: `false`.<br> Defines direction of scrollbar - horizontal by default.<br>If height of ReactSmartScroller is not defined it will automatically resize to 100% and scroll will not be visible. 
+draggable        | boolean                                                  | Default: `false`.<br> Allows to scroll by dragging content.
+pagination       | boolean                                                  | Default: `false`.<br> Renders Slider with children, arrowRight, arrowLeft and dots (number of dots same as children length)
+paginationConfig | {<br>&nbsp; infinite?: boolean,<br>&nbsp; unactiveDotsColor?: string,<br>&nbsp; activeDotColor?: string,<br>&nbsp; transitionTime?: number,<br>&nbsp; minOffsetToChangeSlide?: number,<br>&nbsp; draggable?: boolean<br>} | Default: `undefined`.<br> `infinite` is optional boolean that allows user to scroll to first element from lsat after clicking next and in opposite way<br> `uncativeDotsColor` is optional string that defines unactive color of dots, default: `gray`<br> `activeDotColor` is optional string that defines active color of dot, default: `green`<br> `transitionTime` is optional number that sets transition time between slides Default: `1s` <br>`minOffsetToChangeSlide` is optional number that defines minimal offset needed to change slide in pixels Default: `150px`<br> `draggable` is optional boolean that enables switching slides by dragging them Default: `false`
+renderPagination | ({<br>&nbsp; selectedDot: number,<br>&nbsp; childrenCount: number,<br>&nbsp; onNext(): void,<br>&nbsp; onPrev(): void,<br>&nbsp; onDotClick(index: number): void<br>}) => JSX.Element | Default: `undefined`.<br> Replaces original pagination, first element is arrowLeft and last element is arrowRight, elements in between are 'dots'<br> `selectedDot` is an index of selectedDot<br> `childrenCount` number of children  <br>`onNext` function that triggers next slide<br> `onPrev` function that triggers previous slide<br> `onDotClick` is a function that requires index of clicked dot, triggers transition to selected slide
 
 ## Usage
 
@@ -180,11 +184,157 @@ This is what you'll see in your browser:
     <img src="assets/react-smart-scroller-usage-draggable.gif" />
 </p>
 
-## todo
+### pagination
 
-- [x] thumb width dependent on scrollWidth
-- [x] vertical scroll
-- [x] vertical scroll tests
-- [x] improve documentation
-- [x] more examples in usage
-- [x] enable drag with mouse
+    export const Slider = () => (
+        <ReactSmartScroller pagination>
+            {renderImages()}
+        </ReactSmartScroller>
+    )
+    
+<p align="center">
+    <img src="assets/react-smart-scroller-pagination.png" />
+</p>
+
+### renderPagination
+
+    const renderDots = (onDotClick: (index: number) => void, selectedDot: number) => images.map((value, index) => {
+        const backgroundColor = selectedDot === index
+            ? 'black'
+            : 'gray'
+    
+        return (
+            <Dot
+                key={index}
+                onClick={() => onDotClick(index)}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path fill={backgroundColor} d="M144 268.4V358c0 6.9 4.5 14 11.4 14H184v52c0 13.3 10.7 24 24 24s24-10.7 24-24v-52h49v52c0 7.5 3.4 14.2 8.8 18.6 3.9 3.4 9.1 5.4 14.7 5.4h.5c13.3 0 24-10.7 24-24v-52h27.6c7 0 11.4-7.1 11.4-13.9V192H144v76.4zM408 176c-13.3 0-24 10.7-24 24v96c0 13.3 10.7 24 24 24s24-10.7 24-24v-96c0-13.3-10.7-24-24-24zM104 176c-13.3 0-24 10.7-24 24v96c0 13.3 10.7 24 24 24s24-10.7 24-24v-96c0-13.3-10.7-24-24-24z"/>
+                    <g>
+                        <path fill={backgroundColor} d="M311.2 89.1l18.5-21.9c.4-.5-.2-1.6-1.3-2.5-1.1-.8-2.4-1-2.7-.4l-19.2 22.8c-13.6-5.4-30.2-8.8-50.6-8.8-20.5-.1-37.2 3.2-50.8 8.5l-19-22.4c-.4-.5-1.6-.4-2.7.4s-1.7 1.8-1.3 2.5l18.3 21.6c-48.2 20.9-55.4 72.2-56.4 87.2h223.6c-.9-15.1-8-65.7-56.4-87zm-104.4 49.8c-7.4 0-13.5-6-13.5-13.3 0-7.3 6-13.3 13.5-13.3 7.4 0 13.5 6 13.5 13.3 0 7.3-6 13.3-13.5 13.3zm98.4 0c-7.4 0-13.5-6-13.5-13.3 0-7.3 6-13.3 13.5-13.3 7.4 0 13.5 6 13.5 13.3 0 7.3-6.1 13.3-13.5 13.3z"/>
+                    </g>
+                </svg>
+            </Dot>
+        )
+    })
+
+    const renderPagination = ({ onNext, onPrev, onDotClick, selectedDot }: RenderPaginationProps) => {
+        return (
+            <Wrapper>
+                <LeftArrow
+                    src={arrowLeft}
+                    onClick={onPrev}
+                />
+                {renderDots(onDotClick, selectedDot)}
+                <RightArrow
+                    src={arrowRight}
+                    onClick={onNext}
+                />
+            </Wrapper>
+        )
+    }
+
+    export const Slider = () => (
+        <ReactSmartScroller
+            pagination
+            renderPagination={renderPagination}
+        >
+            {renderImages()}
+        </ReactSmartScroller>
+    )
+    
+<p align="center">
+    <img src="assets/react-smart-scroller-pagination-renderPagination.png" />
+</p>
+
+### paginationConfig
+
+#### infinite
+
+    export const Slider = () => (
+        <ReactSmartScroller
+            pagination
+            paginationConfig={{
+                infinite: true
+            }}
+        >
+            {renderImages()}
+        </ReactSmartScroller>
+    )
+
+<p align="center">
+    <img src="assets/react-smart-scroller-pagination-infinite.gif" />
+</p>
+
+#### draggable
+
+    export const Slider = () => (
+        <ReactSmartScroller
+            pagination
+            paginationConfig={{
+                draggable: true
+            }}
+        >
+            {renderImages()}
+        </ReactSmartScroller>
+    )
+
+<p align="center">
+    <img src="assets/react-smart-scroller-pagination-draggable.gif" />
+</p>
+
+#### transitionTime
+
+    export const Slider = () => (
+        <ReactSmartScroller
+            pagination
+            paginationConfig={{
+                transitionTime: 0.25
+            }}
+        >
+            {renderImages()}
+        </ReactSmartScroller>
+    )
+
+<p align="center">
+    <img src="assets/react-smart-scroller-pagination-transitionTime.gif" />
+</p>
+
+#### minOffsetToChangeSlide
+
+    export const Slider = () => (
+        <ReactSmartScroller
+            pagination
+            paginationConfig={{
+                minOffsetToChangeSlide: 25
+            }}
+        >
+            {renderImages()}
+        </ReactSmartScroller>
+    )
+
+#### unactiveDotsColor
+
+    export const Slider = () => (
+        <ReactSmartScroller
+            pagination
+            paginationConfig={{
+                unactiveDotsColor: 'gray'
+            }}
+        >
+            {renderImages()}
+        </ReactSmartScroller>
+    )
+
+#### unactiveDotsColor
+
+    export const Slider = () => (
+        <ReactSmartScroller
+            pagination
+            paginationConfig={{
+                activeDotColor: 'red'
+            }}
+        >
+            {renderImages()}
+        </ReactSmartScroller>
+    )
