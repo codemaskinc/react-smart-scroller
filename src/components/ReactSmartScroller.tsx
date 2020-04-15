@@ -22,7 +22,7 @@ export class ReactSmartScroller extends React.Component<ReactSmartScrollerProps>
     }
 
     render() {
-        return !isServer ? (
+        return !isServer() ? (
             <Wrapper>
                 {this.renderMain()}
             </Wrapper>

@@ -6,7 +6,7 @@
     "jsx": "react",
     "lib": ["es6", "es5", "dom"],
     "moduleResolution": "node",
-    "noEmit": true,
+    "noEmit": false,
     "strict": true,
     "target": "esnext",
     "rootDir": ".",
@@ -14,5 +14,5 @@
     "noImplicitAny": false,
     "baseUrl": "src"
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src/**/*.spec.tsx"]
 }

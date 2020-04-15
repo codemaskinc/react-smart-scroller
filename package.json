@@ -2,9 +2,9 @@
   "name": "react-smart-scroller",
   "version": "1.0.21",
   "description": "React-smart-scroller is a library that allows you to create highly customizable horizontal or vertical scroller in easy way. You can modify track styles or pass your own thumb (own component)",
-  "main": "dist/index.js",
+  "main": "dist/bundle.js",
   "scripts": {
-    "build": "babel ./src --out-dir dist --extensions \".ts,.tsx\"",
+    "build": "npx webpack --config webpack.config.js",
     "build:watch": "rimraf dist && tsc --watch",
     "tsc": "node_modules/typescript/bin/tsc",
     "tsc:watch": "node_modules/typescript/bin/tsc --watch",
@@ -32,29 +32,20 @@
   "author": "CodeGate",
   "license": "MIT",
   "peerDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   },
   "bugs": {
     "url": "https://github.com/codegateinc/react-smart-slider/issues"
   },
   "homepage": "https://github.com/codegateinc/react-smart-slider#readme",
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.5",
-    "@babel/plugin-proposal-class-properties": "^7.4.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
-    "@babel/plugin-transform-react-jsx": "^7.3.0",
-    "@babel/plugin-transform-runtime": "^7.4.4",
-    "@babel/preset-env": "^7.4.5",
-    "@babel/preset-typescript": "^7.3.3",
     "@types/enzyme": "3.1.15",
     "@types/enzyme-adapter-react-16": "1.0.3",
     "@types/jest": "24.0.13",
     "@types/react": "16.8.17",
     "@types/react-dom": "16.8.4",
     "@types/styled-components": "4.1.16",
-    "babel-plugin-module-resolver": "^3.2.0",
     "coveralls": "3.0.4",
     "enzyme": "3.9.0",
     "enzyme-adapter-react-16": "1.9.1",
@@ -62,8 +53,11 @@
     "react": "16.8.6",
     "react-dom": "16.8.6",
     "react-scripts-ts": "4.0.8",
+    "ts-loader": "^7.0.0",
     "tslint": "5.17.0",
-    "typescript": "3.4.5"
+    "typescript": "3.4.5",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
   },
   "dependencies": {
     "styled-components": "4.3.1"

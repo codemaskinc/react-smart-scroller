@@ -1,6 +1,6 @@
 import { isServer } from './server'
 
-export const checkAgent = (agentName: string) => !isServer
+export const checkAgent = (agentName: string) => !isServer()
     ? navigator.userAgent.includes(agentName)
     : false
 

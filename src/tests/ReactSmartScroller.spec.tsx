@@ -9,7 +9,8 @@ const server = require('lib/utils/server')
 
 describe('ReactSmartScroller: lib/components', () => {
     it('should not render', () => {
-        server.isServer = true
+        jest.spyOn(server, 'isServer')
+            .mockImplementation(() => true)
 
         const wrapper = shallow(<ReactSmartScroller/>)
 
@@ -20,7 +21,8 @@ describe('ReactSmartScroller: lib/components', () => {
     })
 
     it('should render ReactSmartScrollerPagination', () => {
-        server.isServer = false
+        jest.spyOn(server, 'isServer')
+            .mockImplementation(() => false)
 
         const wrapper = shallow(<ReactSmartScroller pagination/>)
 
@@ -29,7 +31,8 @@ describe('ReactSmartScroller: lib/components', () => {
     })
 
     it('should render ReactSmartScrollerHorizontal', () => {
-        server.isServer = false
+        jest.spyOn(server, 'isServer')
+            .mockImplementation(() => false)
 
         const wrapper = shallow(<ReactSmartScroller />)
 
@@ -38,7 +41,8 @@ describe('ReactSmartScroller: lib/components', () => {
     })
 
     it('should render ReactSmartScrollerVertical', () => {
-        server.isServer = false
+        jest.spyOn(server, 'isServer')
+            .mockImplementation(() => false)
 
         const wrapper = shallow(<ReactSmartScroller vertical/>)
 
