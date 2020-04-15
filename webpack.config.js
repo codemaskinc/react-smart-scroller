@@ -1,15 +1,16 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src',
-    devtool: "inline-source-map",
+    entry: './src/index.ts',
+    mode: 'production',
+    devtool: 'inline-source-map',
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
-            },
+            }
         ],
     },
     resolve: {
@@ -23,8 +24,5 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         library: 'react-smart-scroller',
         libraryTarget: 'umd'
-    },
-    optimization: {
-        runtimeChunk: true
     }
 };
