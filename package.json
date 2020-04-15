@@ -1,6 +1,6 @@
 {
   "name": "react-smart-scroller",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "React-smart-scroller is a library that allows you to create highly customizable horizontal or vertical scroller in easy way. You can modify track styles or pass your own thumb (own component)",
   "main": "dist/bundle.js",
   "scripts": {
