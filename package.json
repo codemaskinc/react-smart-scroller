@@ -4,7 +4,7 @@
   "description": "React-smart-scroller is a library that allows you to create highly customizable horizontal or vertical scroller in easy way. You can modify track styles or pass your own thumb (own component)",
   "main": "dist/bundle.js",
   "scripts": {
-    "build": "npx webpack --config webpack.config.js",
+    "build": "rimraf build && npx webpack --config webpack.config.js",
     "build:watch": "rimraf dist && tsc --watch",
     "tsc": "node_modules/typescript/bin/tsc",
     "tsc:watch": "node_modules/typescript/bin/tsc --watch",

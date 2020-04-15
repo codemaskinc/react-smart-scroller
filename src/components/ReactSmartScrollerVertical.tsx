@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Padding, ReactSmartScrollerProps } from 'lib/types'
 import { C, isMacOs, isMobile } from 'lib/utils'
@@ -352,7 +352,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
         const cursor = draggable ? 'pointer' : 'unset'
 
         return (
-            <Fragment>
+            <React.Fragment>
                 <Content
                     ref={this.overflowContainerRef}
                     onScroll={this.onOverflowContentScroll}
@@ -363,7 +363,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
                     {this.renderChildren()}
                 </Content>
                 {this.renderScrollbar()}
-            </Fragment>
+            </React.Fragment>
         )
     }
 }

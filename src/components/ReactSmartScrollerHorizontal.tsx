@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { colors } from 'lib/styles'
 import { Padding, ReactSmartScrollerProps } from 'lib/types'
@@ -344,7 +344,7 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
         const cursor = draggable ? 'pointer' : 'unset'
 
         return (
-            <Fragment>
+            <React.Fragment>
                 <SecondWrapper
                     ref={this.overflowContainerRef}
                     onScroll={this.onOverflowContentScroll}
@@ -355,7 +355,7 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
                     {this.renderChildren()}
                 </SecondWrapper>
                 {this.renderScrollbar()}
-            </Fragment>
+            </React.Fragment>
         )
     }
 }
