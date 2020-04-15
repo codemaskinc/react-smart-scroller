@@ -238,7 +238,8 @@ describe('ReactSmartScrollerPagination: lib/components', () => {
     })
 
     it('should not invoke onOverflowContentMouseDown if mobile', () => {
-        isMobile.isMobile = jest.fn(() => true)
+        jest.spyOn(isMobile, 'isMobile')
+            .mockImplementation(() => true)
 
         const onOverflowContentMouseDownSpy = jest.spyOn(ReactSmartScrollerPagination.prototype, 'onOverflowContentMouseDown')
         const wrapper = shallow<ReactSmartScrollerPagination>(<ReactSmartScrollerPagination {...initialProps}/>)
@@ -253,7 +254,8 @@ describe('ReactSmartScrollerPagination: lib/components', () => {
 
     it('should set state after onOverflowContentMouseDown', () => {
         window.addEventListener = jest.fn()
-        isMobile.isMobile = jest.fn(() => false)
+        jest.spyOn(isMobile, 'isMobile')
+            .mockImplementation(() => false)
 
         const wrapper = shallow<ReactSmartScrollerPagination>(
             <ReactSmartScrollerPagination
