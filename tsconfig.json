@@ -9,10 +9,14 @@
     "noEmit": false,
     "strict": true,
     "target": "esnext",
-    "rootDir": ".",
     "skipLibCheck": true,
     "noImplicitAny": false,
-    "baseUrl": "src"
+    "baseUrl": ".",
+    "paths": {
+      "lib/*": ["src/lib/*"]
+    },
+    "declaration": false
   },
-  "exclude": ["node_modules", "src/**/*.spec.tsx"]
+  "include": ["src"],
+  "exclude": ["dist", "node_modules", "setupTests.tsx", "src/**/*.spec.tsx"]
 }
