@@ -11,9 +11,9 @@
     "target": "esnext",
     "skipLibCheck": true,
     "noImplicitAny": false,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
-      "lib/*": ["src/lib/*"]
+      "*": ["src/*", "node_modules/*"]
     },
     "declaration": false
   },
