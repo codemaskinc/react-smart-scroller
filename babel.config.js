@@ -5,8 +5,12 @@ module.exports = {
     [
       'babel-plugin-module-resolver',
       {
-        root: ['./src/'],
-        alias: require('./tsconfig.json').compilerOptions.paths,
+        root: './',
+        alias: {
+          "lib/utils": "./src/lib/utils",
+          "lib/styles": "./src/lib/styles",
+          "lib/types": "./src/lib/types"
+        },
       },
     ],
   ],
