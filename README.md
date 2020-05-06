@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="assets/react-smart-scroller.png" width="400"/>
+    <img src="https://codegate.pl/screenshots/react-smart-scroller.png" width="400"/>
 </p>
 
 ## <a href='https://coveralls.io/github/codegateinc/react-smart-scroller?branch=master'><img src='https://coveralls.io/repos/github/codegateinc/react-smart-scroller/badge.svg?branch=master' alt='Coverage Status' /></a> <a href='https://github.com/styled-components/styled-components'><img src='https://img.shields.io/badge/style-%F0%9F%92%85%20styled--components-orange.svg?colorB=daa357&colorA=db748e' alt='styled compoennts' /></a> <a href='https://www.typescriptlang.org/'><img src='https://badges.frapsoft.com/typescript/code/typescript.png?v=101' alt='typescript' height=20/></a> <a href='http://opensource.org/licenses/MIT'><img src='http://img.shields.io/badge/license-MIT-brightgreen.svg' alt='MIT' /></a> <a href="https://badge.fury.io/js/react-smart-scroller"><img src="https://badge.fury.io/js/react-smart-scroller.svg" alt="npm version"></a>
@@ -25,7 +25,7 @@ Define your own spacing or columns per scroller width simply passing props.
 - Horizontal Slider with arrows and dots
 
 <p align="center">
-  <img src="assets/react-smart-scroller-demo-default.gif" />
+  <img src="https://codegate.pl/screenshots/react-smart-scroller-demo-default.gif" />
 </p>
 
 ### [Live demo](https://codesandbox.io/embed/quizzical-lalande-tj4uq)
@@ -87,7 +87,7 @@ Let's create our first component
 This is what you'll see in your browser:
 
 <p align="center">
-  <img src="assets/react-smart-scroller-usage-basic.png" />
+  <img src="https://codegate.pl/screenshots/react-smart-scroller-usage-basic.png" />
 </p>
 
 ### numCols
@@ -99,7 +99,7 @@ This is what you'll see in your browser:
     )
 
 <p align="center">
-  <img src="assets/react-smart-scroller-usage-numCols.png" />
+  <img src="https://codegate.pl/screenshots/react-smart-scroller-usage-numCols.png" />
 </p>
 
 ### spacing
@@ -111,7 +111,7 @@ This is what you'll see in your browser:
     )
     
 <p align="center">
-    <img src="assets/react-smart-scroller-usage-spacing.png" />
+    <img src="https://codegate.pl/screenshots/react-smart-scroller-usage-spacing.png" />
 </p>
 
 ### trackProps
@@ -127,7 +127,7 @@ This is what you'll see in your browser:
     )
     
 <p align="center">
-    <img src="assets/react-smart-scroller-usage-trackProps.png" />
+    <img src="https://codegate.pl/screenshots/react-smart-scroller-usage-trackProps.png" />
 </p>
 
 ### thumb
@@ -150,7 +150,7 @@ This is what you'll see in your browser:
     )
     
 <p align="center">
-    <img src="assets/react-smart-scroller-usage-thumb.png" />
+    <img src="https://codegate.pl/screenshots/react-smart-scroller-usage-thumb.png" />
 </p>
 
 ### vertical
@@ -169,7 +169,7 @@ This is what you'll see in your browser:
     )
 
 <p align="center">
-    <img src="assets/react-smart-scroller-usage-vertical.png" />
+    <img src="https://codegate.pl/screenshots/react-smart-scroller-usage-vertical.png" />
 </p>
 
 ### draggable
@@ -181,7 +181,7 @@ This is what you'll see in your browser:
     )
     
 <p align="center">
-    <img src="assets/react-smart-scroller-usage-draggable.gif" />
+    <img src="https://codegate.pl/screenshots/react-smart-scroller-usage-draggable.gif" />
 </p>
 
 ### pagination
@@ -193,7 +193,7 @@ This is what you'll see in your browser:
     )
     
 <p align="center">
-    <img src="assets/react-smart-scroller-pagination.png" />
+    <img src="https://codegate.pl/screenshots/react-smart-scroller-pagination.png" />
 </p>
 
 ### renderPagination
@@ -244,7 +244,7 @@ This is what you'll see in your browser:
     )
     
 <p align="center">
-    <img src="assets/react-smart-scroller-pagination-renderPagination.gif" />
+    <img src="https://codegate.pl/screenshots/react-smart-scroller-pagination-renderPagination.gif" />
 </p>
 
 ### paginationConfig
@@ -263,7 +263,7 @@ This is what you'll see in your browser:
     )
 
 <p align="center">
-    <img src="assets/react-smart-scroller-pagination-infinite.gif" />
+    <img src="https://codegate.pl/screenshots/react-smart-scroller-pagination-infinite.gif" />
 </p>
 
 #### draggable
@@ -280,7 +280,7 @@ This is what you'll see in your browser:
     )
 
 <p align="center">
-    <img src="assets/react-smart-scroller-pagination-draggable.gif" />
+    <img src="https://codegate.pl/screenshots/react-smart-scroller-pagination-draggable.gif" />
 </p>
 
 #### transitionTime
@@ -297,7 +297,7 @@ This is what you'll see in your browser:
     )
 
 <p align="center">
-    <img src="assets/react-smart-scroller-pagination-transitionTime.gif" />
+    <img src="https://codegate.pl/screenshots/react-smart-scroller-pagination-transitionTime.gif" />
 </p>
 
 #### minOffsetToChangeSlide
