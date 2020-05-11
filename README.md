@@ -326,7 +326,7 @@ This is what you'll see in your browser:
         </ReactSmartScroller>
     )
 
-#### unactiveDotsColor
+#### activeDotsColor
 
     export const Slider = () => (
         <ReactSmartScroller
