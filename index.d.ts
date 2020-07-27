@@ -76,6 +76,21 @@ type RenderPaginationProps = {
     onDotClick(index: number): void
 }
 
+type StartAt = {
+    /**
+        Defines index of start element (scrolled to when componentDidMount)
+    */
+
+    startIndex: number,
+
+    /**
+        Defines alignment of start element
+        If set to true, target element will be centered
+    */
+
+    center?: boolean
+}
+
 export type ReactSmartScrollerProps = {
     /**
         Default undefined.
@@ -132,6 +147,8 @@ export type ReactSmartScrollerProps = {
     */
 
     pagination?: boolean,
+
+    startAt?: StartAt,
 
     paginationConfig?: PaginationConfig,
 

@@ -48,7 +48,8 @@ describe('utils: deviceDetect', () => {
     })
 
     it('should return false if window is undefined', () => {
-        serverUtils.isServer = true
+        jest.spyOn(serverUtils, 'isServer')
+            .mockImplementation(() => true)
 
         expect(checkAgent('Edge')).toEqual(false)
     })
