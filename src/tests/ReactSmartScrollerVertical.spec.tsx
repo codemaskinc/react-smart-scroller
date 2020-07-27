@@ -62,15 +62,6 @@ describe('ReactSmartScrollerVertical: lib/components', () => {
         expect(onOverflowContentScrollSpy).toHaveBeenCalled()
     })
 
-    it('should invoke measureContainers onLoad', () => {
-        const measureContainersSpy = jest.spyOn(ReactSmartScrollerVertical.prototype, 'measureContainers')
-        const wrapper = shallow(<ReactSmartScrollerVertical {...initialProps}/>)
-
-        wrapper.find(Content).simulate('load')
-
-        expect(measureContainersSpy).toHaveBeenCalled()
-    })
-
     it('should invoke addEventListener', () => {
         window.addEventListener = jest.fn()
 
@@ -364,8 +355,6 @@ describe('ReactSmartScrollerVertical: lib/components', () => {
         const clientHeight = 100
         const scrollTop = 50
         const thumbRef = 'thumbRef'
-        const maximumOffset = state.scrollContainerHeight - thumbHeight
-        const ratio = maximumOffset / (scrollHeight - clientHeight)
 
         getRefCurrent('overflowContainerRef' , {
             scrollHeight,
@@ -384,7 +373,7 @@ describe('ReactSmartScrollerVertical: lib/components', () => {
 
         wrapperInstance.onOverflowContentScroll()
 
-        expect(wrapperInstance[thumbRef].current!.style.top).toEqual(`${scrollTop * ratio}px`)
+        expect(wrapperInstance[thumbRef].current!.style.top).toEqual(`${scrollTop * wrapperInstance.state.ratio}px`)
     })
 
     it('should render custom thumb if provided', () => {

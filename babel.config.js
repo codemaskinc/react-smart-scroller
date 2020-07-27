@@ -9,7 +9,8 @@ module.exports = {
         alias: {
           "lib/utils": "./src/lib/utils",
           "lib/styles": "./src/lib/styles",
-          "lib/types": "./src/lib/types"
+          "lib/types": "./src/lib/types",
+          "lib/common": "./src/lib/common"
         },
       },
     ],

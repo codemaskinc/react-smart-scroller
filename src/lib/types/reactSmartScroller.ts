@@ -17,6 +17,10 @@ export type ReactSmartScrollerProps = {
     vertical?: boolean,
     draggable?: boolean,
     pagination?: boolean,
+    startAt?: {
+        startIndex: number,
+        center?: boolean
+    },
     paginationConfig?: {
         infinite?: boolean,
         unactiveDotsColor?: string,
