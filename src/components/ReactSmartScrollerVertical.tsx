@@ -193,7 +193,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
     }
 
     onScrollbarClick({ clientY }: React.MouseEvent) {
-        const { padding, ratio } = this.state
+        const { padding } = this.state
         const thumbRef = this.thumbRef.current as HTMLDivElement
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const shouldReturn = C.all(
@@ -208,6 +208,9 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
             return null
         }
 
+        const maximumOffset = this.state.scrollContainerHeight - thumbRef.offsetHeight
+        // this is different ratio than in state
+        const ratio = (overflowRef.scrollHeight - overflowRef.clientHeight) / maximumOffset
         const deltaY = overflowRef.getBoundingClientRect().top + (thumbRef.offsetHeight / 2) + padding.top
 
         return overflowRef.scroll({
@@ -227,7 +230,7 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
 
     onMouseDrag(event: DragEvent | MouseEvent) {
         const zero = 0
-        const { deltaY, deltaYOrigin, scrollContainerHeight, padding, ratio } = this.state
+        const { deltaY, deltaYOrigin, scrollContainerHeight, padding } = this.state
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const thumbRef = this.thumbRef.current as HTMLDivElement
         const maximumOffset = scrollContainerHeight - thumbRef.offsetHeight
@@ -249,6 +252,9 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
         }
 
         if (areRefsCurrent && isBetweenClientHeight) {
+            // this is different ratio than in state
+            const ratio = (overflowRef.scrollHeight - overflowRef.offsetHeight) / maximumOffset
+
             overflowRef.scroll(zero, ratio * offset)
             thumbRef.style.top = `${offset}px`
         }
