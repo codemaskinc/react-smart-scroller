@@ -212,6 +212,7 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
         }
 
         const maximumOffset = this.state.scrollContainerWidth - thumbRef.offsetWidth
+        // this is different ratio than in state
         const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset
         const deltaX = overflowRef.getBoundingClientRect().left + (thumbRef.offsetWidth / 2) + this.state.padding.left
 
@@ -232,7 +233,7 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
 
     onMouseDrag(event: DragEvent | MouseEvent) {
         const zero = 0
-        const { deltaX, deltaXOrigin, scrollContainerWidth, ratio } = this.state
+        const { deltaX, deltaXOrigin, scrollContainerWidth } = this.state
         const overflowRef = this.overflowContainerRef.current as HTMLDivElement
         const thumbRef = this.thumbRef.current as HTMLDivElement
         const maximumOffset = scrollContainerWidth - thumbRef.offsetWidth
@@ -254,6 +255,9 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
         }
 
         if (areRefsCurrent && isBetweenClientWidth) {
+            // this is different ratio than in state
+            const ratio = (overflowRef.scrollWidth - overflowRef.clientWidth) / maximumOffset
+
             overflowRef.scroll(ratio * offset, zero)
             thumbRef.style.left = `${offset}px`
         }
