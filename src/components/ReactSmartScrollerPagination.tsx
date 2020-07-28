@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { ReactSmartScrollerProps } from 'lib/types'
 import { colors } from 'lib/styles'
 import { C, isMobile } from 'lib/utils'
+import { constants } from 'lib/common'
 
 type ReactSmartScrollerPaginationState = {
     numberOfViews: number,
@@ -51,6 +52,8 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
             numberOfViews: this.numberOfViews
         })
 
+        this.setStartPosition()
+
         window.addEventListener('touchstart', this.onTouchStart)
         window.addEventListener('touchmove', this.onTouchMove, { passive: false })
         window.addEventListener('touchend', this.deleteOverflowMouseMoveEvent)
@@ -72,6 +75,34 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const numCols = this.props.numCols || 1
 
         return Math.ceil(this.childrenCount / numCols)
+    }
+
+    setStartPosition() {
+        const { startAt, children } = this.props
+        const overflowRef = this.overflowContainerRef.current
+        const numCols = this.props.numCols || 1
+        const position = startAt
+            ? startAt.startIndex
+            : 0
+
+        if (overflowRef) {
+            const page = Math.floor(position / numCols)
+            const childrenCount = React.Children.count(children)
+            const maxChildrenPage = Math.floor(childrenCount / numCols)
+            const checkedPage = page < 0
+                ? 0
+                : page > maxChildrenPage
+                    ? maxChildrenPage
+                    : page
+            const scrollValue = -checkedPage * overflowRef.offsetWidth
+
+            overflowRef.style.transform = `translate(${scrollValue}px)`
+
+            this.setState({
+                paginationIndex: checkedPage,
+                scrollValue
+            })
+        }
     }
 
     onNext() {
@@ -310,6 +341,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
 
             return (
                 <ChildrenWrapper
+                    id={`${constants.reactSmartScrollerId}-${index}`}
                     style={{
                         padding: `0 ${padding}px`,
                         flexBasis,
