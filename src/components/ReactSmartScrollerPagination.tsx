@@ -87,17 +87,15 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
             : 0
 
         if (overflowRef) {
-            const page = Math.floor(position / numCols)
+            const page = Math.ceil(position / numCols)
             const childrenCount = React.Children.count(children)
-            const maxChildrenPage = Math.floor(childrenCount / numCols) - 1
+            const maxChildrenPage = Math.ceil(childrenCount / numCols) - 1
             const checkedPage = page < 0
                 ? 0
                 : page > maxChildrenPage
                     ? maxChildrenPage
                     : page
             const scrollValue = -checkedPage * overflowRef.offsetWidth
-
-            console.log(maxChildrenPage, overflowRef.offsetWidth, scrollValue)
 
             overflowRef.style.transform = `translate(${scrollValue}px)`
 
