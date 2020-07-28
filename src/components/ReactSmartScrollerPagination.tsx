@@ -42,6 +42,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         this.onDotClick = this.onDotClick.bind(this)
         this.onTouchMove = this.onTouchMove.bind(this)
         this.onTouchStart = this.onTouchStart.bind(this)
+        this.setStartPosition = this.setStartPosition.bind(this)
         this.onOverflowContentDrag = this.onOverflowContentDrag.bind(this)
         this.onOverflowContentMouseDown = this.onOverflowContentMouseDown.bind(this)
         this.deleteOverflowMouseMoveEvent = this.deleteOverflowMouseMoveEvent.bind(this)
@@ -52,11 +53,10 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
             numberOfViews: this.numberOfViews
         })
 
-        this.setStartPosition()
-
         window.addEventListener('touchstart', this.onTouchStart)
         window.addEventListener('touchmove', this.onTouchMove, { passive: false })
         window.addEventListener('touchend', this.deleteOverflowMouseMoveEvent)
+        window.addEventListener('load', this.setStartPosition)
     }
 
     componentWillUnmount() {
@@ -65,6 +65,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         window.removeEventListener('mouseup', this.deleteOverflowMouseMoveEvent)
         window.removeEventListener('touchmove', this.onTouchMove)
         window.removeEventListener('touchend', this.deleteOverflowMouseMoveEvent)
+        window.removeEventListener('load', this.setStartPosition)
     }
 
     get childrenCount() {
@@ -88,13 +89,15 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         if (overflowRef) {
             const page = Math.floor(position / numCols)
             const childrenCount = React.Children.count(children)
-            const maxChildrenPage = Math.floor(childrenCount / numCols)
+            const maxChildrenPage = Math.floor(childrenCount / numCols) - 1
             const checkedPage = page < 0
                 ? 0
                 : page > maxChildrenPage
                     ? maxChildrenPage
                     : page
             const scrollValue = -checkedPage * overflowRef.offsetWidth
+
+            console.log(maxChildrenPage, overflowRef.offsetWidth, scrollValue)
 
             overflowRef.style.transform = `translate(${scrollValue}px)`
 
