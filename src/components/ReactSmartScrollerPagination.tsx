@@ -397,11 +397,11 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
     }
 
     render() {
-        const { paginationConfig } = this.props
+        const { paginationConfig, style } = this.props
         const transition = paginationConfig && paginationConfig.transitionTime || 1
 
         return (
-            <ContainerWrapper>
+            <ContainerWrapper style={style}>
                 <Container
                     ref={this.overflowContainerRef}
                     style={{

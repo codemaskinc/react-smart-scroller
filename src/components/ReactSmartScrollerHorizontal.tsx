@@ -379,11 +379,11 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
     }
 
     render() {
-        const { draggable } = this.props
+        const { draggable, style } = this.props
         const cursor = draggable ? 'pointer' : 'unset'
 
         return (
-            <React.Fragment>
+            <div style={style}>
                 <SecondWrapper
                     ref={this.overflowContainerRef}
                     onScroll={this.onOverflowContentScroll}
@@ -393,7 +393,7 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
                     {this.renderChildren()}
                 </SecondWrapper>
                 {this.renderScrollbar()}
-            </React.Fragment>
+            </div>
         )
     }
 }

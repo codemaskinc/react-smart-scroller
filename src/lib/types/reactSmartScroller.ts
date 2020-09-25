@@ -29,5 +29,6 @@ export type ReactSmartScrollerProps = {
         minOffsetToChangeSlide?: number,
         draggable?: boolean
     },
+    style?: React.CSSProperties,
     renderPagination?(options: RenderPaginationProps): JSX.Element
 }

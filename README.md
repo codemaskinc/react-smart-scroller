@@ -38,6 +38,7 @@ Define your own spacing or columns per scroller width simply passing props.
 Property         | Type                                                     | Description
 ---------------- | ------------------------------------------------------   | ------------------------
 numCols          | number                                                   | Default: `undefined`.<br> Number of columns per container width.<br>If 1, width of each child is 100%.<br>If not provided, column has childs width.
+style            | React.CssProperties                                      | Default: `undefined`.<br> Custom styles applied to wrapper.
 spacing          | number                                                   | Default: `0`.<br> Space in pixels between elements.
 trackProps       | React.CssProperties                                      | Default: `undefined`.<br> CSS styles to original track.
 thumb            | JSX.Element                                              | Default: `rectangle`.<br> Element that if provided overrides default rectangle.

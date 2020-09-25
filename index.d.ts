@@ -152,6 +152,8 @@ export type ReactSmartScrollerProps = {
 
     paginationConfig?: PaginationConfig,
 
+    style?: React.CSSProperties,
+
     /**
         Function that renders custom arrows and currently selected element.
     */

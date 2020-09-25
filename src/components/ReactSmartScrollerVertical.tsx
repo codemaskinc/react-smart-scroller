@@ -387,21 +387,21 @@ export class ReactSmartScrollerVertical extends React.Component<ReactSmartScroll
     }
 
     render() {
-        const { draggable } = this.props
+        const { draggable, style } = this.props
         const cursor = draggable ? 'pointer' : 'unset'
 
         return (
-            <React.Fragment>
+            <div style={style}>
                 <Content
+                    style={{ cursor }}
                     ref={this.overflowContainerRef}
                     onScroll={this.onOverflowContentScroll}
                     onMouseDown={draggable ? this.onOverflowContentMouseDown : C.noop}
-                    style={{ cursor }}
                 >
                     {this.renderChildren()}
                 </Content>
                 {this.renderScrollbar()}
-            </React.Fragment>
+            </div>
         )
     }
 }
