@@ -405,7 +405,8 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
                 <Container
                     ref={this.overflowContainerRef}
                     style={{
-                        transition: `all ${transition}s`
+                        transition: `all ${transition}s`,
+                        flex: 1
                     }}
                     onMouseDown={isMobile() ? C.noop : this.onOverflowContentMouseDown}
                 >
