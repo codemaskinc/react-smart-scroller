@@ -329,7 +329,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const cols = this.props.numCols as number
         const spacing = this.props.spacing as number
         const padding = spacing / 2
-        const children = this.state.children as ChildNode
+        const children = this.props.children as ChildNode
 
         return React.Children.map(children, (child: ChildNode, index: number) => {
             const paddingRight = index !== React.Children.count(children) - 1
