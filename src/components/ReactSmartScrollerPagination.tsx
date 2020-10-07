@@ -238,11 +238,10 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const touch = event.touches.item(0) as Touch
         const overflowRef = this.overflowContainerRef.current
         const dragScroll = scrollLeft + (touch.clientX - deltaX)
-        const element = touch.target as Element
         const { paginationConfig } = this.props
         const minOffset = paginationConfig && paginationConfig.minOffsetToChangeSlide || 50
 
-        if (overflowRef && element.parentNode!.parentNode !== overflowRef || !horizontal && lockedMove) {
+        if (!horizontal && lockedMove) {
             return null
         }
 
