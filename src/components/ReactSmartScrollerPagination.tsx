@@ -4,6 +4,7 @@ import { ReactSmartScrollerProps } from 'lib/types'
 import { colors } from 'lib/styles'
 import { C, isMobile } from 'lib/utils'
 import { constants } from 'lib/common'
+import { Simulate } from 'react-dom/test-utils'
 
 type ReactSmartScrollerPaginationState = {
     numberOfViews: number,
@@ -42,6 +43,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         this.onDotClick = this.onDotClick.bind(this)
         this.onTouchMove = this.onTouchMove.bind(this)
         this.onTouchStart = this.onTouchStart.bind(this)
+        this.updatePosition = this.updatePosition.bind(this)
         this.setStartPosition = this.setStartPosition.bind(this)
         this.onOverflowContentDrag = this.onOverflowContentDrag.bind(this)
         this.onOverflowContentMouseDown = this.onOverflowContentMouseDown.bind(this)
@@ -53,6 +55,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
             numberOfViews: this.numberOfViews
         })
 
+        window.addEventListener('resize', this.updatePosition)
         window.addEventListener('touchstart', this.onTouchStart)
         window.addEventListener('touchmove', this.onTouchMove, { passive: false })
         window.addEventListener('touchend', this.deleteOverflowMouseMoveEvent)
@@ -60,6 +63,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
     }
 
     componentWillUnmount() {
+        window.removeEventListener('resize', this.updatePosition)
         window.removeEventListener('touchstart', this.onTouchStart)
         window.removeEventListener('mousemove', this.onOverflowContentDrag)
         window.removeEventListener('mouseup', this.deleteOverflowMouseMoveEvent)
@@ -96,6 +100,35 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
                     ? maxChildrenPage
                     : page
             const scrollValue = -checkedPage * overflowRef.offsetWidth
+
+            overflowRef.style.transform = `translate(${scrollValue}px)`
+
+            this.setState({
+                paginationIndex: checkedPage,
+                scrollValue
+            })
+        }
+    }
+
+    updatePosition() {
+        const { children } = this.props
+        const overflowRef = this.overflowContainerRef.current
+        const numCols = this.props.numCols || 1
+        const position = this.state.paginationIndex
+
+        if (overflowRef) {
+            const page = Math.ceil(position / numCols)
+            const childrenCount = React.Children.count(children)
+            const maxChildrenPage = Math.ceil(childrenCount / numCols) - 1
+            const checkedPage = page < 0
+                ? 0
+                : page > maxChildrenPage
+                    ? maxChildrenPage
+                    : page
+            const scrollValue = -checkedPage * overflowRef.offsetWidth
+
+
+            console.log(position, scrollValue)
 
             overflowRef.style.transform = `translate(${scrollValue}px)`
 
