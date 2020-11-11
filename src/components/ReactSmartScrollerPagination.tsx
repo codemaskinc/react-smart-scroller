@@ -127,9 +127,6 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
                     : page
             const scrollValue = -checkedPage * overflowRef.offsetWidth
 
-
-            console.log(position, scrollValue)
-
             overflowRef.style.transform = `translate(${scrollValue}px)`
 
             this.setState({
