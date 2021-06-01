@@ -4,7 +4,6 @@ import { ReactSmartScrollerProps } from 'lib/types'
 import { colors } from 'lib/styles'
 import { C, isMobile } from 'lib/utils'
 import { constants } from 'lib/common'
-import { Simulate } from 'react-dom/test-utils'
 
 type ReactSmartScrollerPaginationState = {
     numberOfViews: number,
@@ -46,6 +45,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         this.updatePosition = this.updatePosition.bind(this)
         this.setStartPosition = this.setStartPosition.bind(this)
         this.onOverflowContentDrag = this.onOverflowContentDrag.bind(this)
+        this.onOverflowContentScroll = this.onOverflowContentScroll.bind(this)
         this.onOverflowContentMouseDown = this.onOverflowContentMouseDown.bind(this)
         this.deleteOverflowMouseMoveEvent = this.deleteOverflowMouseMoveEvent.bind(this)
     }
@@ -80,6 +80,15 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const numCols = this.props.numCols || 1
 
         return Math.ceil(this.childrenCount / numCols)
+    }
+
+    get childrenWidth() {
+        return React.Children.map(this.props.children, (_, index) => {
+            return {
+                value: this.overflowContainerRef.current?.children.item(index)?.clientWidth || 0,
+                index: index
+            }
+        })
     }
 
     setStartPosition() {
@@ -141,6 +150,21 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const { paginationIndex, scrollValue } = this.state
         const { paginationConfig } = this.props
 
+        if (overflowRef && paginationConfig && paginationConfig.withScroll && paginationIndex < this.numberOfViews - 1) {
+            const index = paginationIndex + 1
+            const newScrollValue = overflowRef.children.item(paginationIndex)?.clientWidth || 0
+
+            overflowRef.scroll({
+                left: overflowRef.scrollLeft + newScrollValue,
+                top: 0,
+                behavior: 'smooth'
+            })
+
+            return this.setState({
+                paginationIndex: index
+            })
+        }
+
         if (overflowRef && paginationIndex === this.numberOfViews - 1 && paginationConfig && paginationConfig.infinite) {
             overflowRef.style.transform = `translate(0px)`
 
@@ -151,8 +175,10 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         }
 
         if (overflowRef && paginationIndex < this.numberOfViews - 1) {
-            const newScrollValue = scrollValue - overflowRef.offsetWidth
             const index = paginationIndex + 1
+            const newScrollValue = this.props.paginationConfig?.withScroll
+                ? scrollValue - (overflowRef.children.item(paginationIndex)?.clientWidth || 0)
+                : scrollValue - overflowRef.offsetWidth
 
             overflowRef.style.transform = `translate(${newScrollValue}px)`
 
@@ -168,9 +194,26 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const { paginationIndex, scrollValue } = this.state
         const { paginationConfig } = this.props
 
+        if (overflowRef && paginationConfig && paginationConfig.withScroll && paginationIndex > 0) {
+            const index = paginationIndex - 1
+            const newScrollValue = overflowRef.children.item(index)?.clientWidth || 0
+
+            overflowRef.scroll({
+                left: overflowRef.scrollLeft - newScrollValue,
+                top: 0,
+                behavior: 'smooth'
+            })
+
+            return this.setState({
+                paginationIndex: index
+            })
+        }
+
         if (overflowRef && paginationIndex === 0 && paginationConfig && paginationConfig.infinite) {
             const index = this.numberOfViews - 1
-            const newScrollValue = index * overflowRef.offsetWidth
+            const newScrollValue = this.props.paginationConfig?.withScroll
+                ? index + (overflowRef.children.item(index)?.clientWidth || 0)
+                : index * overflowRef.offsetWidth
 
             overflowRef.style.transform = `translate(-${newScrollValue}px)`
 
@@ -182,7 +225,9 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
 
         if (overflowRef && paginationIndex > 0) {
             const index = paginationIndex - 1
-            const newScrollValue = scrollValue + overflowRef.offsetWidth
+            const newScrollValue = this.props.paginationConfig?.withScroll
+                ? scrollValue + (overflowRef.children.item(index)?.clientWidth || 0)
+                : scrollValue + overflowRef.offsetWidth
 
             overflowRef.style.transform = `translate(${newScrollValue}px)`
 
@@ -196,9 +241,26 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
     onDotClick(index: number) {
         const overflowRef = this.overflowContainerRef.current
         const { paginationIndex } = this.state
+        const { paginationConfig } = this.props
+
+        if (overflowRef && paginationConfig && paginationConfig.withScroll) {
+            const newScrollValue = (overflowRef?.children.item(index) as HTMLDivElement)?.offsetLeft || 0
+
+            overflowRef.scroll({
+                left: newScrollValue,
+                top: 0,
+                behavior: 'smooth'
+            })
+
+            return this.setState({
+                paginationIndex: index
+            })
+        }
 
         if (overflowRef && index !== paginationIndex) {
-            const newScrollValue = -(index * overflowRef.clientWidth)
+            const newScrollValue = this.props.paginationConfig?.withScroll
+                ? -((overflowRef?.children.item(index) as HTMLDivElement)?.offsetLeft || 0)
+                : -(index * overflowRef.clientWidth)
 
             overflowRef.style.transform = `translate(${newScrollValue}px)`
 
@@ -269,7 +331,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const overflowRef = this.overflowContainerRef.current
         const dragScroll = scrollLeft + (touch.clientX - deltaX)
         const { paginationConfig } = this.props
-        const minOffset = paginationConfig && paginationConfig.minOffsetToChangeSlide || 50
+        const minOffset = paginationConfig?.minOffsetToChangeSlide || 50
 
         if (!horizontal && lockedMove) {
             return null
@@ -300,14 +362,16 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
                 dragScroll
             })
         }
+
+        return
     }
 
     deleteOverflowMouseMoveEvent() {
         const overflowRef = this.overflowContainerRef.current
         const { dragScroll, paginationIndex, scrollLeft } = this.state
         const { paginationConfig } = this.props
-        const minOffset = paginationConfig && paginationConfig.minOffsetToChangeSlide || 150
-        const transition = paginationConfig && paginationConfig.transitionTime || 1
+        const minOffset = paginationConfig?.minOffsetToChangeSlide || 150
+        const transition = paginationConfig?.transitionTime || 1
 
         if (overflowRef && (-scrollLeft + dragScroll < -minOffset)) {
             const isLastSlide = paginationIndex === this.childrenCount - 1
@@ -368,6 +432,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
                 ? `paddingLeft: ${padding}px`
                 : undefined
             const flexBasis = cols ? `calc(100% / ${cols})` : 'unset'
+            const width = this.props.paginationConfig?.withScroll ? 'unset' : undefined
 
             return (
                 <ChildrenWrapper
@@ -376,7 +441,8 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
                         padding: `0 ${padding}px`,
                         flexBasis,
                         paddingRight,
-                        paddingLeft
+                        paddingLeft,
+                        width
                     }}
                 >
                     {child}
@@ -390,8 +456,8 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
 
         return Array.from(Array(this.numberOfViews)).map((_, index) => {
             const backgroundColor = this.state.paginationIndex === index
-                ? paginationConfig && paginationConfig.activeDotColor || colors.primary
-                : paginationConfig && paginationConfig.unactiveDotsColor || colors.gray.mediumGray
+                ? paginationConfig?.activeDotColor || colors.primary
+                : paginationConfig?.unactiveDotsColor || colors.gray.mediumGray
 
             return (
                 <Dot
@@ -404,7 +470,12 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
     }
 
     renderPagination() {
-        const { renderPagination } = this.props
+        const { renderPagination, paginationConfig } = this.props
+        const customStyles = paginationConfig?.withScroll ? {
+            marginTop: 20
+        } as React.CSSProperties : {
+            marginTop: 'unset'
+        } as React.CSSProperties
 
         if (renderPagination) {
             return renderPagination({
@@ -417,7 +488,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         }
 
         return (
-            <Pagination>
+            <Pagination style={customStyles}>
                 <LeftArrow onClick={this.onPrevious}/>
                 {this.renderDots()}
                 <RightArrow onClick={this.onNext}/>
@@ -425,9 +496,34 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         )
     }
 
+    onOverflowContentScroll() {
+        const overflowRef = this.overflowContainerRef.current
+        const leftScroll = overflowRef?.scrollLeft || 0
+        const properChildrenOffsets = this.childrenWidth?.reduce((acc, element, index) => {
+            return acc.concat({
+                index: index + 1,
+                value: element.value + (acc[index - 1]?.value || 0)
+            })
+        }, [] as Array<{ value: number, index: number }>)
+        const searchedElement = properChildrenOffsets?.reverse()?.find(item => leftScroll >= item.value)
+
+        this.setState({
+            paginationIndex: searchedElement
+                ? searchedElement.index
+                : 0
+        })
+    }
+
     render() {
         const { paginationConfig, style } = this.props
-        const transition = paginationConfig && paginationConfig.transitionTime || 1
+        const transition = paginationConfig?.transitionTime || 1
+        const customStyles = paginationConfig?.withScroll ? {
+            overflowX: 'auto',
+            marginBottom: -20
+        } as React.CSSProperties : {
+            overflowX: 'unset',
+            marginBottom: 'unset'
+        } as React.CSSProperties
 
         return (
             <ContainerWrapper style={style}>
@@ -435,8 +531,10 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
                     ref={this.overflowContainerRef}
                     style={{
                         transition: `all ${transition}s`,
-                        flex: 1
+                        flex: 1,
+                        ...customStyles
                     }}
+                    onScroll={this.onOverflowContentScroll}
                     onMouseDown={isMobile() ? C.noop : this.onOverflowContentMouseDown}
                 >
                     {this.renderChildren()}
@@ -448,52 +546,53 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
 }
 
 export const ContainerWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 `
 
 export const Container = styled.div`
-    display: flex;
-    position: relative;
+  display: flex;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
 `
 
 export const ChildrenWrapper = styled.div`
-    flex: 0 0 auto;
-    box-sizing: border-box;
-    width: 100%;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: 100%;
 `
 
 export const Pagination = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
 `
 
 export const LeftArrow = styled.div`
-    border: solid ${colors.black};
-    border-width: 0 2px 2px 0;
-    display: inline-block;
-    padding: 6px;
-    transform: rotate(135deg);
-    -webkit-transform: rotate(135deg);
-    cursor: pointer;
+  border: solid ${colors.black};
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 6px;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  cursor: pointer;
 `
 
 export const RightArrow = styled.div`
-    border: solid ${colors.black};
-    border-width: 0 2px 2px 0;
-    display: inline-block;
-    padding: 6px;
-    transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
-    cursor: pointer;
+  border: solid ${colors.black};
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 6px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  cursor: pointer;
 `
 
 export const Dot = styled.div`
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    margin: 0 3px;
-    cursor: pointer;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 0 3px;
+  cursor: pointer;
 `

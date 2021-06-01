@@ -14,7 +14,9 @@ type ReactSmartScrollerHorizontalState = {
     scrollWidth: number,
     scrollLeft: number,
     padding: Padding,
-    ratio: number
+    ratio: number,
+    numberOfViews: number,
+    paginationIndex: number
 }
 
 export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScrollerProps, ReactSmartScrollerHorizontalState> {
@@ -34,16 +36,22 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
         scrollWidth: 0,
         scrollLeft: 0,
         padding: this.trackPadding,
-        ratio: 1
+        ratio: 1,
+        numberOfViews: 0,
+        paginationIndex: 0
     }
 
     private overflowContainerRef: React.RefObject<HTMLDivElement> = React.createRef()
     private thumbRef: React.RefObject<HTMLDivElement> = React.createRef()
     private trackRef: React.RefObject<HTMLDivElement> = React.createRef()
+    private paginationRef: React.RefObject<HTMLDivElement> = React.createRef()
 
     constructor(props: ReactSmartScrollerProps) {
         super(props)
 
+        this.onNext = this.onNext.bind(this)
+        this.onPrevious = this.onPrevious.bind(this)
+        this.onDotClick = this.onDotClick.bind(this)
         this.measureContainers = this.measureContainers.bind(this)
         this.onMouseDown = this.onMouseDown.bind(this)
         this.onMouseDrag = this.onMouseDrag.bind(this)
@@ -56,6 +64,10 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
     }
 
     componentDidMount() {
+        this.setState({
+            numberOfViews: this.numberOfViews
+        })
+
         window.addEventListener('resize', this.measureContainers)
         window.addEventListener('mouseup', this.deleteMouseMoveEvent)
         window.addEventListener('transitionend', this.measureContainers)
@@ -123,6 +135,25 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
         }
 
         return undefined
+    }
+
+    get childrenCount() {
+        return React.Children.count(this.props.children)
+    }
+
+    get numberOfViews() {
+        const numCols = this.props.numCols || 1
+
+        return Math.ceil(this.childrenCount / numCols)
+    }
+
+    get childrenWidth() {
+        return React.Children.map(this.props.children, (_, index) => {
+            return {
+                value: this.overflowContainerRef.current?.children.item(index)?.clientWidth || 0,
+                index: index
+            }
+        })
     }
 
     scrollContainerReducedWidth(scrollContainerWidth: number) {
@@ -271,6 +302,22 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
         if (overflowRef && thumbRef) {
             thumbRef.style.left = `${overflowRef.scrollLeft * ratio}px`
         }
+
+        // logic to pagination
+        const leftScroll = overflowRef?.scrollLeft || 0
+        const properChildrenOffsets = this.childrenWidth?.reduce((acc, element, index) => {
+            return acc.concat({
+                index: index + 1,
+                value: element.value + (acc[index - 1]?.value || 0)
+            })
+        }, [] as Array<{ value: number, index: number }>)
+        const searchedElement = properChildrenOffsets?.reverse()?.find(item => leftScroll >= item.value)
+
+        this.setState({
+            paginationIndex: searchedElement
+                ? searchedElement.index
+                : 0
+        })
     }
 
     onOverflowContentMouseDown(event: React.MouseEvent) {
@@ -361,6 +408,11 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
 
     renderScrollbar() {
         const display = !isMobile() && this.shouldRenderScrollbar && !this.props.pagination
+        const customStyles = this.props.paginationConfig?.withScroll ? {
+            bottom: this.paginationRef.current?.clientHeight || 40
+        } as React.CSSProperties : {
+            bottom: 0
+        } as React.CSSProperties
 
         return (
             <Track
@@ -370,7 +422,8 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
                     color: colors.gray.mediumGray,
                     bottom: this.bottomOffset,
                     display: display ? 'flex' : 'none',
-                    ...this.props.trackProps
+                    ...this.props.trackProps,
+                    ...customStyles
                 }}
             >
                 {this.renderThumb()}
@@ -378,8 +431,125 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
         )
     }
 
+    onNext() {
+        const overflowRef = this.overflowContainerRef.current
+        const { paginationIndex } = this.state
+        const { paginationConfig } = this.props
+
+        if (overflowRef && paginationConfig && paginationConfig.withScroll && paginationIndex < this.numberOfViews - 1) {
+            const index = paginationIndex + 1
+            const newScrollValue = overflowRef.children.item(paginationIndex)?.clientWidth || 0
+
+            overflowRef.scroll({
+                left: overflowRef.scrollLeft + newScrollValue,
+                top: 0,
+                behavior: 'smooth'
+            })
+
+            return this.setState({
+                paginationIndex: index
+            })
+        }
+    }
+
+    onPrevious() {
+        const overflowRef = this.overflowContainerRef.current
+        const { paginationIndex } = this.state
+        const { paginationConfig } = this.props
+
+        if (overflowRef && paginationConfig && paginationConfig.withScroll && paginationIndex > 0) {
+            const index = paginationIndex - 1
+            const newScrollValue = overflowRef.children.item(index)?.clientWidth || 0
+
+            overflowRef.scroll({
+                left: overflowRef.scrollLeft - newScrollValue,
+                top: 0,
+                behavior: 'smooth'
+            })
+
+            return this.setState({
+                paginationIndex: index
+            })
+        }
+    }
+
+    onDotClick(index: number) {
+        const overflowRef = this.overflowContainerRef.current
+        const { paginationConfig } = this.props
+
+        if (overflowRef && paginationConfig && paginationConfig.withScroll) {
+            const newScrollValue = (overflowRef?.children.item(index) as HTMLDivElement)?.offsetLeft || 0
+
+            overflowRef.scroll({
+                left: newScrollValue,
+                top: 0,
+                behavior: 'smooth'
+            })
+
+            return this.setState({
+                paginationIndex: index
+            })
+        }
+    }
+
+    renderDots() {
+        const { paginationConfig } = this.props
+
+        return Array.from(Array(this.numberOfViews)).map((_, index) => {
+            const backgroundColor = this.state.paginationIndex === index
+                ? paginationConfig?.activeDotColor || colors.primary
+                : paginationConfig?.unactiveDotsColor || colors.gray.mediumGray
+
+            return (
+                <Dot
+                    key={index}
+                    style={{ backgroundColor }}
+                    onClick={() => this.onDotClick(index)}
+                />
+            )
+        })
+    }
+
+    renderPagination() {
+        const { renderPagination, paginationConfig } = this.props
+        const customStyles = paginationConfig?.withScroll ? {
+            marginTop: 20
+        } as React.CSSProperties : {
+            marginTop: 'unset'
+        } as React.CSSProperties
+
+        if (renderPagination) {
+            const customPagination = renderPagination({
+                selectedDot: this.state.paginationIndex,
+                onPrev: this.onPrevious,
+                onNext: this.onNext,
+                childrenCount: this.childrenCount,
+                onDotClick: this.onDotClick
+            })
+
+            return React.cloneElement(customPagination, {
+                ref: this.paginationRef,
+                style: {
+                    ...customPagination.props.style,
+                    marginTop: 20
+                }
+            })
+        }
+
+        return (
+            <Pagination
+                style={customStyles}
+                ref={this.paginationRef}
+            >
+                <LeftArrow onClick={this.onPrevious}/>
+                {this.renderDots()}
+                <RightArrow onClick={this.onNext}/>
+            </Pagination>
+        )
+    }
+
     render() {
-        const { draggable, style } = this.props
+        const { draggable, style, paginationConfig } = this.props
         const cursor = draggable ? 'pointer' : 'unset'
 
         return (
@@ -393,6 +563,7 @@ export class ReactSmartScrollerHorizontal extends React.Component<ReactSmartScro
                     {this.renderChildren()}
                 </SecondWrapper>
                 {this.renderScrollbar()}
+                {paginationConfig?.withScroll && this.renderPagination()}
             </div>
         )
     }
@@ -431,3 +602,39 @@ export const RectangleThumb = styled.div`
     width: 100px;
     height: 10px;
 `
+
+export const Pagination = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+`
+
+export const LeftArrow = styled.div`
+    border: solid ${colors.black};
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 6px;
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    cursor: pointer;
+`
+
+export const RightArrow = styled.div`
+    border: solid ${colors.black};
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 6px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    cursor: pointer;
+`
+
+export const Dot = styled.div`
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin: 0 3px;
+    cursor: pointer;
+`
+

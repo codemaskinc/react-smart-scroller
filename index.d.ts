@@ -42,6 +42,13 @@ type PaginationConfig = {
     */
 
     draggable?: boolean
+
+    /**
+        Default false.
+        Allows scroll with pagination
+    */
+
+    withScroll?: boolean
 }
 
 type RenderPaginationProps = {
