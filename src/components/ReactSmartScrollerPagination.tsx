@@ -150,7 +150,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const { paginationIndex, scrollValue } = this.state
         const { paginationConfig } = this.props
 
-        if (overflowRef && paginationConfig && paginationConfig.withScroll && paginationIndex < this.numberOfViews - 1) {
+        if (overflowRef && paginationConfig && paginationConfig?.withScroll && paginationIndex < this.numberOfViews - 1) {
             const index = paginationIndex + 1
             const newScrollValue = overflowRef.children.item(paginationIndex)?.clientWidth || 0
 
@@ -176,7 +176,13 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
 
         if (overflowRef && paginationIndex < this.numberOfViews - 1) {
             const index = paginationIndex + 1
-            const newScrollValue = this.props.paginationConfig?.withScroll
+            const isLast = overflowRef.clientWidth + Math.abs(this.state.scrollValue) >= overflowRef.scrollWidth
+
+            if (isLast) {
+                return
+            }
+
+            const newScrollValue = this.props.paginationConfig?.withScroll || this.props.paginationConfig?.renderNextToEachOther
                 ? scrollValue - (overflowRef.children.item(paginationIndex)?.clientWidth || 0)
                 : scrollValue - overflowRef.offsetWidth
 
@@ -194,7 +200,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const { paginationIndex, scrollValue } = this.state
         const { paginationConfig } = this.props
 
-        if (overflowRef && paginationConfig && paginationConfig.withScroll && paginationIndex > 0) {
+        if (overflowRef && paginationConfig && paginationConfig?.withScroll && paginationIndex > 0) {
             const index = paginationIndex - 1
             const newScrollValue = overflowRef.children.item(index)?.clientWidth || 0
 
@@ -211,7 +217,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
 
         if (overflowRef && paginationIndex === 0 && paginationConfig && paginationConfig.infinite) {
             const index = this.numberOfViews - 1
-            const newScrollValue = this.props.paginationConfig?.withScroll
+            const newScrollValue = this.props.paginationConfig?.withScroll || this.props.paginationConfig?.renderNextToEachOther
                 ? index + (overflowRef.children.item(index)?.clientWidth || 0)
                 : index * overflowRef.offsetWidth
 
@@ -225,7 +231,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
 
         if (overflowRef && paginationIndex > 0) {
             const index = paginationIndex - 1
-            const newScrollValue = this.props.paginationConfig?.withScroll
+            const newScrollValue = this.props.paginationConfig?.withScroll || this.props.paginationConfig?.renderNextToEachOther
                 ? scrollValue + (overflowRef.children.item(index)?.clientWidth || 0)
                 : scrollValue + overflowRef.offsetWidth
 
@@ -243,7 +249,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const { paginationIndex } = this.state
         const { paginationConfig } = this.props
 
-        if (overflowRef && paginationConfig && paginationConfig.withScroll) {
+        if (overflowRef && paginationConfig && (paginationConfig?.withScroll || paginationConfig?.renderNextToEachOther)) {
             const newScrollValue = (overflowRef?.children.item(index) as HTMLDivElement)?.offsetLeft || 0
 
             overflowRef.scroll({
@@ -258,7 +264,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         }
 
         if (overflowRef && index !== paginationIndex) {
-            const newScrollValue = this.props.paginationConfig?.withScroll
+            const newScrollValue = this.props.paginationConfig?.withScroll || this.props.paginationConfig?.renderNextToEachOther
                 ? -((overflowRef?.children.item(index) as HTMLDivElement)?.offsetLeft || 0)
                 : -(index * overflowRef.clientWidth)
 
@@ -432,7 +438,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
                 ? `paddingLeft: ${padding}px`
                 : undefined
             const flexBasis = cols ? `calc(100% / ${cols})` : 'unset'
-            const width = this.props.paginationConfig?.withScroll ? 'unset' : undefined
+            const width = (this.props.paginationConfig?.withScroll || this.props.paginationConfig?.renderNextToEachOther) ? 'unset' : undefined
 
             return (
                 <ChildrenWrapper

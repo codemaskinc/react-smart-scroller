@@ -28,7 +28,8 @@ export type ReactSmartScrollerProps = {
         transitionTime?: number,
         minOffsetToChangeSlide?: number,
         draggable?: boolean,
-        withScroll?: boolean
+        withScroll?: boolean,
+        renderNextToEachOther?: boolean
     },
     style?: React.CSSProperties,
     renderPagination?(options: RenderPaginationProps): JSX.Element
