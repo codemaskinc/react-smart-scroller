@@ -438,7 +438,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
                 ? `paddingLeft: ${padding}px`
                 : undefined
             const flexBasis = cols ? `calc(100% / ${cols})` : 'unset'
-            const width = (this.props.paginationConfig?.withScroll || this.props.paginationConfig?.renderNextToEachOther) ? 'unset' : undefined
+            const width = (this.props.paginationConfig?.withScroll || this.props.paginationConfig?.renderNextToEachOther) ? 'unset' : '100%'
 
             return (
                 <ChildrenWrapper
@@ -565,7 +565,6 @@ export const Container = styled.div`
 export const ChildrenWrapper = styled.div`
   flex: 0 0 auto;
   box-sizing: border-box;
-  width: 100%;
 `
 
 export const Pagination = styled.div`
