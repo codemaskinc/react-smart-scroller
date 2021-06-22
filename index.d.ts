@@ -45,6 +45,13 @@ type PaginationConfig = {
 
     /**
         Default false.
+        Allows to render elements next to each other
+     */
+
+    renderNextToEachOther?: boolean
+
+    /**
+        Default false.
         Allows scroll with pagination
     */
 
