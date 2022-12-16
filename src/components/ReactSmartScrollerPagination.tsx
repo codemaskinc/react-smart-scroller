@@ -56,20 +56,16 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         })
 
         window.addEventListener('resize', this.updatePosition)
-        window.addEventListener('touchstart', this.onTouchStart)
-        window.addEventListener('touchmove', this.onTouchMove, { passive: false })
-        window.addEventListener('touchend', this.deleteOverflowMouseMoveEvent)
         window.addEventListener('load', this.setStartPosition)
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.updatePosition)
-        window.removeEventListener('touchstart', this.onTouchStart)
         window.removeEventListener('mousemove', this.onOverflowContentDrag)
         window.removeEventListener('mouseup', this.deleteOverflowMouseMoveEvent)
-        window.removeEventListener('touchmove', this.onTouchMove)
-        window.removeEventListener('touchend', this.deleteOverflowMouseMoveEvent)
         window.removeEventListener('load', this.setStartPosition)
+        this.overflowContainerRef.current?.removeEventListener('touchmove', this.onTouchMove)
+        this.overflowContainerRef.current?.removeEventListener('touchend', this.deleteOverflowMouseMoveEvent)
     }
 
     get childrenCount() {
@@ -312,7 +308,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         }
     }
 
-    onTouchStart(event: TouchEvent) {
+    onTouchStart(event: React.TouchEvent) {
         const { scrollValue } = this.state
         const touch = event.touches.item(0) as Touch
         const overflowRef = this.overflowContainerRef.current
@@ -329,6 +325,9 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         if (overflowRef) {
             overflowRef.style.transition = 'unset'
         }
+
+        this.overflowContainerRef.current?.addEventListener('touchmove', this.onTouchMove, { passive: false })
+        this.overflowContainerRef.current?.addEventListener('touchend', this.deleteOverflowMouseMoveEvent)
     }
 
     onTouchMove(event: TouchEvent) {
@@ -380,7 +379,8 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
         const transition = paginationConfig?.transitionTime || 1
 
         if (overflowRef && (-scrollLeft + dragScroll < -minOffset)) {
-            const isLastSlide = paginationIndex === this.childrenCount - 1
+            const numCols = this.props.numCols || 1
+            const isLastSlide = paginationIndex === Math.ceil(this.childrenCount / numCols) - 1
             const newValue = isLastSlide
                 ? paginationIndex * overflowRef.clientWidth
                 : (paginationIndex + 1) * overflowRef.clientWidth
@@ -542,6 +542,7 @@ export class ReactSmartScrollerPagination extends React.Component<ReactSmartScro
                     }}
                     onScroll={this.onOverflowContentScroll}
                     onMouseDown={isMobile() ? C.noop : this.onOverflowContentMouseDown}
+                    onTouchStart={isMobile() ? this.onTouchStart : C.noop}
                 >
                     {this.renderChildren()}
                 </Container>
